@@ -238,7 +238,7 @@ svg.i.sm{width:var(--icon-sm);height:var(--icon-sm)}
 /* ── 表格 ────────────────────────────────────────────────────────── */
 .card{background:var(--ink-2);border:1px solid transparent;border-radius:var(--r-lg);box-shadow:var(--shadow-ring),var(--highlight-top)}
 .table-scroll{overflow-x:auto;overscroll-behavior-x:contain;border-radius:var(--r-lg)}
-table.list{width:100%;border-collapse:collapse;font-size:var(--fs-small);min-width:1000px}
+table.list{width:100%;border-collapse:collapse;font-size:var(--fs-small);min-width:1080px}
 table.list th{background:var(--ink-3);color:var(--text-2);font-size:var(--fs-caption);font-weight:500;text-align:left;height:44px;padding:0 var(--sp-4);white-space:nowrap;letter-spacing:.02em}
 table.list th.r,table.list td.r{text-align:right}
 table.list td{height:var(--row-h);padding:var(--sp-2) var(--sp-4);border-top:1px solid var(--line-1);color:var(--text-2);vertical-align:middle}
@@ -806,13 +806,126 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
 @keyframes toast-out{to{opacity:0;translate:0 6px}}
 @media (prefers-reduced-motion:reduce){@keyframes toast-in{from{opacity:0}}@keyframes toast-out{to{opacity:0}}}
 
+/* ── 手機導覽（< 1024px；桌機改用側欄） ─────────────────────────── */
+.m-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px;padding:3px;margin:0 auto var(--sp-6);max-width:var(--container-wide);background:var(--ink-0);border-radius:var(--r-sm);box-shadow:inset 0 0 0 1px var(--line-2)}
+.m-tabs a{display:flex;align-items:center;justify-content:center;gap:6px;min-height:40px;padding:0 var(--sp-2);border-radius:7px;color:var(--text-3);text-decoration:none;font-size:var(--fs-small);font-weight:600;white-space:nowrap;transition-property:background-color,color;transition-duration:var(--dur-fast);transition-timing-function:var(--ease-standard)}
+.m-tabs a .i{width:var(--icon-sm);height:var(--icon-sm)}
+.m-tabs a[aria-current="page"]{background:var(--ink-4);color:var(--text-1)}
+@media (max-width:359.98px){.m-tabs a .i{display:none}}
+@media (min-width:1024px){.m-tabs{display:none}}
+
+/* ── 學員名冊 ───────────────────────────────────────────────────── */
+.rgrid{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--sp-5)}
+@media (min-width:1100px){.rgrid{grid-template-columns:minmax(0,5fr) minmax(0,7fr);align-items:start}}
+.rstat{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line-1);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-ring),var(--highlight-top)}
+.rstat>div{background:var(--ink-2);padding:var(--sp-5);display:flex;flex-direction:column;gap:var(--sp-1);min-width:0}
+.rstat .k{font-size:var(--fs-caption);color:var(--text-3);letter-spacing:var(--tracking-label)}
+.rstat .v{font-family:var(--font-serif);font-size:var(--fs-display);font-weight:700;line-height:1.1;color:var(--rose-300);font-variant-numeric:tabular-nums}
+.rstat .v small{font-family:var(--font-sans);font-size:var(--fs-small);font-weight:500;color:var(--text-3);margin-left:4px}
+.rstat .t{font-family:var(--font-mono);font-size:var(--fs-lead);color:var(--text-1);font-variant-numeric:tabular-nums;margin-top:auto;overflow-wrap:anywhere}
+.rstat .foot{grid-column:1/-1;flex-direction:row;align-items:center;gap:var(--sp-2);padding:var(--sp-3) var(--sp-5);font-size:var(--fs-caption);color:var(--text-3)}
+.rstat .foot .i{width:var(--icon-sm);height:var(--icon-sm);color:var(--success-500)}
+.rstat-empty{border-radius:var(--r-lg);border:1.5px dashed var(--line-3);padding:var(--sp-8) var(--sp-6)}
+.rstat-empty .empty{padding:0}
+.bm{padding:var(--sp-5) var(--card-pad) var(--sp-6)}
+.bm-stage{display:flex;flex-direction:column;align-items:center;gap:var(--sp-4);padding:var(--sp-6) var(--sp-4);border-radius:var(--r-md);background:var(--ink-1);box-shadow:inset 0 0 0 1px var(--line-1)}
+/* 書籤列示意：既有書籤（淡）＋桃紅虛線落點 */
+.bm-bar{display:flex;align-items:center;gap:6px;width:100%;max-width:420px;height:34px;padding:0 8px;border-radius:var(--r-xs);background:var(--ink-3);box-shadow:inset 0 -1px 0 var(--line-2)}
+.bm-bar .ph{height:16px;border-radius:4px;background:var(--ink-5);flex:none}
+.bm-bar .slot-d{flex:1;min-width:0;height:22px;border-radius:5px;border:1.5px dashed var(--rose-line-2);background:var(--rose-tint-1);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--rose-300);letter-spacing:.04em;white-space:nowrap;overflow:hidden}
+.bm-arrow{color:var(--text-3);display:flex;flex-direction:column;align-items:center;gap:2px;font-size:var(--fs-caption)}
+.bm-arrow .i{width:18px;height:18px}
+.bm-link{display:inline-flex;align-items:center;gap:var(--sp-3);min-height:56px;max-width:100%;padding:0 var(--sp-6) 0 var(--sp-5);border-radius:var(--r-pill);background-color:var(--rose-500);background-image:var(--btn-pri-bg);color:var(--rose-ink);border:1px solid var(--btn-pri-edge);box-shadow:var(--btn-pri-shadow);font-size:var(--fs-lead);font-weight:700;letter-spacing:.02em;text-decoration:none;cursor:grab;white-space:nowrap;user-select:none;-webkit-user-drag:element;
+  transition-property:background-color,background-image,box-shadow,scale;transition-duration:var(--btn-dur-color),var(--btn-dur-color),var(--btn-dur-color),var(--btn-dur-press);transition-timing-function:var(--ease-out)}
+.bm-link .i{width:22px;height:22px;stroke-width:1.75}
+.bm-link:active{cursor:grabbing;scale:var(--btn-press)}
+.bm-link:focus-visible{box-shadow:var(--focus-ring),var(--btn-pri-shadow)}
+@media (hover:hover){.bm-link:hover{background-color:var(--rose-400);background-image:var(--btn-pri-bg-h);box-shadow:var(--btn-pri-shadow-h)}}
+@media (max-width:399.98px){.bm-link{font-size:var(--fs-body);padding:0 var(--sp-5) 0 var(--sp-4)}}
+.bm-cap{font-size:var(--fs-caption);color:var(--text-3);text-align:center}
+.bm-steps{list-style:none;margin:var(--sp-5) 0 0;padding:0;display:grid;grid-template-columns:minmax(0,1fr);gap:var(--sp-3)}
+@media (min-width:700px){.bm-steps{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.bm-step{display:flex;flex-direction:column;gap:var(--sp-2);padding:var(--sp-4);border-radius:var(--r-md);background:var(--ink-3);box-shadow:var(--shadow-ring);min-width:0}
+.bm-step .hd{display:flex;align-items:center;gap:var(--sp-2)}
+.bm-step .no{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-family:var(--font-mono);font-size:var(--fs-caption);color:var(--rose-300);box-shadow:inset 0 0 0 1px var(--rose-line-1);flex:none}
+.bm-step .hd .i{margin-left:auto;color:var(--text-3)}
+.bm-step h3{font-family:var(--font-sans);font-size:var(--fs-small);font-weight:600}
+.bm-step p{font-size:var(--fs-caption);color:var(--text-2);line-height:1.6;overflow-wrap:anywhere}
+kbd{font-family:var(--font-mono);font-size:11px;padding:1px 5px;border-radius:4px;background:var(--ink-1);box-shadow:inset 0 -1px 0 var(--line-3),inset 0 0 0 1px var(--line-2);color:var(--text-1);white-space:nowrap}
+.bm-alt{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--sp-3);margin-top:var(--sp-5);padding-top:var(--sp-4);border-top:1px solid var(--line-1)}
+.bm-alt p{font-size:var(--fs-caption);color:var(--text-3);flex:1 1 240px;min-width:0}
+.bm-alt b{color:var(--text-1);font-weight:600;display:block;font-size:var(--fs-small);margin-bottom:2px}
+.rnote{display:flex;gap:var(--sp-2);align-items:flex-start;font-size:var(--fs-caption);color:var(--text-3);margin-top:var(--sp-4)}
+.rnote .i{width:var(--icon-sm);height:var(--icon-sm);margin-top:2px;color:var(--text-3)}
+
+/* ── 名冊同步接收頁 ─────────────────────────────────────────────── */
+.sync{max-width:560px;margin:var(--sp-6) auto 0}
+.sync-card{display:flex;flex-direction:column;gap:var(--sp-5);padding:var(--sp-8) var(--sp-6);background:var(--ink-2);border-radius:var(--r-xl);box-shadow:var(--shadow-ring),var(--highlight-top);border:1px solid transparent}
+@media (min-width:768px){.sync-card{padding:var(--sp-10) var(--sp-8)}}
+.sync-mark{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;align-self:center;background:var(--ink-3);box-shadow:var(--shadow-ring-hi);color:var(--text-2)}
+.sync-mark .i{width:26px;height:26px}
+.sync-mark.is-ok{background:var(--success-tint);box-shadow:inset 0 0 0 1px var(--success-line);color:var(--success-500)}
+.sync-mark.is-err{background:var(--error-tint);box-shadow:inset 0 0 0 1px var(--error-line);color:var(--error-500)}
+.sync-mark.is-busy .i{animation:spin 1.1s linear infinite}
+@keyframes spin{to{rotate:360deg}}
+@media (prefers-reduced-motion:reduce){.sync-mark.is-busy .i{animation:none}}
+.sync-card .head{text-align:center;display:flex;flex-direction:column;gap:var(--sp-2)}
+.sync-card h1{font-size:var(--fs-h2)}
+.sync-card .sub{font-size:var(--fs-small);color:var(--text-3)}
+.sync-card .sub .mono{color:var(--text-2)}
+.sync-facts{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.7fr) minmax(0,1fr);gap:1px;background:var(--line-1);border-radius:var(--r-md);overflow:hidden;box-shadow:var(--shadow-ring)}
+.sync-facts>div{background:var(--ink-3);padding:var(--sp-3) var(--sp-4);display:flex;flex-direction:column;gap:2px;min-width:0}
+.sync-facts .k{font-size:var(--fs-caption);color:var(--text-3)}
+.sync-facts .v{font-family:var(--font-mono);font-size:var(--fs-body);color:var(--text-1);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.sync-facts .v[data-sync-time]{font-size:var(--fs-small);margin-top:auto}
+@media (min-width:480px){.sync-facts .v[data-sync-time]{white-space:nowrap}}
+.sync-facts .v.hero{font-family:var(--font-serif);font-size:var(--fs-h2);font-weight:700;color:var(--rose-300);line-height:1.15}
+.sync-facts .v small{font-family:var(--font-sans);font-size:var(--fs-caption);color:var(--text-3);margin-left:3px}
+@media (max-width:479.98px){.sync-facts{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.sync-facts>div:first-child{grid-column:1/-1}}
+.sync-acts{display:flex;flex-direction:column;gap:var(--sp-2)}
+.sync-acts .btn{width:100%}
+.sync-bar{height:3px;border-radius:var(--r-pill);background:var(--ink-0);overflow:hidden;position:relative}
+.sync-bar i{position:absolute;inset:0;width:40%;background:var(--rose-500);border-radius:inherit;animation:indet 1.1s var(--ease-in-out) infinite}
+@media (prefers-reduced-motion:reduce){.sync-bar i{animation:none;width:100%;opacity:.5}}
+.login-ctx{margin-top:calc(-1 * var(--sp-2))}
+
+/* ── 填寫進度 ───────────────────────────────────────────────────── */
+.ledger.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.ledger .stat.is-static{cursor:default}
+@media (hover:hover){.ledger .stat.is-static:hover{background:var(--ink-2)}}
+table.list.prog{min-width:880px}
+table.list.prog tbody tr{cursor:default}
+.acct{display:inline-flex;align-items:center;gap:2px;font-family:var(--font-mono);font-size:var(--fs-caption);color:var(--text-2);max-width:100%}
+.acct .tx{overflow-wrap:anywhere;min-width:0}
+.acct .btn{min-height:32px;width:32px;color:var(--text-3)}
+.acct .btn .i{width:var(--icon-sm);height:var(--icon-sm)}
+.acct .btn[aria-pressed="true"]{color:var(--rose-300)}
+.elapsed{display:inline-flex;align-items:center;justify-content:flex-end;gap:var(--sp-2);font-variant-numeric:tabular-nums;color:var(--text-1);font-weight:500;white-space:nowrap}
+.over7{display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 7px;border-radius:var(--r-xs);background:var(--warning-tint);color:var(--warning-500);box-shadow:inset 0 0 0 1px var(--warning-line);font-size:11px;font-weight:600;letter-spacing:.04em;white-space:nowrap}
+.over7 .i{width:12px;height:12px;stroke-width:2}
+tr.is-over td:first-child{box-shadow:inset 2px 0 0 var(--warning-500)}
+.mcard.is-over{box-shadow:inset 2px 0 0 var(--warning-500),var(--shadow-ring)}
+.mcard .el-big{font-family:var(--font-serif);font-size:var(--fs-h3);font-weight:700;color:var(--text-1);font-variant-numeric:tabular-nums;white-space:nowrap}
+.mcard .tl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px var(--sp-3);margin-top:var(--sp-3);padding-top:var(--sp-3);border-top:1px solid var(--line-1);font-size:var(--fs-caption);color:var(--text-3)}
+.mcard .tl time{color:var(--text-2)}
+.msort{display:none;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-3)}
+.msort .label{flex:none}
+.msort .select{min-height:40px}
+@media (max-width:767.98px){.msort{display:flex}}
+/* 名單：填寫耗時（主）＋開始時間（副） */
+td .dur{display:block;font-variant-numeric:tabular-nums;color:var(--text-1);white-space:nowrap}
+td .dur-s{display:block;font-family:var(--font-mono);font-size:var(--fs-caption);color:var(--text-3);white-space:nowrap}
+/* 名單欄位較多：時間依空白折成日期／時刻兩行，儲存格左右留白 12px */
+table.list:not(.prog) th,table.list:not(.prog) td{padding-inline:var(--sp-3)}
+td[data-col="submittedAt"] time{display:inline-block;max-width:10.5ch;white-space:normal;line-height:1.5}
+
 /* 進場（僅首次載入與切換畫面，不用於高頻互動） */
 .enter{animation:enter var(--dur-slow) var(--ease-out) both}
 @keyframes enter{from{opacity:0;translate:0 8px}}
 @media (prefers-reduced-motion:reduce){@keyframes enter{from{opacity:0}}}
 @media print{.side,.rail,.toasts,.crumbs{display:none!important}.app{display:block}}
 </style>
-<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.10.29_2157"};</script>
+<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.10.31_1409", "ROSTER_BOOKMARKLET": "javascript:(function(){var GRACE_BOOKMARKLET_RUN=1;(function (root, factory) { var m = factory(root); if (typeof GRACE_BOOKMARKLET_RUN !== 'undefined') { m.run(); return; } if (typeof module === 'object' && module && module.exports) module.exports = m; root.CONSULT_ROSTER_BOOKMARKLET = m; })(typeof globalThis !== 'undefined' ? globalThis : this, function (root) { 'use strict'; var ADMIN_ORIGIN = 'https://grace63188.github.io'; var ADMIN_URL = ADMIN_ORIGIN + '/consult-prep/admin/%23/roster-sync'; var SITE_HOSTS = ['www.graceschool.com.tw', 'graceschool.com.tw']; var MAX_PAGES = 200; var MAX_ROWS = 5000; var MESSAGE_VERSION = 1; var API_PATH = '/api/admin/members'; var API_PER_PAGE = 500; var STATUS_CODES = { Y: '啟用', W: '待驗證', D: '停用' }; var SYNC_STATUSES = ['Y']; function membersApiUrl(origin, page, perPage) { return origin + API_PATH + '?curPage=' + page + '&maxPerPage=' + (perPage || API_PER_PAGE) + '&sortBy=&ascSort=true'; } function parseMembersPage(json) { if (!json || typeof json !== 'object' || !Array.isArray(json.data)) return null; var page = json.page && typeof json.page === 'object' ? json.page : {}; var rows = [], skipped = 0, filtered = 0, statusCounts = {}; json.data.forEach(function (m) { if (!m || typeof m !== 'object') { skipped++; return; } var st = cleanCell(m.status).toUpperCase(); statusCounts[st || '?'] = (statusCounts[st || '?'] || 0) + 1; if (SYNC_STATUSES.indexOf(st) < 0) { filtered++; return; } var uid = cleanCell(m.uid), name = cleanCell(m.name); if (!uid || !name) { skipped++; return; } rows.push({ account: uid, name: name }); }); var maxPage = Number(page.maxPage), curPage = Number(page.curPage), counts = Number(page.counts); return { rows: rows, skipped: skipped, filtered: filtered, statusCounts: statusCounts, curPage: isFinite(curPage) && curPage > 0 ? curPage : 1, maxPage: isFinite(maxPage) && maxPage > 0 ? maxPage : 1, counts: isFinite(counts) && counts >= 0 ? counts : rows.length }; } function collectMembers(getPage, onProgress, isCancelled) { var all = [], skipped = 0, filtered = 0, statusCounts = {}; function addCounts(p) { Object.keys(p.statusCounts).forEach(function (k) { statusCounts[k] = (statusCounts[k] || 0) + p.statusCounts[k]; }); } return Promise.resolve(getPage(1)).then(function (json) { var first = parseMembersPage(json); if (!first) throw new Error('API 回應形狀不符'); all = first.rows.slice(); skipped += first.skipped; filtered += first.filtered; addCounts(first); var maxPage = Math.min(first.maxPage, MAX_PAGES); if (onProgress) onProgress({ page: 1, maxPage: maxPage, rows: all.length }); function next(n) { if (n > maxPage || (isCancelled && isCancelled())) return { rows: all, pages: Math.min(n - 1, maxPage), counts: first.counts, skipped: skipped, filtered: filtered, statusCounts: statusCounts, truncatedPages: first.maxPage > MAX_PAGES }; return Promise.resolve(getPage(n)).then(function (j) { var p = parseMembersPage(j); if (!p) throw new Error('第 ' + n + ' 頁回應形狀不符'); all = all.concat(p.rows); skipped += p.skipped; filtered += p.filtered; addCounts(p); if (onProgress) onProgress({ page: n, maxPage: maxPage, rows: all.length }); return next(n + 1); }); } return next(2); }); } function normHeader(s) { return String(s == null ? '' : s).toLowerCase().replace(/[\\s　_\\-：:（）()\\[\\]【】*＊\\/|]/g, ''); } function headerType(h) { var n = normHeader(h); if (!n) return ''; if (/mail|信箱|郵件|郵箱/.test(n)) return 'email'; if (/account|帳號|账号|username|userid|loginid|login|^id$|會員id|memberid|uid$/.test(n)) return 'account'; if (/姓名|本名|真名|真實姓名|会员姓名|^name$|fullname|realname|membername|^名字$/.test(n)) return 'name'; return ''; } function detectColumns(headers) { var out = { account: -1, email: -1, name: -1 }; (headers || []).forEach(function (h, i) { var t = headerType(h); if (t && out[t] < 0) out[t] = i; }); return out; } function columnsUsable(cols) { return !!cols && cols.name >= 0 && (cols.account >= 0 || cols.email >= 0); } function cleanCell(s) { return String(s == null ? '' : s).replace(/[\\u0000-\\u001f\\u007f]/g, ' ').replace(/\\s+/g, ' ').trim(); } function extractRoster(model) { if (!model || !Array.isArray(model.headers)) return null; var cols = detectColumns(model.headers); if (!columnsUsable(cols)) return null; var rows = [], skipped = 0; (model.rows || []).forEach(function (cells) { if (!Array.isArray(cells)) return; var name = cleanCell(cells[cols.name]); var account = cols.account >= 0 ? cleanCell(cells[cols.account]) : ''; var email = cols.email >= 0 ? cleanCell(cells[cols.email]) : ''; if (email) { var em = /[\\w.+\\-]+@[\\w\\-]+(\\.[\\w\\-]+)+/.exec(email); email = em ? em[0] : email; } if (!name || (!account && !email)) { skipped++; return; } rows.push({ account: account, email: email, name: name }); }); return { columns: cols, rows: rows, skipped: skipped }; } function pickTable(models) { var best = null, bestScore = -1, bestIndex = -1; (models || []).forEach(function (m, i) { var r = extractRoster(m); if (!r) return; var hits = (r.columns.account >= 0 ? 1 : 0) + (r.columns.email >= 0 ? 1 : 0) + 1; var score = hits * 100000 + r.rows.length; if (score > bestScore) { best = r; bestScore = score; bestIndex = i; } }); return best ? { roster: best, index: bestIndex } : null; } function dedupeRows(rows) { var seen = {}, out = [], dup = 0; (rows || []).forEach(function (r) { var ks = [r.account, r.email].map(function (v) { return String(v || '').trim().toLowerCase(); }).filter(function (v) { return v; }); var hit = ks.some(function (k) { return seen['k' + k]; }); if (hit) { dup++; return; } ks.forEach(function (k) { seen['k' + k] = 1; }); out.push(r); }); return { rows: out, duplicates: dup }; } var NEXT_TEXTS = ['下一頁', '下一页', '下頁', '下页', '›', '»', '>', '>>', '→', 'next', 'next page', 'nextpage', '下一頁›', '下一頁»']; function normText(s) { return String(s == null ? '' : s).toLowerCase().replace(/[\\s　]/g, ''); } function absUrl(href, base) { try { return new URL(href, base).href; } catch (e) { return ''; } } function currentPage(currentUrl, links) { try { var u = new URL(currentUrl); var keys = ['page', 'p', 'pageindex', 'pageno', 'pg', 'page_no', 'pagenum']; for (var i = 0; i < keys.length; i++) { var v = u.searchParams.get(keys[i]); if (v && /^\\d+$/.test(v)) return Number(v); } var m = /\\/page\\/(\\d+)/i.exec(u.pathname); if (m) return Number(m[1]); } catch (e) {  } for (var j = 0; j < (links || []).length; j++) { var l = links[j]; if (/(^|\\s)(active|current|selected|on)(\\s|$)/i.test(l.className || '') && /^\\d+$/.test(normText(l.text))) return Number(normText(l.text)); } return 1; } function nextPageUrl(links, currentUrl, visited) { visited = visited || {}; var cur = absUrl(currentUrl, currentUrl); var host = ''; try { host = new URL(cur).host; } catch (e) { host = ''; } function ok(l) { if (!l || l.disabled) return ''; if (/(^|\\s)disabled(\\s|$)/i.test(l.className || '')) return ''; var href = String(l.href || '').trim(); if (!href || /^(javascript:|%23|mailto:|tel:)/i.test(href)) return ''; var abs = absUrl(href, cur); if (!/^https?:/i.test(abs)) return ''; try { if (new URL(abs).host !== host) return ''; } catch (e) { return ''; } if (abs === cur || visited[abs]) return ''; return abs; } var i, l, u; for (i = 0; i < (links || []).length; i++) { l = links[i]; if (/(^|\\s)next(\\s|$)/i.test(l.rel || '')) { u = ok(l); if (u) return u; } } for (i = 0; i < (links || []).length; i++) { l = links[i]; var t = normText(l.text), a = normText(l.ariaLabel); if (NEXT_TEXTS.indexOf(t) >= 0 || NEXT_TEXTS.indexOf(a) >= 0 || /^下一頁|^下一页|^nextpage|^next$/.test(t) || /^下一頁|^next$|^nextpage/.test(a)) { u = ok(l); if (u) return u; } } for (i = 0; i < (links || []).length; i++) { l = links[i]; if (/(^|[\\s_\\-])next([\\s_\\-]|$)/i.test(l.className || '')) { u = ok(l); if (u) return u; } } var page = currentPage(cur, links); for (i = 0; i < (links || []).length; i++) { l = links[i]; if (normText(l.text) === String(page + 1)) { u = ok(l); if (u) return u; } } return ''; } function maskName(name) { var s = cleanCell(name); var chars = Array.from ? Array.from(s) : s.split(''); if (chars.length <= 1) return s ? '○' : ''; if (chars.length === 2) return chars[0] + '○'; var mid = ''; for (var i = 1; i < chars.length - 1; i++) mid += '○'; return chars[0] + mid + chars[chars.length - 1]; } function cellText(cell) { var inp = cell.querySelector ? cell.querySelector('input,select,textarea') : null; var txt = cleanCell(cell.textContent); if (!txt && inp && inp.value != null) txt = cleanCell(inp.value); var mail = cell.querySelector ? cell.querySelector('a[href^=\"mailto:\"]') : null; if (mail && !/@/.test(txt)) txt = cleanCell(String(mail.getAttribute('href')).replace(/^mailto:/i, '').split('?')[0]); return txt; } function tableModel(table) { var rowsEls = Array.prototype.slice.call(table.querySelectorAll('tr')); rowsEls = rowsEls.filter(function (tr) { var t = tr; while (t && t !== table) { if (t.tagName && t.tagName.toLowerCase() === 'table' && t !== table) return false; t = t.parentNode; } return true; }); if (!rowsEls.length) return { headers: [], rows: [] }; var headerRow = null; var thead = table.querySelector('thead'); if (thead) { var trs = thead.querySelectorAll('tr'); headerRow = trs.length ? trs[trs.length - 1] : null; } if (!headerRow) { for (var i = 0; i < rowsEls.length; i++) { if (rowsEls[i].querySelector('th')) { headerRow = rowsEls[i]; break; } } } if (!headerRow) headerRow = rowsEls[0]; var headers = Array.prototype.slice.call(headerRow.querySelectorAll('th,td')).map(cellText); var rows = rowsEls.filter(function (tr) { return tr !== headerRow && !(headerRow.parentNode === thead && tr.parentNode === thead); }) .map(function (tr) { return Array.prototype.slice.call(tr.querySelectorAll('th,td')).map(cellText); }) .filter(function (cells) { return cells.some(function (c) { return c; }); }); return { headers: headers, rows: rows }; } function tableModels(doc) { return Array.prototype.slice.call(doc.querySelectorAll('table')).map(tableModel); } function linksFromDocument(doc) { var out = []; Array.prototype.slice.call(doc.querySelectorAll('a[href], link[rel~=\"next\"], button[data-href]')).forEach(function (a) { out.push({ text: cleanCell(a.textContent || a.getAttribute('title') || ''), href: a.getAttribute('href') || a.getAttribute('data-href') || '', rel: a.getAttribute('rel') || '', className: (a.getAttribute('class') || '') + ' ' + ((a.parentNode && a.parentNode.getAttribute && a.parentNode.getAttribute('class')) || ''), ariaLabel: a.getAttribute('aria-label') || '', disabled: a.hasAttribute('disabled') || a.getAttribute('aria-disabled') === 'true' }); }); return out; } function parseDocument(doc, url, visited) { var picked = pickTable(tableModels(doc)); return { roster: picked ? picked.roster : null, tableIndex: picked ? picked.index : -1, nextUrl: nextPageUrl(linksFromDocument(doc), url, visited) }; } var UI = { host: null, body: null }; var CSS = { host: 'position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:rgba(8,6,7,.72);font-family:\"Noto Sans TC\",\"PingFang TC\",\"Microsoft JhengHei\",system-ui,sans-serif;color:%23F6EFEA;font-size:15px;line-height:1.6;', card: 'width:min(440px,calc(100vw - 32px));background:%23110E0F;border:1px solid rgba(255,46,139,.32);border-radius:20px;box-shadow:0 0 0 1px rgba(246,239,234,.08),0 24px 64px -12px rgba(0,0,0,.75);padding:28px 28px 24px;box-sizing:border-box;', eyebrow: 'font-size:12px;letter-spacing:.12em;color:%23FF4C9C;text-transform:uppercase;margin:0 0 6px;', title: 'font-size:22px;font-weight:600;margin:0 0 14px;color:%23F6EFEA;letter-spacing:.02em;', text: 'margin:0 0 10px;color:%23CDC2BC;', num: 'color:%23FF4C9C;font-weight:600;font-variant-numeric:tabular-nums;', list: 'margin:12px 0 18px;padding:12px 14px;background:%23191516;border-radius:12px;border:1px solid rgba(246,239,234,.07);font-size:14px;color:%23CDC2BC;', row: 'display:flex;justify-content:space-between;gap:12px;padding:3px 0;', btns: 'display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:6px;', primary: 'appearance:none;border:0;border-radius:999px;padding:12px 22px;font:inherit;font-weight:600;color:%231A0911;background:linear-gradient(180deg,%23FF4C9C,%23E8247E);box-shadow:inset 0 1px 0 rgba(255,255,255,.25);cursor:pointer;', secondary: 'appearance:none;border:1px solid rgba(246,239,234,.2);border-radius:999px;padding:11px 18px;font:inherit;color:%23CDC2BC;background:transparent;cursor:pointer;', bar: 'height:6px;border-radius:999px;background:%232B2526;overflow:hidden;margin:14px 0 6px;', fill: 'height:100%25;width:0;background:linear-gradient(90deg,%23FF4C9C,%23E8247E);transition:width .2s;', small: 'font-size:13px;color:%23A0948F;margin:0;' }; function el(tag, style, text) { var e = root.document.createElement(tag); if (style) e.setAttribute('style', style); if (text != null) e.textContent = text; return e; } function openOverlay() { closeOverlay(); UI.host = el('div', CSS.host); UI.host.setAttribute('role', 'dialog'); UI.body = el('div', CSS.card); UI.host.appendChild(UI.body); root.document.body.appendChild(UI.host); } function closeOverlay() { if (UI.host && UI.host.parentNode) UI.host.parentNode.removeChild(UI.host); UI.host = null; UI.body = null; } function render(children) { if (!UI.body) openOverlay(); while (UI.body.firstChild) UI.body.removeChild(UI.body.firstChild); children.forEach(function (c) { if (c) UI.body.appendChild(c); }); } function header(title) { var frag = root.document.createDocumentFragment(); frag.appendChild(el('p', CSS.eyebrow, 'G.R.A.C.E Academy ｜ 諮詢前置作業')); frag.appendChild(el('h2', CSS.title, title)); return frag; } function button(label, style, onClick) { var b = el('button', style, label); b.type = 'button'; b.addEventListener('click', onClick); return b; } function showProgress(page, rows, note, maxPage) { var bar = el('div', CSS.bar), fill = el('div', CSS.fill); fill.style.width = Math.min(100, Math.round(page / (maxPage || MAX_PAGES) * 100) + (maxPage ? 0 : 8)) + '%25'; bar.appendChild(fill); render([header('名冊讀取中'), el('p', CSS.text, '第 ' + page + (maxPage ? ' / ' + maxPage : '') + ' 頁 ｜ 已取得 ' + rows + ' 筆'), bar, el('p', CSS.small, note || '逐頁讀取官網會員資料，不會離開此頁'), el('div', CSS.btns, null)]); UI.body.lastChild.appendChild(button('取消', CSS.secondary, function () { STATE.cancelled = true; closeOverlay(); })); } function showError(msg, hint) { render([header('無法解析名冊'), el('p', CSS.text, msg), hint ? el('p', CSS.small, hint) : null, el('div', CSS.btns, null)]); UI.body.lastChild.appendChild(button('關閉', CSS.secondary, closeOverlay)); } function showConfirm(result) { var list = el('div', CSS.list); result.rows.slice(0, 3).forEach(function (r) { var row = el('div', CSS.row); row.appendChild(el('span', '', maskName(r.name))); row.appendChild(el('span', 'color:%23A0948F;', r.account ? '帳號 ' + maskKey(r.account) : (r.email ? 'Email ' + maskKey(r.email) : ''))); list.appendChild(row); }); var sum = el('p', CSS.text); sum.appendChild(root.document.createTextNode(result.source === 'api' ? '啟用帳號 ' : '會員 ')); sum.appendChild(el('span', CSS.num, String(result.rows.length))); sum.appendChild(root.document.createTextNode(' 筆')); var notes = []; if (result.truncated) notes.push('超過 ' + MAX_ROWS + ' 筆，只取前 ' + MAX_ROWS + ' 筆'); if (result.pageHint) notes.push(result.pageHint); var btns = el('div', CSS.btns); btns.appendChild(button('取消', CSS.secondary, closeOverlay)); btns.appendChild(button('同步至諮詢後台', CSS.primary, function () { sendToAdmin(result.rows); })); render([header('名冊確認'), sum, list, notes.length ? el('p', CSS.small, notes.join('；')) : null, el('p', CSS.small, '只傳送帳號、Email 與本名至諮詢後台（' + ADMIN_ORIGIN + '），由後台以管理密碼登入後寫入。'), btns]); } function maskKey(s) { s = String(s || ''); var at = s.indexOf('@'); var local = at >= 0 ? s.slice(0, at) : s, dom = at >= 0 ? s.slice(at) : ''; if (local.length <= 2) return local.charAt(0) + '○' + dom; return local.slice(0, 2) + '○○' + dom; } var STATE = { cancelled: false, popup: null, sent: false }; function sendToAdmin(rows) { var win = root.open(ADMIN_URL, 'grace-roster-sync'); if (!win) { showError('瀏覽器攔截了新視窗', '請允許此網站開啟彈出視窗後再試一次'); return; } STATE.popup = win; STATE.sent = false; var payload = { type: 'grace-roster', version: MESSAGE_VERSION, rows: rows, source: root.location.origin + root.location.pathname, count: rows.length }; var waitMsg = el('p', CSS.text, '等待諮詢後台就緒…（請在新視窗登入後台）'); render([header('傳送名冊'), waitMsg, el('p', CSS.small, '後台頁面回報就緒後自動傳送；完成後此處會顯示結果。'), el('div', CSS.btns, null)]); UI.body.lastChild.appendChild(button('關閉', CSS.secondary, function () { root.removeEventListener('message', onMsg); closeOverlay(); })); function onMsg(ev) { if (ev.origin !== ADMIN_ORIGIN || !ev.data || typeof ev.data !== 'object') return; if (ev.data.type === 'grace-roster-ready' && !STATE.sent) { STATE.sent = true; (ev.source || win).postMessage(payload, ADMIN_ORIGIN); waitMsg.textContent = '已傳送 ' + rows.length + ' 筆，等待後台寫入…'; } else if (ev.data.type === 'grace-roster-ack') { root.removeEventListener('message', onMsg); waitMsg.textContent = ev.data.ok ? '同步完成：' + (ev.data.count != null ? ev.data.count : rows.length) + ' 筆已寫入諮詢後台。' : '後台回報失敗：' + (ev.data.error || '請於後台頁面查看訊息'); } } root.addEventListener('message', onMsg); var pings = 0; var timer = root.setInterval(function () { if (STATE.sent || pings++ > 240 || win.closed) { root.clearInterval(timer); if (!STATE.sent && !win.closed) waitMsg.textContent = '後台未回應，請確認新視窗已開啟並登入後重試。'; return; } try { win.postMessage({ type: 'grace-roster-hello', version: MESSAGE_VERSION }, ADMIN_ORIGIN); } catch (e) {  } }, 500); } function fetchDoc(url) { return root.fetch(url, { credentials: 'same-origin', redirect: 'follow' }).then(function (res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.text(); }).then(function (html) { return new root.DOMParser().parseFromString(html, 'text/html'); }); } function fetchJson(url) { return root.fetch(url, { credentials: 'include', redirect: 'follow', headers: { Accept: 'application/json' } }).then(function (res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.text(); }).then(function (t) { try { return JSON.parse(t); } catch (e) { throw new Error('回應非 JSON'); } }); } function finishRows(all, meta) { var d = dedupeRows(all); var rows = d.rows, truncated = false; if (rows.length > MAX_ROWS) { rows = rows.slice(0, MAX_ROWS); truncated = true; } if (!rows.length) { showError(meta.source === 'api' ? '沒有狀態為啟用（' + SYNC_STATUSES.join('、') + '）且含帳號與本名的會員' : '沒有可用的會員列（每列需同時有帳號與本名）', meta.pageHint); return; } showConfirm({ rows: rows, columns: meta.columns || null, source: meta.source, pages: meta.pages, counts: meta.counts, duplicates: d.duplicates, skipped: meta.skipped, truncated: truncated, pageHint: meta.pageHint }); } function run() { STATE.cancelled = false; openOverlay(); var host = root.location.hostname; var siteNote = SITE_HOSTS.indexOf(host) < 0 ? '目前網站並非 ' + SITE_HOSTS[0] + '，諮詢後台只接受官網來源的名冊' : ''; var origin = root.location.origin; showProgress(1, 0, '向官網會員 API 讀取名冊…', 1); collectMembers(function (n) { return fetchJson(membersApiUrl(origin, n)); }, function (p) { showProgress(p.page, p.rows, '向官網會員 API 讀取名冊…', p.maxPage); }, function () { return STATE.cancelled; } ).then(function (r) { if (STATE.cancelled) return; finishRows(r.rows, { source: 'api', pages: r.pages, counts: r.counts, skipped: r.skipped, filtered: r.filtered, pageHint: [siteNote, r.truncatedPages ? '已達 ' + MAX_PAGES + ' 頁上限，後續頁未讀取' : ''].filter(function (x) { return x; }).join('；') }); }, function (e) { if (STATE.cancelled) return; runTableFallback(siteNote, '會員 API 無法使用（' + (e && e.message ? e.message : '網路錯誤') + '），改讀取頁面表格'); }); } function runTableFallback(siteNote, why) { var startUrl = root.location.href; var first = parseDocument(root.document, startUrl, {}); if (!first.roster) { var models = tableModels(root.document); var hasName = models.some(function (m) { return detectColumns(m.headers).name >= 0; }); showError(hasName ? '無法取得帳號：頁面表格只有姓名等欄位，沒有帳號或 Email 欄' : '此頁找不到含「本名」與「帳號或 Email」表頭的表格', [why, siteNote || '請確認已登入官網後台後再試一次'].filter(function (x) { return x; }).join('；')); return; } var all = first.roster.rows.slice(); var skipped = first.roster.skipped; var visited = {}; visited[absUrl(startUrl, startUrl)] = 1; var pages = 1; var pageHint = first.nextUrl ? '' : '未偵測到分頁連結，只取目前頁；如會員不只一頁，可將每頁筆數調大後再點書籤'; showProgress(pages, all.length, why); function finish() { finishRows(all, { source: 'table', columns: first.roster.columns, pages: pages, skipped: skipped, pageHint: [why, pageHint, siteNote].filter(function (x) { return x; }).join('；') }); } function step(nextUrl) { if (STATE.cancelled) return; if (!nextUrl || pages >= MAX_PAGES) { if (pages >= MAX_PAGES && nextUrl) pageHint = '已達 ' + MAX_PAGES + ' 頁上限，後續頁未讀取'; finish(); return; } visited[nextUrl] = 1; fetchDoc(nextUrl).then(function (doc) { if (STATE.cancelled) return; var r = parseDocument(doc, nextUrl, visited); pages++; if (r.roster) { all = all.concat(r.roster.rows); skipped += r.roster.skipped; } showProgress(pages, all.length, why); if (!r.roster || !r.roster.rows.length) { finish(); return; } step(r.nextUrl); }, function (e) { pageHint = '第 ' + (pages + 1) + ' 頁讀取失敗（' + (e && e.message ? e.message : '網路錯誤') + '），只保留已取得的頁數'; finish(); }); } step(first.nextUrl); } return { ADMIN_ORIGIN: ADMIN_ORIGIN, ADMIN_URL: ADMIN_URL, SITE_HOSTS: SITE_HOSTS, MAX_PAGES: MAX_PAGES, MAX_ROWS: MAX_ROWS, MESSAGE_VERSION: MESSAGE_VERSION, API_PATH: API_PATH, API_PER_PAGE: API_PER_PAGE, STATUS_CODES: STATUS_CODES, SYNC_STATUSES: SYNC_STATUSES, membersApiUrl: membersApiUrl, parseMembersPage: parseMembersPage, collectMembers: collectMembers, normHeader: normHeader, headerType: headerType, detectColumns: detectColumns, columnsUsable: columnsUsable, extractRoster: extractRoster, pickTable: pickTable, dedupeRows: dedupeRows, nextPageUrl: nextPageUrl, currentPage: currentPage, maskName: maskName, maskKey: maskKey, tableModel: tableModel, tableModels: tableModels, linksFromDocument: linksFromDocument, parseDocument: parseDocument, run: run }; });})();", "SITE_ORIGINS": ["https://www.graceschool.com.tw", "https://graceschool.com.tw"]};</script>
 <script>
 /*
  * G.R.A.C.E Academy《諮詢前置作業》作業欄位設定檔
@@ -840,9 +953,28 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
     title: '諮詢前置作業',
     tag: '優化作業',
     org: 'G.R.A.C.E Academy',
-    version: '2.2.0',
+    version: '2.3.0',
     timezone: 'Asia/Taipei',
     dateFormat: 'yyyy.mm.dd'
+  };
+
+  /** 學員名冊（Script Properties 分片儲存，不建立雲端檔案）與前台公開查詢的限制 */
+  var ROSTER = {
+    maxRows: 5000,                 // roster_sync 單次筆數上限
+    maxNameLength: 60,
+    maxKeyLength: 120,             // 帳號或 Email 正規化後長度上限
+    lookupFailLimit: 5,            // 同一 clientKey 連續查無次數
+    lookupLockMinutes: 15,         // 鎖定時間
+    publicPerMinute: 120,          // 免 token action 全站每分鐘上限（roster_lookup、session_start 合計）
+    clientPerMinute: 20,           // 同一 clientKey 每分鐘上限
+    fixedResponseMs: 350           // roster_lookup 回應時間固定化
+  };
+
+  /** 填寫計時 */
+  var SESSION = {
+    restartAfterDays: 90,          // 開始時間存在且未送出時不覆蓋，超過此天數視為新一輪
+    progressTab: '填寫進度',
+    statuses: { filling: '填寫中', submitted: '已送出' }
   };
 
   /** 雲端連結的共用對象（學員需將檔案共用給此帳號，可檢視即可） */
@@ -1014,10 +1146,12 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
   }
 
   /**
-   * 12 類資料。def 為範圍定義（desc 同值）；refs 為舉例標籤（不是欄位），最後一項固定為 key 'other'；
+   * 11 類資料（2.3 移除「收款帳務」finance）。def 為範圍定義（desc 同值）；refs 為舉例標籤（不是欄位），最後一項固定為 key 'other'；
    * primary:true 為重點項目。roles：出現的身分；condition：經銷合作需有下線夥伴才出現。
    */
   function cat(o) { o.desc = o.def; return o; }
+  /** 已移除的類別 id：舊答案含這些鍵時讀取忽略（normalizeAnswers 去除、各身分對應與匯出皆不列） */
+  var LEGACY_CATEGORY_IDS = ['finance'];
   var UPLOAD_CATEGORIES = [
     cat({ id: 'brand', label: '品牌門面', icon: 'storefront', def: '與品牌形象有關的資料',
       roles: ['owner', 'manager', 'freelancer', 'reseller'],
@@ -1034,9 +1168,6 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
     cat({ id: 'delivery', label: '服務交付', icon: 'package', def: '與提供服務過程有關的資料',
       roles: ALL_ROLES,
       refs: refs([ref('process', '服務流程'), ref('notice', '服務前通知'), ref('record', '服務紀錄'), ref('aftercare', '售後說明')]) }),
-    cat({ id: 'finance', label: '收款帳務', icon: 'wallet', def: '與收款及記帳有關的資料',
-      roles: ['owner', 'manager', 'freelancer', 'reseller'],
-      refs: refs([ref('payMethods', '收款方式'), ref('receipts', '收據發票'), ref('ledger', '收支紀錄')]) }),
     cat({ id: 'crm', label: '客戶管理', icon: 'users', def: '與客人資料及消費紀錄有關的資料',
       roles: ALL_ROLES,
       refs: refs([ref('clientList', '客戶名單', true), ref('purchases', '消費紀錄', true), ref('followUp', '回訪紀錄')]) }),
@@ -1151,7 +1282,8 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
     {
       id: 'uploads', label: '資料上傳', kind: 'uploads', icon: 'upload',
       roles: ALL_ROLES,
-      desc: '現有書面資料與檔案彙整',
+      desc: '現有資源盤點與整理',
+      hint: '為協助優化方案更貼近實際狀況，此區依學姊現有資源進行盤點與整理。建議於電腦前操作，依設備中既有的資料夾分類，逐一帶入對應類別。',
       notice: '影片或大型檔案以雲端連結提供，共用對象 ' + SHARE_EMAIL + '（可檢視）',
       itemFields: UPLOAD_FIELDS,
       categories: UPLOAD_CATEGORIES
@@ -1280,7 +1412,7 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
   /* 匯出工作表（xlsx）                                                   */
   /* ------------------------------------------------------------------ */
   var EXPORT_TABS = [
-    { id: 'index', name: '索引', headers: ['回執編號', '送出時間', '本名', '學員帳號', '身分', '行業', '品牌名稱', '檔案數', '缺口數', '狀態', '資料夾連結'] },
+    { id: 'index', name: '索引', headers: ['回執編號', '送出時間', '本名', '學員帳號', '身分', '行業', '品牌名稱', '檔案數', '缺口數', '狀態', '資料夾連結', '開始時間', '填寫耗時（分）'] },
     { id: 'profile', name: '基本輪廓', headers: ['回執編號', '本名', '身分', '下線夥伴', '行業類別', '品牌名稱', '任職公司', '職稱', '主要業務', '服務形式', '營運規模', '團隊人數'] },
     { id: 'uploads', name: '資料上傳', headers: ['回執編號', '本名', '類別', '狀態', '檔案數', '連結數', '補充說明'] },
     { id: 'links', name: '雲端連結', headers: ['回執編號', '本名', '類別', '網址', '說明'] },
@@ -1372,8 +1504,9 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
     });
   }
 
+  /** 區塊說明文字：身分提示 → 區塊 hint（較完整的說明，例：資料上傳）→ desc */
   function sectionHint(section, roleId) {
-    return (section.roleHints && section.roleHints[roleId]) || section.desc || '';
+    return (section.roleHints && section.roleHints[roleId]) || section.hint || section.desc || '';
   }
 
   /** 身分專屬提示（例：經銷合作的協作流程），無則空字串 */
@@ -1864,6 +1997,7 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
     var up = a.uploads;
     if (up && typeof up === 'object') {
       Object.keys(up).forEach(function (k) {
+        if (!categoryById(k)) { delete up[k]; return; }   // 已移除的類別（例 finance）與未知鍵：讀取忽略
         var v = up[k];
         if (!v || typeof v !== 'object') return;
         if (v.status !== 'yes') { v.links = []; v.note = ''; return; }
@@ -2164,6 +2298,53 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
     return rows;
   }
 
+  /* ---- 學員名冊與填寫計時 ------------------------------------------------ */
+  /** 名冊查詢鍵正規化：去頭尾空白、小寫、去除控制字元（帳號與 Email 共用；前台、資料中心、mock 一致） */
+  function rosterKey(s) {
+    return String(s == null ? '' : s).replace(/[\u0000-\u001f\u007f​﻿]/g, '').trim().toLowerCase().slice(0, ROSTER.maxKeyLength);
+  }
+
+  /** 名冊同步列整理：{ account, email, name } → { keys:[正規化鍵], name } 或 null（無本名或無可用鍵） */
+  function rosterRow(row) {
+    if (!row || typeof row !== 'object') return null;
+    var name = String(row.name == null ? '' : row.name).replace(/[\u0000-\u001f\u007f]/g, '').replace(/\s+/g, ' ').trim();
+    if (!name || name.length > ROSTER.maxNameLength) return null;
+    var keys = [];
+    [row.account, row.email].forEach(function (v) {
+      var k = rosterKey(v);
+      if (k && keys.indexOf(k) < 0) keys.push(k);
+    });
+    return keys.length ? { keys: keys, name: name } : null;
+  }
+
+  /** 填寫耗時文字：分鐘數 → 「X 天 Y 小時」「Y 小時 Z 分」「Z 分」；空值回 '' */
+  function durationText(min) {
+    var n = Number(min);
+    if (min == null || min === '' || !isFinite(n) || n < 0) return '';
+    n = Math.round(n);
+    if (n < 1) return '不到 1 分';
+    var d = Math.floor(n / 1440), h = Math.floor((n % 1440) / 60), m = n % 60;
+    if (d) return d + ' 天' + (h ? ' ' + h + ' 小時' : '');
+    if (h) return h + ' 小時' + (m ? ' ' + m + ' 分' : '');
+    return m + ' 分';
+  }
+
+  /** 開始與送出時間（yyyy.mm.dd HH:mm[:ss] 或毫秒）→ 耗時分鐘；無法計算回 null */
+  function durationMinutes(startedAt, endedAt) {
+    var a = timeToMs(startedAt), b = timeToMs(endedAt);
+    if (a == null || b == null || b < a) return null;
+    return Math.round((b - a) / 60000);
+  }
+
+  /** 'yyyy.mm.dd HH:mm[:ss]'（Asia/Taipei）或毫秒數 → 毫秒；格式不符回 null */
+  function timeToMs(v) {
+    if (v == null || v === '') return null;
+    if (typeof v === 'number' && isFinite(v)) return v;
+    var m = /^(\d{4})[.\-\/](\d{2})[.\-\/](\d{2})[ T](\d{2}):(\d{2})(?::(\d{2}))?/.exec(String(v).trim());
+    if (!m) return null;
+    return Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3]), Number(m[4]) - 8, Number(m[5]), Number(m[6] || 0));
+  }
+
   /** 前後台可用的 icon 語意名稱總表（區塊、身分、類別、步驟；plus 為自訂步驟） */
   function iconKeys() {
     var set = { plus: 1 };
@@ -2175,6 +2356,9 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
 
   return {
     META: META,
+    ROSTER: ROSTER,
+    SESSION: SESSION,
+    LEGACY_CATEGORY_IDS: LEGACY_CATEGORY_IDS,
     SHARE_EMAIL: SHARE_EMAIL,
     LINK_HOSTS: LINK_HOSTS,
     VIDEO_EXT: VIDEO_EXT,
@@ -2254,6 +2438,11 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
     gapCountOf: gapCountOf,
     buildLabeledData: buildLabeledData,
     exportRows: exportRows,
+    rosterKey: rosterKey,
+    rosterRow: rosterRow,
+    durationText: durationText,
+    durationMinutes: durationMinutes,
+    timeToMs: timeToMs,
     iconKeys: iconKeys
   };
 });
@@ -2610,6 +2799,45 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
   }
 
   /* ------------------------------------------------------------------ */
+  /* 前台：名冊查詢與填寫計時（免 token；以 clientKey 限流）               */
+  /* ------------------------------------------------------------------ */
+  var CLIENT_KEY = 'consult_client_key';
+  var memClientKey = '';
+  /** 前台裝置識別碼：隨機 24 碼，存 localStorage（不可用時存記憶體）；只用於限流，不含個資 */
+  function clientKey() {
+    if (memClientKey) return memClientKey;
+    var st = storageOf('localStorage');
+    var k = '';
+    try { k = st ? String(st.getItem(CLIENT_KEY) || '') : ''; } catch (e) { k = ''; }
+    if (!/^[A-Za-z0-9]{16,64}$/.test(k)) {
+      k = randomKey(24);
+      try { if (st) st.setItem(CLIENT_KEY, k); } catch (e) { /* ignore */ }
+    }
+    memClientKey = k;
+    return k;
+  }
+
+  /**
+   * rosterLookup(q) → { found:true, name } ｜ { found:false } ｜ { found:false, empty:true }
+   *   q 為學員帳號或 Email；只回本名。empty:true 表示名冊尚未同步，畫面改為手動輸入本名。
+   *   ERR_RATE_LIMIT：同裝置連續查無 5 次鎖 15 分鐘，或全站查詢過多。
+   */
+  function rosterLookup(q) {
+    return call('roster_lookup', { q: String(q == null ? '' : q), clientKey: clientKey() }, { retries: 1 });
+  }
+
+  /**
+   * sessionStart({ account, name, role? }) → { account, name, startedAt, lastSeen, resumed, elapsedMin }
+   *   學員資料頁完成帳號與本名後呼叫一次；伺服器記錄開始時間（已存在且未送出不覆蓋）。失敗不影響填寫（呼叫端可忽略錯誤）。
+   */
+  function sessionStart(o) {
+    o = o || {};
+    var params = { account: o.account, name: o.name, clientKey: clientKey() };
+    if (o.role) params.role = o.role;
+    return call('session_start', params, { retries: 1 });
+  }
+
+  /* ------------------------------------------------------------------ */
   /* 後台                                                                */
   /* ------------------------------------------------------------------ */
   /*
@@ -2733,6 +2961,16 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
     });
   }
 
+  /**
+   * rosterSync(rows) → { count, keys, skipped, duplicates, shards, updatedAt }
+   *   rows：[{ account, email, name }]（≤ 5000；由名冊同步書籤經 postMessage 送達後台頁面）；整份取代。
+   */
+  function rosterSync(rows) { return authed('roster_sync', { rows: rows || [] }); }
+  /** rosterStatus() → { count, keys, shards, updatedAt, empty } */
+  function rosterStatus() { return authed('roster_status', {}); }
+  /** progressList() → { rows:[{ account, name, role, startedAt, lastSeen, elapsedMin }], total }（已開始未送出） */
+  function progressList() { return authed('progress_list', {}); }
+
   /** ping() → { version, time } */
   function ping() { return call('ping', {}, { retries: 0 }); }
 
@@ -2750,6 +2988,12 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
     saveBlob: saveBlob,
     isIOS: isIOS,
     submit: submit,
+    clientKey: clientKey,
+    rosterLookup: rosterLookup,
+    sessionStart: sessionStart,
+    rosterSync: rosterSync,
+    rosterStatus: rosterStatus,
+    progressList: progressList,
     login: login,
     logout: logout,
     getToken: getToken,
@@ -2801,6 +3045,12 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
     <symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/></symbol>
     <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
     <symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M7 3.5h10a1 1 0 0 1 1 1v16l-6-4-6 4v-16a1 1 0 0 1 1-1z"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="11" height="11" rx="1.5"/><path d="M15.5 8.5V5.5a1 1 0 0 0-1-1h-9a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h3"/></symbol>
+    <symbol id="i-login" viewBox="0 0 24 24"><path d="M10 4.5h7.5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H10M3.5 12H14m0 0-3.5-3.5M14 12l-3.5 3.5"/></symbol>
+    <symbol id="i-pointer" viewBox="0 0 24 24"><path d="M9 4.5v9.5l2.2-2 2.3 5.2 2-.9-2.3-5.1 3.3-.2z"/></symbol>
+    <symbol id="i-roster" viewBox="0 0 24 24"><rect x="4.5" y="3.5" width="15" height="17" rx="1.5"/><circle cx="12" cy="9.5" r="2.5"/><path d="M8 16.5c.6-1.9 2.1-3 4-3s3.4 1.1 4 3"/></symbol>
+    <symbol id="i-hourglass" viewBox="0 0 24 24"><path d="M7 3.5h10M7 20.5h10M8 3.5c0 4 4 5.5 4 8.5S8 16.5 8 20.5M16 3.5c0 4-4 5.5-4 8.5s4 4.5 4 8.5"/></symbol>
     <symbol id="i-device" viewBox="0 0 24 24"><rect x="4" y="4.5" width="16" height="11" rx="1.5"/><path d="M9 19.5h6M12 15.5v4"/><path d="m9.5 10 1.8 1.8 3.4-3.6"/></symbol>
     <!-- 語意圖示（schema icon 鍵；區塊、類別、步驟） -->
     <symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5" stroke-dasharray="2 2"/></symbol>
@@ -2855,6 +3105,7 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
       <h1 id="login-title">諮詢前置作業 後台</h1>
       <p class="sub">學員作業審閱、下載與狀態管理</p>
     </div>
+    <div id="login-ctx" class="alert info login-ctx" hidden><svg class="i" aria-hidden="true"><use href="#i-roster"/></svg><div><b>名冊同步</b><p>登入後自動接收官網後台傳送的名冊。</p></div></div>
     <div id="login-alert" class="alert err" role="alert" hidden><svg class="i" aria-hidden="true"><use href="#i-alert"/></svg><div><b id="login-alert-t"></b></div></div>
     <form id="login-form" novalidate>
       <div class="field">
@@ -2887,7 +3138,9 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
       <div class="brand-txt"><div class="eyebrow">優化作業</div><div class="name">諮詢前置作業</div></div>
     </a>
     <nav class="side-nav" aria-label="主要">
-      <a class="nav-item" href="#/" id="nav-list" aria-current="page"><svg class="i" aria-hidden="true"><use href="#i-list"/></svg>作業名單<span class="count" id="nav-unread" aria-label=""></span></a>
+      <a class="nav-item" href="#/" id="nav-list" data-nav="list" aria-current="page"><svg class="i" aria-hidden="true"><use href="#i-list"/></svg>作業名單<span class="count" id="nav-unread" aria-label=""></span></a>
+      <a class="nav-item" href="#/progress" id="nav-progress" data-nav="progress"><svg class="i" aria-hidden="true"><use href="#i-hourglass"/></svg>填寫進度<span class="count" id="nav-prog" aria-label=""></span></a>
+      <a class="nav-item" href="#/roster" id="nav-roster" data-nav="roster"><svg class="i" aria-hidden="true"><use href="#i-roster"/></svg>學員名冊</a>
     </nav>
     <div class="side-tools">
       <div class="group-label" aria-hidden="true">工具</div>
@@ -2905,8 +3158,16 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
       <span class="sess" id="sess-info"></span>
       <button class="btn btn-secondary has-icon" type="button" data-act="logout"><svg class="i" aria-hidden="true"><use href="#i-logout"/></svg>登出</button>
     </div>
+    <nav class="m-tabs" aria-label="主要（手機）">
+      <a href="#/" data-nav="list" aria-current="page"><svg class="i" aria-hidden="true"><use href="#i-list"/></svg>作業名單</a>
+      <a href="#/progress" data-nav="progress"><svg class="i" aria-hidden="true"><use href="#i-hourglass"/></svg>填寫進度</a>
+      <a href="#/roster" data-nav="roster"><svg class="i" aria-hidden="true"><use href="#i-roster"/></svg>學員名冊</a>
+    </nav>
     <div class="wrap" id="view-list"></div>
     <div class="wrap" id="view-detail" hidden></div>
+    <div class="wrap" id="view-progress" hidden></div>
+    <div class="wrap" id="view-roster" hidden></div>
+    <div class="wrap" id="view-sync" hidden></div>
   </main>
 </div>
 
@@ -3052,7 +3313,8 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
     document.title = '登入｜諮詢前置作業 後台';
     var al = $('#login-alert');
     if (msg) { $('#login-alert-t').textContent = msg; al.hidden = false; } else al.hidden = true;
-    state.loaded = false; state.rows = []; state.detail = null;
+    $('#login-ctx').hidden = !/^#\/roster-sync/.test(location.hash);
+    state.loaded = false; state.rows = []; state.detail = null; prog.loaded = false; prog.rows = []; roster.status = null;
     // 記住此裝置且仍在效期內：顯示已記住狀態，可直接進入
     var ss = API.session ? API.session() : null;
     var known = !!(ss && ss.remember);
@@ -3131,6 +3393,9 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
     var h = location.hash.replace(/^#/, '') || '/';
     var m = /^\/r\/([^?]+)/.exec(h);
     if (m) return { view: 'detail', id: dec(m[1]) };
+    if (/^\/roster-sync\/?$/.test(h)) return { view: 'sync' };
+    if (/^\/roster\/?$/.test(h)) return { view: 'roster' };
+    if (/^\/progress\/?$/.test(h)) return { view: 'progress' };
     var q = h.split('?')[1] || '', p = {};
     q.split('&').forEach(function (kv) { if (!kv) return; var i = kv.indexOf('='); if (i < 0) return; var k = dec(kv.slice(0, i)); if (Object.prototype.hasOwnProperty.call(state.f, k) || k === 'sort') p[k] = dec(kv.slice(i + 1)); });
     return { view: 'list', params: p };
@@ -3149,6 +3414,9 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
     var r = parseHash();
     syncBrandHref();
     if (r.view === 'detail') openDetail(r.id);
+    else if (r.view === 'sync') showSync();
+    else if (r.view === 'roster') showRoster();
+    else if (r.view === 'progress') showProgress();
     else {
       var p = r.params || {};
       Object.keys(state.f).forEach(function (k) { state.f[k] = p[k] || ''; });
@@ -3176,10 +3444,15 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
     el.setAttribute('aria-label', n ? '未讀 ' + n + ' 份' : '');
   }
 
+  /** 切換主畫面：只顯示指定區塊，導覽標示目前頁面（作業閱讀歸屬作業名單但不標 current） */
+  var VIEWS = ['list', 'detail', 'progress', 'roster', 'sync'];
+  function showOnly(view, nav) {
+    VIEWS.forEach(function (v) { $('#view-' + v).hidden = v !== view; });
+    $$('[data-nav]').forEach(function (a) { if (a.dataset.nav === nav) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+  }
+
   function showList() {
-    $('#view-detail').hidden = true;
-    $('#view-list').hidden = false;
-    $('#nav-list').setAttribute('aria-current', 'page');
+    showOnly('list', 'list');
     document.title = '作業名單｜諮詢前置作業 後台';
     var root = $('#view-list');
     if (!root.dataset.built) buildListShell(root);
@@ -3307,6 +3580,7 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
     rows.sort(function (a, b) {
       var x = a[k], y = b[k];
       if (k === 'fileCount') { x = +x || 0; y = +y || 0; }
+      else if (k === 'durationMin') { x = durMin(a); y = durMin(b); x = x == null ? -1 : x; y = y == null ? -1 : y; }
       else if (k === 'gaps') { x = state.gapN[a.receiptId]; y = state.gapN[b.receiptId]; x = x == null ? -1 : x; y = y == null ? -1 : y; }
       else if (k === 'status') { x = STORDER[x]; y = STORDER[y]; }
       else { x = String(x || ''); y = String(y || ''); }
@@ -3335,12 +3609,26 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
     var body = $('#list-body');
     if (skeleton) {
       var sk = '';
-      for (var i = 0; i < 5; i++) sk += '<tr aria-hidden="true">' + [120, 70, 70, 120, 110, 32, 40, 64].map(function (w) { return '<td><span class="sk" style="height:12px;width:' + w + 'px"></span></td>'; }).join('') + '</tr>';
+      for (var i = 0; i < 5; i++) sk += '<tr aria-hidden="true">' + [120, 70, 70, 120, 110, 90, 32, 40, 64].map(function (w) { return '<td><span class="sk" style="height:12px;width:' + w + 'px"></span></td>'; }).join('') + '</tr>';
       body.innerHTML = '<div class="card table-card" aria-busy="true" aria-label="名單載入中"><div class="table-scroll"><table class="list"><tbody>' + sk + '</tbody></table></div></div>' +
         '<ul class="mlist" aria-hidden="true">' + [1, 2, 3].map(function () { return '<li class="mcard"><span class="sk" style="height:14px;width:40%"></span><span class="sk" style="height:12px;width:70%;margin-top:12px"></span></li>'; }).join('') + '</ul>';
       $('#ledger').innerHTML = '<div class="stat"><span class="sk" style="height:40px;width:60%"></span></div><div class="stat"><span class="sk" style="height:40px;width:60%"></span></div><div class="stat"><span class="sk" style="height:40px;width:60%"></span></div>';
       $('#result-count').textContent = '名單載入中…';
     }
+  }
+
+  /** 填寫耗時（分）：索引列 durationMin；缺少時由開始與送出時間推算；無開始紀錄回 null */
+  function durMin(r) {
+    var n = r && r.durationMin;
+    if (n != null && n !== '' && isFinite(Number(n))) return Number(n);
+    return r && r.startedAt && S.durationMinutes ? S.durationMinutes(r.startedAt, r.submittedAt) : null;
+  }
+  function durText(min) { var t = S.durationText ? S.durationText(min) : ''; return t || ''; }
+  function isoAttr(s) { return esc(fmtTime(s).replace(/\./g, '-').replace(' ', 'T')); }
+  function durCell(r) {
+    var t = durText(durMin(r));
+    if (!t) return '<span class="blank" aria-label="無開始紀錄">—</span>';
+    return '<span class="dur">' + esc(t) + '</span>' + (r.startedAt ? '<span class="dur-s"><span class="sr-only">開始 </span><time datetime="' + isoAttr(r.startedAt) + '">' + esc(fmtTime(r.startedAt)) + '</time></span>' : '');
   }
 
   function isEmployedLabel(label) { return S.ROLES.some(function (x) { return x.label === label && (S.EMPLOYED_ROLES || []).indexOf(x.id) >= 0; }); }
@@ -3355,6 +3643,7 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
     { key: 'industry', label: '行業' },
     { key: 'brand', label: '品牌／任職公司' },
     { key: 'submittedAt', label: '送出時間', r: true },
+    { key: 'durationMin', label: '填寫耗時／開始時間', r: true },
     { key: 'gaps', label: '缺口數', r: true },
     { key: 'fileCount', label: '檔案數', r: true },
     { key: 'status', label: '狀態' },
@@ -3399,7 +3688,8 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
         '<td>' + show(r.role, '—') + '</td>' +
         '<td>' + show(r.industry, '—') + '</td>' +
         '<td>' + brandCell(r) + '</td>' +
-        '<td class="r"><time class="num" datetime="' + esc(fmtTime(r.submittedAt).replace(/\./g, '-').replace(' ', 'T')) + '">' + esc(fmtTime(r.submittedAt)) + '</time></td>' +
+        '<td class="r" data-col="submittedAt"><time class="num" datetime="' + esc(fmtTime(r.submittedAt).replace(/\./g, '-').replace(' ', 'T')) + '">' + esc(fmtTime(r.submittedAt)) + '</time></td>' +
+        '<td class="r" data-col="durationMin">' + durCell(r) + '</td>' +
         '<td class="r">' + gapCell(r) + '</td>' +
         '<td class="r num">' + (Number(r.fileCount) || 0) + '</td>' +
         '<td>' + statusBadge(r.status) + '</td>' +
@@ -3412,6 +3702,7 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
         (r.brand ? '<div class="brandname">' + (isEmployedLabel(r.role) ? '<span class="muted">任職 </span>' : '') + esc(r.brand) + '</div>' : '') +
         '<div class="meta"><span class="tag">' + esc(r.role || '—') + '</span>' + (r.industry ? '<span class="tag">' + esc(r.industry) + '</span>' : '') + '</div>' +
         '<div class="foot"><time class="num">' + esc(fmtTime(r.submittedAt)) + '</time><span class="foot-r">' + gapCell(r) + '<span>附件 <span class="num">' + (Number(r.fileCount) || 0) + '</span> 件</span></span></div>' +
+        (durText(durMin(r)) ? '<div class="foot" style="border-top:0;padding-top:0;margin-top:var(--sp-2)"><span>填寫耗時 <b style="font-weight:500;color:var(--text-1)">' + esc(durText(durMin(r))) + '</b></span>' + (r.startedAt ? '<span>開始 <time class="num">' + esc(fmtTime(r.startedAt)) + '</time></span>' : '') + '</div>' : '') +
         '<div class="foot" style="justify-content:flex-start;gap:var(--sp-2)">' + rowDlBtn(r) + driveBtn(r.folderUrl, 'btn-icon row-drive row-dl', true) + '</div></div></li>';
     }).join('');
     body.innerHTML = '<div class="card table-card"><div class="table-scroll" role="region" aria-label="作業名單表格" tabindex="0"><table class="list"><caption class="sr-only">作業名單，可依欄位排序</caption><thead>' + thead + '</thead><tbody>' + tbody + '</tbody></table></div></div>' +
@@ -3420,26 +3711,323 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
       b.addEventListener('click', function () {
         var k = b.dataset.sort;
         if (state.sort.key === k) state.sort.dir = state.sort.dir === 'asc' ? 'desc' : 'asc';
-        else state.sort = { key: k, dir: k === 'submittedAt' || k === 'fileCount' || k === 'gaps' ? 'desc' : 'asc' };
+        else state.sort = { key: k, dir: k === 'submittedAt' || k === 'fileCount' || k === 'gaps' || k === 'durationMin' ? 'desc' : 'asc' };
         applyFilters();
         var nb = $('.sort-btn[data-sort="' + k + '"]'); if (nb) nb.focus();
       });
     });
   }
 
+  /* ---------------- 填寫進度（progress_list：已開始未送出） ---------------- */
+  var OVER_MIN = 7 * 1440;
+  var prog = { rows: [], loaded: false, error: null, sort: { key: 'elapsedMin', dir: 'desc' }, reveal: {} };
+  /** 帳號遮罩：Email 保留前 2 碼與網域（ab***@gmail.com）；一般帳號保留首尾各 2 碼 */
+  function maskAcct(s) {
+    s = String(s || '');
+    var at = s.indexOf('@'), local = at >= 0 ? s.slice(0, at) : s, dom = at >= 0 ? s.slice(at) : '';
+    var ch = Array.from ? Array.from(local) : local.split('');
+    if (at >= 0) return ch.slice(0, Math.min(2, Math.max(1, ch.length - 1))).join('') + '***' + dom;
+    if (ch.length <= 4) return (ch[0] || '') + '***';
+    return ch.slice(0, 2).join('') + '***' + ch.slice(-2).join('');
+  }
+  function acctHtml(acc) {
+    var on = !!prog.reveal[acc];
+    return '<span class="acct"><span class="tx" data-acct>' + esc(on ? acc : maskAcct(acc)) + '</span>' +
+      '<button type="button" class="btn btn-ghost btn-icon" data-act="reveal" data-key="' + esc(acc) + '" aria-pressed="' + on + '" aria-label="顯示完整帳號" title="' + (on ? '隱藏完整帳號' : '顯示完整帳號') + '">' + icon(on ? 'eye-off' : 'eye') + '</button></span>';
+  }
+  function toggleReveal(acc) {
+    var on = !prog.reveal[acc];
+    if (on) prog.reveal[acc] = 1; else delete prog.reveal[acc];
+    $$('[data-act="reveal"]').forEach(function (b) {
+      if (b.dataset.key !== acc) return;
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      b.setAttribute('title', on ? '隱藏完整帳號' : '顯示完整帳號');   // 切換鈕名稱固定，狀態由 aria-pressed 表示
+      $('use', b).setAttribute('href', on ? '#i-eye-off' : '#i-eye');
+      var tx = $('[data-acct]', b.parentNode); if (tx) tx.textContent = on ? acc : maskAcct(acc);
+    });
+  }
+  function elapsedOf(p) {
+    var n = p.elapsedMin;
+    if (n != null && n !== '' && isFinite(Number(n))) return Number(n);
+    return p.startedAt && S.durationMinutes ? S.durationMinutes(p.startedAt, Date.now()) : null;
+  }
+  function updateProgCount() {
+    var el = $('#nav-prog'), n = prog.rows.length;
+    el.textContent = n ? n : '';
+    el.setAttribute('aria-label', n ? '填寫中 ' + n + ' 位' : '');
+  }
+  function loadProgress() {
+    prog.error = null;
+    return API.progressList().then(function (d) { prog.rows = (d && d.rows) || []; prog.loaded = true; updateProgCount(); }, function (e) { if (e.code === 'ERR_AUTH') throw e; prog.error = e; });
+  }
+  function showProgress() {
+    showOnly('progress', 'progress');
+    document.title = '填寫進度｜諮詢前置作業 後台';
+    var root = $('#view-progress');
+    if (!root.dataset.built) {
+      root.dataset.built = '1';
+      root.innerHTML = '<header class="page-head"><div><p class="eyebrow">G.R.A.C.E Academy｜優化作業</p><h1 id="prog-title">填寫進度</h1>' +
+        '<p class="muted" style="font-size:var(--fs-small);margin-top:var(--sp-2)">已開始填寫、尚未送出的學姊；經過時間自學員資料頁完成起算，送出後自動移出。</p></div>' +
+        '<div class="actions"><button class="btn btn-secondary has-icon" type="button" data-act="prog-refresh">' + icon('refresh') + '重新整理</button></div></header>' +
+        '<section class="ledger cols-2" id="prog-ledger" aria-label="填寫進度統計"></section>' +
+        '<section aria-labelledby="prog-title"><div id="prog-body"></div></section>';
+    }
+    renderProgress(!prog.loaded);
+    loadProgress().then(function () { renderProgress(); }, function (e) { onError(e); });
+  }
+  function progSorted() {
+    var k = prog.sort.key, dir = prog.sort.dir === 'asc' ? 1 : -1;
+    return prog.rows.slice().sort(function (a, b) {
+      var x, y;
+      if (k === 'elapsedMin') { x = elapsedOf(a); y = elapsedOf(b); x = x == null ? -1 : x; y = y == null ? -1 : y; }
+      else { x = String(a[k] || ''); y = String(b[k] || ''); }
+      if (x < y) return -1 * dir; if (x > y) return 1 * dir;
+      return String(a.lastSeen) < String(b.lastSeen) ? 1 : -1;
+    });
+  }
+  var PCOLS = [
+    { key: 'name', label: '本名' }, { key: '', label: '學員帳號' }, { key: 'role', label: '身分' },
+    { key: 'startedAt', label: '開始時間', r: true }, { key: 'lastSeen', label: '最後活動', r: true }, { key: 'elapsedMin', label: '已經過時間', r: true }
+  ];
+  var MSORT = [['elapsedMin.desc', '經過時間：長至短'], ['elapsedMin.asc', '經過時間：短至長'], ['lastSeen.desc', '最後活動：新至舊']];
+  function timeCell(s) { return s ? '<time class="num" datetime="' + isoAttr(s) + '">' + esc(fmtTime(s)) + '</time>' : '<span class="blank">—</span>'; }
+  function overTag() { return '<span class="over7">' + icon('alert') + '逾 7 天</span>'; }
+  function renderProgress(skeleton) {
+    var body = $('#prog-body'), led = $('#prog-ledger');
+    if (!body) return;
+    if (skeleton) {
+      led.innerHTML = '<div class="stat is-static"><span class="sk" style="height:40px;width:60%"></span></div><div class="stat is-static"><span class="sk" style="height:40px;width:60%"></span></div>';
+      body.innerHTML = '<div class="card" aria-busy="true" aria-label="填寫進度載入中" style="padding:var(--sp-5);display:flex;flex-direction:column;gap:var(--sp-4)">' + [1, 2, 3].map(function () { return '<span class="sk" style="height:14px;width:' + (50 + Math.round(Math.random() * 40)) + '%"></span>'; }).join('') + '</div>';
+      return;
+    }
+    if (prog.error && !prog.loaded) {
+      led.innerHTML = '';
+      body.innerHTML = '<div class="card"><div class="empty" role="alert">' + icon('alert') + '<h2>填寫進度載入失敗</h2><p>' + esc(prog.error.message || '資料中心回應異常') + '</p><button class="btn btn-secondary has-icon" type="button" data-act="prog-refresh">' + icon('refresh') + '重新載入</button></div></div>';
+      return;
+    }
+    var rows = progSorted();
+    var over = rows.filter(function (p) { var n = elapsedOf(p); return n != null && n > OVER_MIN; }).length;
+    led.innerHTML = '<div class="stat is-static is-hero"><span class="k">填寫中</span><span class="v num">' + rows.length + '<small>位</small></span></div>' +
+      '<div class="stat is-static' + (over ? ' is-warn' : '') + '"><span class="k">逾 7 天未送出</span><span class="v num">' + over + '<small>位</small></span></div>';
+    if (!rows.length) {
+      body.innerHTML = '<div class="card"><div class="empty">' + icon('hourglass') + '<h2>目前無填寫中的作業</h2><p>學姊於前台完成學員資料後即列入此處；送出作業後自動移出。</p></div></div>';
+      return;
+    }
+    var thead = '<tr>' + PCOLS.map(function (c) {
+      if (!c.key) return '<th scope="col">' + esc(c.label) + '</th>';
+      var on = prog.sort.key === c.key;
+      var ariaSort = on ? ' aria-sort="' + (prog.sort.dir === 'asc' ? 'ascending' : 'descending') + '"' : '';
+      return '<th scope="col"' + ariaSort + (c.r ? ' class="r"' : '') + '><button type="button" class="sort-btn" data-act="psort" data-key="' + c.key + '">' + esc(c.label) + icon(on ? (prog.sort.dir === 'asc' ? 'up' : 'down') : 'sort', 'sm') + '</button></th>';
+    }).join('') + '</tr>';
+    var tbody = rows.map(function (p) {
+      var n = elapsedOf(p), isOver = n != null && n > OVER_MIN;
+      return '<tr class="' + (isOver ? 'is-over' : '') + '" data-elapsed="' + (n == null ? '' : n) + '">' +
+        '<td style="color:var(--text-1);font-weight:600">' + show(p.name, '—') + '</td>' +
+        '<td>' + acctHtml(p.account) + '</td>' +
+        '<td>' + show(p.role, '—') + '</td>' +
+        '<td class="r">' + timeCell(p.startedAt) + '</td>' +
+        '<td class="r">' + timeCell(p.lastSeen) + '</td>' +
+        '<td class="r" data-col="elapsed"><span class="elapsed">' + (isOver ? overTag() : '') + '<span>' + esc(durText(n) || '—') + '</span></span></td></tr>';
+    }).join('');
+    var cards = rows.map(function (p) {
+      var n = elapsedOf(p), isOver = n != null && n > OVER_MIN;
+      return '<li><div class="mcard' + (isOver ? ' is-over' : '') + '"><div class="top"><div style="min-width:0"><div class="nm">' + esc(p.name || '—') + '</div>' + acctHtml(p.account) + '</div>' +
+        '<div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px"><span class="el-big">' + esc(durText(n) || '—') + '</span>' + (isOver ? overTag() : '') + '</div></div>' +
+        (p.role ? '<div class="meta"><span class="tag">' + esc(p.role) + '</span></div>' : '') +
+        '<div class="tl"><span>開始時間</span>' + timeCell(p.startedAt) + '<span>最後活動</span>' + timeCell(p.lastSeen) + '</div></div></li>';
+    }).join('');
+    var cur = prog.sort.key + '.' + prog.sort.dir;
+    body.innerHTML = '<div class="result-bar"><p>共 <b>' + rows.length + '</b> 位填寫中</p></div>' +
+      '<div class="msort"><label class="label" for="prog-msort">排序</label><select class="select" id="prog-msort">' + MSORT.map(function (o) { return '<option value="' + o[0] + '"' + (o[0] === cur ? ' selected' : '') + '>' + esc(o[1]) + '</option>'; }).join('') + '</select></div>' +
+      '<div class="card table-card"><div class="table-scroll" role="region" aria-label="填寫進度表格" tabindex="0"><table class="list prog"><caption class="sr-only">已開始未送出的學姊，可依時間排序</caption><thead>' + thead + '</thead><tbody>' + tbody + '</tbody></table></div></div>' +
+      '<ul class="mlist" aria-label="填寫進度">' + cards + '</ul>';
+    $('#prog-msort').addEventListener('change', function () { var s = this.value.split('.'); prog.sort = { key: s[0], dir: s[1] }; renderProgress(); var m = $('#prog-msort'); if (m) m.focus(); });
+  }
+  function sortProgress(k) {
+    if (prog.sort.key === k) prog.sort.dir = prog.sort.dir === 'asc' ? 'desc' : 'asc';
+    else prog.sort = { key: k, dir: k === 'name' || k === 'role' ? 'asc' : 'desc' };
+    renderProgress();
+    var nb = $('#prog-body .sort-btn[data-key="' + k + '"]'); if (nb) nb.focus();
+  }
+
+  /* ---------------- 學員名冊（roster_status＋同步書籤；不列學員明細） ---------------- */
+  var roster = { status: null, error: null };
+  function bmHref() { var u = (window.CONSULT_CONFIG || {}).ROSTER_BOOKMARKLET; return typeof u === 'string' && /^javascript:/i.test(u) ? u : ''; }
+  var BM_LABEL = 'G.R.A.C.E 名冊同步';
+  function showRoster() {
+    showOnly('roster', 'roster');
+    document.title = '學員名冊｜諮詢前置作業 後台';
+    var root = $('#view-roster');
+    if (!root.dataset.built) buildRoster(root);
+    renderRosterStatus();
+    loadRosterStatus();
+  }
+  function loadRosterStatus() {
+    return API.rosterStatus().then(function (s) { roster.status = s || {}; roster.error = null; renderRosterStatus(); }, function (e) {
+      if (e.code === 'ERR_AUTH') return onError(e);
+      roster.error = e; renderRosterStatus();
+    });
+  }
+  function buildRoster(root) {
+    root.dataset.built = '1';
+    var href = bmHref();
+    var mod = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent || '') ? '<kbd>⌘</kbd>+<kbd>Shift</kbd>+<kbd>B</kbd>' : '<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>B</kbd>';
+    var steps = [
+      { ic: 'bookmark', t: '拖曳到書籤列', d: '將上方連結按住拖曳到瀏覽器書籤列；書籤列未顯示時按 ' + mod + '。' },
+      { ic: 'login', t: '登入官網後台', d: '於 <span class="mono">www.graceschool.com.tw/admin/</span> 以管理帳號登入，停留在任一後台頁面。' },
+      { ic: 'pointer', t: '點書籤並確認', d: '點書籤列的「' + esc(BM_LABEL) + '」，確認啟用帳號筆數後同步至諮詢後台。' }
+    ];
+    var link = href
+      ? '<div class="bm-bar" aria-hidden="true"><span class="ph" style="width:44px"></span><span class="ph" style="width:64px"></span><span class="slot-d">書籤列</span><span class="ph" style="width:36px"></span></div>' +
+        '<span class="bm-arrow" aria-hidden="true">' + icon('up') + '</span>' +
+        '<a class="bm-link" id="bm-link" data-act="bm" draggable="true" title="拖曳到書籤列">' + icon('bookmark') + '<span>' + esc(BM_LABEL) + '</span></a>' +
+        '<p class="bm-cap" id="bm-cap">按住連結拖曳到書籤列；在此頁點選不會執行</p>'
+      : '<div class="alert warn" role="alert">' + icon('alert') + '<div><b>書籤程式未載入</b><p>後台需經 build.py 建置後開啟，書籤連結才會出現。</p></div></div>';
+    root.innerHTML = '<header class="page-head"><div><p class="eyebrow">G.R.A.C.E Academy｜優化作業</p><h1 id="roster-title">學員名冊</h1>' +
+      '<p class="muted" style="font-size:var(--fs-small);margin-top:var(--sp-2)">官網啟用帳號的本名對照，供前台以帳號或 Email 帶入本名。</p></div>' +
+      '<div class="actions"><button class="btn btn-secondary has-icon" type="button" data-act="roster-refresh">' + icon('refresh') + '重新整理</button></div></header>' +
+      '<div class="rgrid">' +
+        '<section aria-labelledby="rs-title"><h2 class="panel-title" id="rs-title">名冊狀態</h2><div id="roster-status" aria-live="polite"></div>' +
+          '<p class="rnote">' + icon('shield') + '<span>名冊只保存帳號雜湊與本名，不建立雲端檔案，後台不列出學員明細。</span></p></section>' +
+        '<section class="panel bm" aria-labelledby="bm-title"><h2 class="panel-title" id="bm-title">同步書籤</h2>' +
+          '<div class="bm-stage">' + link + '</div>' +
+          '<ol class="bm-steps">' + steps.map(function (s, i) { return '<li class="bm-step"><div class="hd"><span class="no">' + (i + 1) + '</span><h3>' + esc(s.t) + '</h3>' + icon(s.ic, 'sm') + '</div><p>' + s.d + '</p></li>'; }).join('') + '</ol>' +
+          (href ? '<div class="bm-alt"><p><b>無法拖曳時</b>手機或無法拖曳時，複製書籤程式；新增任一書籤後，將網址欄內容改貼為此程式。</p>' +
+            '<button class="btn btn-secondary has-icon" type="button" data-act="copy-bm">' + icon('copy') + '複製書籤程式</button></div>' : '') +
+        '</section>' +
+      '</div>';
+    var a = $('#bm-link', root);
+    if (a) { a.setAttribute('href', href); a.setAttribute('aria-describedby', 'bm-cap'); }
+  }
+  function renderRosterStatus() {
+    var box = $('#roster-status'); if (!box) return;
+    var s = roster.status;
+    if (roster.error && !s) {
+      box.innerHTML = '<div class="card"><div class="empty" role="alert">' + icon('alert') + '<h3>名冊狀態載入失敗</h3><p>' + esc(roster.error.message || '資料中心回應異常') + '</p><button class="btn btn-secondary has-icon" type="button" data-act="roster-refresh">' + icon('refresh') + '重新載入</button></div></div>';
+      return;
+    }
+    if (!s) { box.innerHTML = '<div class="rstat" aria-busy="true"><div><span class="sk" style="height:12px;width:40%"></span><span class="sk" style="height:40px;width:60%;margin-top:8px"></span></div><div><span class="sk" style="height:12px;width:40%"></span><span class="sk" style="height:20px;width:80%;margin-top:28px"></span></div></div>'; return; }
+    if (s.empty || !Number(s.count)) {
+      box.innerHTML = '<div class="rstat-empty" data-roster-empty><div class="empty">' + icon('roster') + '<h3>尚未同步名冊</h3><p>依「同步書籤」三個步驟同步官網會員後，前台即可由帳號帶入本名；未同步前學姊改為手動輸入本名。</p></div></div>';
+      return;
+    }
+    box.innerHTML = '<div class="rstat" data-roster-count="' + esc(s.count) + '">' +
+      '<div><span class="k">啟用帳號</span><span class="v num">' + esc(s.count) + '<small>筆</small></span></div>' +
+      '<div><span class="k">最後更新</span><span class="t" id="roster-updated">' + (s.updatedAt ? esc(fmtTime(s.updatedAt)) : '—') + '</span></div>' +
+      '<div class="foot">' + icon('check') + '<span>前台可依帳號或 Email 帶入本名' + (s.keys ? '（比對鍵 <span class="num">' + esc(s.keys) + '</span> 組）' : '') + '</span></div></div>';
+  }
+  function copyText(text, okMsg) {
+    function done() { toast(okMsg, 'ok'); }
+    function fallback() {
+      var ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      var ok = false; try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      ta.remove();
+      if (ok) done(); else toast('無法自動複製，需手動選取', 'err');
+    }
+    try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text).then(done, fallback); return; } } catch (e) { /* ignore */ }
+    fallback();
+  }
+
+  /* ---------------- 名冊同步接收（#/roster-sync；只接受 SITE_ORIGINS 的 postMessage） ---------------- */
+  var sync = { phase: 'wait', rows: null, src: null, origin: '', from: '', result: null, error: '' };
+  function siteOrigins() { var o = (window.CONSULT_CONFIG || {}).SITE_ORIGINS; return Array.isArray(o) && o.length ? o : ['https://www.graceschool.com.tw', 'https://graceschool.com.tw']; }
+  /** 就緒訊息（不含資料）：有來源時只回該來源；對 opener 廣播時逐一指定官網來源，不用 '*' */
+  function sendReady(target, origin) {
+    var w = target || window.opener;
+    if (!w) return;
+    (origin ? [origin] : siteOrigins()).forEach(function (o) { try { w.postMessage({ type: 'grace-roster-ready', version: 1 }, o); } catch (e) { /* 來源不符時瀏覽器靜默丟棄 */ } });
+  }
+  function syncActive() { return !$('#view-app').hidden && !$('#view-sync').hidden && API.isLoggedIn(); }
+  function showSync() {
+    showOnly('sync', '');
+    document.title = '名冊同步｜諮詢前置作業 後台';
+    renderSync();
+    if (sync.phase === 'wait') sendReady();
+  }
+  window.addEventListener('message', function (ev) {
+    if (siteOrigins().indexOf(ev.origin) < 0) return;
+    var m = ev.data;
+    if (!m || typeof m !== 'object' || m.version !== 1) return;
+    if (m.type === 'grace-roster-hello') { if (syncActive() && sync.phase === 'wait') sendReady(ev.source, ev.origin); return; }
+    if (m.type !== 'grace-roster' || !Array.isArray(m.rows) || m.rows.length > ((S.ROSTER && S.ROSTER.maxRows) || 5000)) return;
+    if (!syncActive() || sync.phase === 'syncing' || sync.phase === 'done') return;
+    sync.rows = m.rows.filter(function (r) { return r && typeof r === 'object'; }).map(function (r) {
+      var o = { account: String(r.account == null ? '' : r.account), name: String(r.name == null ? '' : r.name) };
+      if (r.email != null && r.email !== '') o.email = String(r.email);
+      return o;
+    });
+    sync.src = ev.source; sync.origin = ev.origin;
+    var src = typeof m.source === 'string' && m.source.indexOf(ev.origin + '/') === 0 ? m.source : ev.origin;
+    sync.from = src.replace(/^https:\/\//, '').slice(0, 80);
+    runSync();
+  });
+  function syncAck(msg) { try { if (sync.src) sync.src.postMessage(msg, sync.origin); } catch (e) { /* ignore */ } }
+  function runSync() {
+    if (!sync.rows) return;
+    sync.phase = 'syncing'; sync.error = ''; renderSync();
+    API.rosterSync(sync.rows).then(function (r) {
+      sync.phase = 'done'; sync.result = r || {}; roster.status = null;
+      renderSync();
+      syncAck({ type: 'grace-roster-ack', ok: true, count: sync.result.count });
+    }, function (e) {
+      sync.phase = 'error'; sync.error = (e && e.message) || '資料中心回應異常';
+      renderSync();
+      syncAck({ type: 'grace-roster-ack', ok: false, error: sync.error });
+      if (e && e.code === 'ERR_AUTH') onError(e);
+    });
+  }
+  function renderSync() {
+    var root = $('#view-sync'); if (!root) return;
+    var p = sync.phase, n = sync.rows ? sync.rows.length : 0, r = sync.result || {};
+    var mark, title, sub, mid = '', acts;
+    var toRoster = '<a class="btn btn-secondary btn-lg" href="#/roster" data-act="sync-roster">前往名冊</a>';
+    if (p === 'syncing') {
+      mark = '<span class="sync-mark is-busy">' + icon('refresh') + '</span>'; title = '同步中';
+      sub = '啟用帳號 <span class="num">' + n + '</span> 筆寫入資料中心';
+      mid = '<div class="sync-bar" role="progressbar" aria-label="同步進度"><i></i></div>'; acts = '';
+    } else if (p === 'done') {
+      mark = '<span class="sync-mark is-ok">' + icon('check') + '</span>'; title = '同步完成';
+      sub = '來源 <span class="mono">' + esc(sync.from) + '</span>';
+      mid = '<div class="sync-facts" data-sync-result>' +
+        '<div><span class="k">啟用帳號</span><span class="v hero num" data-sync-count>' + esc(r.count != null ? r.count : 0) + '<small>筆</small></span></div>' +
+        '<div><span class="k">更新時間</span><span class="v" data-sync-time>' + esc(fmtTime(r.updatedAt) || '—') + '</span></div>' +
+        '<div><span class="k">重複略過</span><span class="v num" data-sync-dup>' + esc(r.duplicates || 0) + '<small>筆</small></span></div></div>' +
+        (r.skipped ? '<p class="muted" style="font-size:var(--fs-caption);text-align:center">缺少本名或帳號而略過 <span class="num">' + esc(r.skipped) + '</span> 筆。</p>' : '') +
+        '<p class="muted" style="font-size:var(--fs-caption);text-align:center">已回報官網後台，書籤浮層將顯示同步結果。</p>';
+      acts = '<button class="btn btn-primary btn-lg" type="button" data-act="sync-close">關閉視窗</button>' + toRoster;
+    } else if (p === 'error') {
+      mark = '<span class="sync-mark is-err">' + icon('alert') + '</span>'; title = '同步失敗';
+      sub = '啟用帳號 <span class="num">' + n + '</span> 筆尚未寫入';
+      mid = '<div class="alert err" role="alert">' + icon('alert') + '<div><b>資料中心回應錯誤</b><p>' + esc(sync.error) + '</p></div></div>';
+      acts = '<button class="btn btn-primary btn-lg has-icon" type="button" data-act="sync-retry">' + icon('refresh') + '重新同步</button>' + toRoster +
+        '<button class="btn btn-text" type="button" data-act="sync-close">關閉視窗</button>';
+    } else {
+      mark = '<span class="sync-mark">' + icon('bookmark') + '</span>'; title = '等待名冊';
+      sub = window.opener ? '已通知官網後台此頁就緒，名冊傳送後自動同步。' : '此頁由官網後台的名冊同步書籤開啟；直接開啟時不會收到名冊。';
+      mid = window.opener ? '<div class="sync-bar" aria-hidden="true"><i></i></div>' : '';
+      acts = toRoster;
+    }
+    root.innerHTML = '<div class="sync" data-phase="' + p + '"><section class="sync-card enter" aria-labelledby="sync-title" aria-live="polite">' + mark +
+      '<div class="head"><p class="eyebrow muted" style="font-size:var(--fs-caption);letter-spacing:var(--tracking-label)">學員名冊｜同步</p><h1 id="sync-title">' + title + '</h1><p class="sub">' + sub + '</p></div>' +
+      mid + (acts ? '<div class="sync-acts">' + acts + '</div>' : '') + '</section></div>';
+  }
+  function closeSyncWindow() {
+    try { window.close(); } catch (e) { /* ignore */ }
+    setTimeout(function () { if (!window.closed) toast('此視窗無法自動關閉，可直接關閉分頁', 'info'); }, 250);
+  }
+
   /* ---------------- 作業閱讀 ---------------- */
   function openDetail(id) {
-    $('#view-list').hidden = true;
+    showOnly('detail', '');
     var root = $('#view-detail');
-    root.hidden = false;
-    $('#nav-list').removeAttribute('aria-current');
     revokeThumbs();
     state.detail = null;
     root.innerHTML = detailSkeleton();
     window.scrollTo(0, 0);
     API.get(id).then(function (d) {
       state.detail = d;
-      if (d.gaps && d.index) setGapCount(d.index.receiptId, d.gaps);
+      if (d.gaps && d.index) setGapCount(d.index.receiptId, normGaps(d.gaps));
       renderDetail(d);
       $('#main').focus({ preventScroll: true });
       maybeAutoRead(d);
@@ -3454,7 +4042,7 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
   }
 
   function detailSkeleton() {
-    var tiles = ''; for (var i = 0; i < 12; i++) tiles += '<span class="sk" style="height:92px;border-radius:var(--r-md)"></span>';
+    var tiles = ''; for (var i = 0; i < 11; i++) tiles += '<span class="sk" style="height:92px;border-radius:var(--r-md)"></span>';
     return '<div aria-busy="true" aria-label="作業載入中"><span class="sk" style="height:14px;width:96px;margin-bottom:24px"></span>' +
       '<span class="sk" style="height:12px;width:220px;margin-bottom:12px"></span><span class="sk" style="height:36px;width:180px;margin-bottom:32px"></span>' +
       '<div class="reader"><div class="gaps" style="padding:var(--sp-5)"><span class="sk" style="height:20px;width:30%;margin-bottom:20px"></span><div class="bay" style="padding:0">' + tiles + '</div></div>' +
@@ -3506,7 +4094,11 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
     }
     var gaps = normGaps(d.gaps || data.gaps);
     curRaw = data.raw || null;
-    var sections = data.sections || [];
+    // 2.3 移除收款帳務：舊 JSON 含 finance 類別時不顯示（結構格、逐類、連結、缺口數）
+    var sections = (data.sections || []).map(function (s) {
+      if (s.kind !== 'uploads' || !Array.isArray(s.categories)) return s;
+      var c = Object.assign({}, s); c.categories = s.categories.filter(function (x) { return !isLegacyCat(x.id); }); return c;
+    });
     var jsonF = findSpecial(d, /_作業資料\.json$/), pdfF = findSpecial(d, /_作業內容\.pdf$/);
     var role = data.role || {};
     var prof = sectionData(sections, 'profile');
@@ -3540,7 +4132,8 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
     g = g || {};
     function arr(v) { return Array.isArray(v) ? v : []; }
     var out = {
-      uploadsMissing: arr(g.uploadsMissing), crmKey: g.crmKey || null, links: arr(g.links),
+      uploadsMissing: arr(g.uploadsMissing).filter(function (x) { return !isLegacyCat(x && x.id); }), crmKey: g.crmKey || null,
+      links: arr(g.links).filter(function (l) { return !isLegacyCat(l && l.categoryId); }),
       shareEmail: g.shareEmail || S.SHARE_EMAIL,
       noneStages: arr(g.noneStages), manualStages: arr(g.manualStages), naStages: arr(g.naStages),
       unansweredStages: arr(g.unansweredStages || g.emptyStages), incompleteStages: arr(g.incompleteStages),
@@ -3551,6 +4144,8 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
     out.gapCount = gapCountOf(out);
     return out;
   }
+  /** 已移除的資料類別（2.3：finance 收款帳務） */
+  function isLegacyCat(id) { return (S.LEGACY_CATEGORY_IDS || ['finance']).indexOf(id) >= 0; }
   /** 區塊名稱以目前 schema 為準（舊 JSON 的區塊名稱可能為舊名） */
   function secLabel(sec) { var s = S.sectionById && S.sectionById(sec.id); return (s && s.label) || sec.label; }
   /** 回名單的 hash（保留目前篩選與排序） */
@@ -3582,7 +4177,9 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
 
       '<section class="panel" aria-labelledby="facts-title"><h2 class="panel-title" id="facts-title">作業資訊</h2><dl class="facts">' +
         '<dt>回執編號</dt><dd class="mono">' + esc(ix.receiptId) + '</dd>' +
-        '<dt>送出時間</dt><dd class="mono">' + esc(fmtTime(ix.submittedAt)) + '</dd>' +
+        '<dt>開始時間</dt><dd class="mono" data-fact="startedAt">' + (ix.startedAt ? esc(fmtTime(ix.startedAt)) : '<span class="blank">無開始紀錄</span>') + '</dd>' +
+        '<dt>送出時間</dt><dd class="mono" data-fact="submittedAt">' + esc(fmtTime(ix.submittedAt)) + '</dd>' +
+        '<dt>填寫耗時</dt><dd data-fact="duration">' + (durText(durMin(ix)) ? esc(durText(durMin(ix))) : '<span class="blank">—</span>') + '</dd>' +
         '<dt>學員帳號</dt><dd class="mono">' + esc(ix.account) + '</dd>' +
         '<dt>附件數</dt><dd class="mono">' + (Number(ix.fileCount) || 0) + ' 件</dd>' +
       '</dl></section>' +
@@ -3763,7 +4360,7 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
 
   /** 雲端連結總表 */
   function renderLinks(g, data) {
-    var links = g.links.length ? g.links : (data.links || []);
+    var links = (g.links.length ? g.links : (data.links || [])).filter(function (l) { return !isLegacyCat(l && l.categoryId); });
     var email = g.shareEmail || (data.meta && data.meta.shareEmail) || S.SHARE_EMAIL;
     var catIcon = {}; S.UPLOAD_CATEGORIES.forEach(function (c) { catIcon[c.id] = c.icon; });
     function a(l) {
@@ -4267,6 +4864,14 @@ dialog.dlg.is-closing{animation:dlg-out var(--dur-exit) var(--ease-in) forwards}
       case 'json': dlJson(t); break;
       case 'pdf': dlPdf(t); break;
       case 'retry-detail': route(); break;
+      case 'prog-refresh': busy(t, true); loadProgress().then(function () { renderProgress(); if (!prog.error) toast('填寫進度已更新', 'ok'); }, onError).then(function () { busy(t, false); }); break;
+      case 'psort': sortProgress(t.dataset.key); break;
+      case 'reveal': toggleReveal(t.dataset.key); break;
+      case 'roster-refresh': busy(t, true); roster.error = null; loadRosterStatus().then(function () { busy(t, false); }); break;
+      case 'bm': ev.preventDefault(); toast('書籤需拖曳到書籤列，於官網後台頁面點選才會執行', 'info'); break;
+      case 'copy-bm': copyText(bmHref(), '書籤程式已複製，新增書籤後貼到網址欄'); break;
+      case 'sync-retry': runSync(); break;
+      case 'sync-close': closeSyncWindow(); break;
     }
   });
   $('#zip-all').addEventListener('click', zipAll);
