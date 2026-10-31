@@ -1249,6 +1249,101 @@ body.is-done .side{display:none}
 @media (min-width:1024px){.tk-done h1{font-size:2.5rem}.tk-kv{grid-template-columns:minmax(0,1.6fr) minmax(0,1.35fr) minmax(0,.6fr) minmax(0,1fr)}.tk-kv .wide{grid-column:auto}.tk-kv dd.rid{font-size:1.125rem;white-space:nowrap}}
 @media (prefers-reduced-motion:no-preference){.tk-done.enter{animation:rise 320ms var(--ease-out) both}}
 @media (prefers-reduced-motion:reduce){.tk-done.enter{animation:viewin var(--dur-slow) var(--ease-out) both}}
+/* ── 2.5.0 優先批次：滿版歡迎視窗（典藏票延伸版，煙火於票面後方綻放） ── */
+dialog.bw{position:fixed;inset:0;width:100%;height:100%;margin:0;display:grid;place-items:center;padding:calc(var(--sp-4) + env(safe-area-inset-top)) var(--gutter) calc(var(--sp-4) + env(safe-area-inset-bottom));overflow:auto;overscroll-behavior:contain}
+dialog.bw::backdrop{background:rgba(8,6,7,.88)}
+dialog.bw:not([open]){display:none}
+.bw-fx,.bw-glow{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
+.bw-glow{background:radial-gradient(60% 46% at 50% 40%,rgba(255,46,139,.24),rgba(255,46,139,.06) 55%,transparent 75%)}
+.bw-card{position:relative;z-index:1;display:grid;grid-template-columns:40px minmax(0,1fr);width:min(480px,100%);background:var(--ink-2);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-dialog),var(--highlight-top)}
+.bw-side{position:relative;display:grid;place-items:center;background:var(--ink-3)}
+.bw-side::after{content:"";position:absolute;top:0;bottom:0;right:-1px;width:2px;background:radial-gradient(circle,var(--ink-0) 1.5px,transparent 2px) 50% 0/2px 8px repeat-y}
+.bw-side span{writing-mode:vertical-rl;font-family:var(--font-mono);font-size:12px;letter-spacing:.24em;color:var(--rose-300)}
+.bw-main{position:relative;isolation:isolate;padding:var(--sp-6) var(--sp-6) var(--sp-6) var(--sp-5)}
+.bw-main::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:repeating-radial-gradient(circle at 112% 18%,rgba(255,46,139,.06) 0 1px,transparent 1px 7px);-webkit-mask:linear-gradient(200deg,#000,transparent 55%);mask:linear-gradient(200deg,#000,transparent 55%)}
+.bw-name{margin:var(--sp-3) 0 var(--sp-4);font-family:var(--font-serif);font-size:clamp(2.5rem,12vw,3.5rem);font-weight:700;line-height:1.1;letter-spacing:.02em;color:var(--text-1);overflow-wrap:anywhere}
+.bw-name small{font-size:.5em;font-weight:600;color:var(--text-2);margin-left:.18em;letter-spacing:.04em}
+.bw-line{margin:0 0 var(--sp-2);font-size:1.0625rem;line-height:1.6;color:var(--text-1)}
+.bw-line b{font-weight:600;white-space:nowrap}
+.bw-hint{margin:0;font-size:var(--fs-small);line-height:1.6;color:var(--text-3)}
+.bw-cd{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-3);margin:var(--sp-5) 0;padding-top:var(--sp-4);border-top:1px solid var(--line-1)}
+.bw-cd dt{flex:none;font-size:11px;letter-spacing:.2em;color:var(--text-3)}
+.bw-cd dd{margin:0;font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:1.375rem;letter-spacing:.02em;color:var(--rose-300);white-space:nowrap}
+.bw-go{width:100%}
+dialog.bw.is-over .bw-side span{color:var(--text-3)}
+dialog.bw.is-over .tag{background:var(--ink-3);color:var(--text-2)}
+dialog.bw.is-over .bw-line{margin-bottom:var(--sp-6)}
+@media (min-width:768px){.bw-card{width:min(560px,100%)}.bw-main{padding:var(--sp-8) var(--sp-8) var(--sp-8) var(--sp-6)}.bw-name{font-size:4rem}}
+/* 進場：票面 320ms（opacity＋12px 位移＋0.96 縮放）→ 內容依序 40ms 錯開；離場 160ms ease-in */
+@media (prefers-reduced-motion:no-preference){
+  dialog.bw[open] .bw-card{animation:bwin 320ms var(--ease-out) both}
+  dialog.bw[open] .bw-main>*{animation:rise 280ms var(--ease-out) both;animation-delay:calc(120ms + var(--i,0) * 40ms)}
+  dialog.bw.closing .bw-card{animation:bwout var(--dur-exit) var(--ease-in) both}
+}
+@media (prefers-reduced-motion:reduce){
+  dialog.bw[open] .bw-card,dialog.bw[open] .bw-glow{animation:viewin var(--dur-slow) var(--ease-out) both}
+  dialog.bw.closing .bw-card{animation:fout var(--dur-exit) var(--ease-in) both}
+}
+dialog.bw[open]::backdrop{animation:fin var(--dur-slow) var(--ease-out) both}
+dialog.bw.closing::backdrop{animation:fout var(--dur-exit) var(--ease-in) both}
+@keyframes bwin{from{opacity:0;translate:0 12px;scale:.96}}
+@keyframes bwout{to{opacity:0;translate:0 -12px;scale:.98}}
+
+/* ── 截止提示列：學員資料頁之後固定於底部（完成頁除外），可收合為膠囊 ── */
+.dl{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--ink-2);border-top:1px solid var(--line-2);box-shadow:0 -16px 32px -20px rgba(0,0,0,.7);padding:var(--sp-2) 0 calc(var(--sp-2) + env(safe-area-inset-bottom));transition:translate var(--dur-slow) var(--ease-out),opacity var(--dur-slow) var(--ease-out)}
+.dl-in{display:flex;align-items:center;gap:var(--sp-3);max-width:calc(var(--container) + var(--gutter)*2);margin:0 auto;padding:0 var(--sp-2) 0 var(--gutter)}
+.dl-dot{flex:none;width:8px;height:8px;border-radius:50%;background:var(--text-3);box-shadow:0 0 0 3px var(--line-1)}
+.dl-main{flex:1;min-width:0;display:flex;flex-wrap:wrap;align-items:center;gap:6px var(--sp-3)}
+.dl-tx{flex:1 1 15rem;min-width:0;margin:0;font-size:var(--fs-caption);line-height:1.5;color:var(--text-2)}
+.dl-tx b{color:var(--text-1);font-weight:600}
+.dl-tx .dt{white-space:nowrap}
+.dl-cd{flex:none;display:inline-flex;align-items:center;height:28px;padding:0 10px;border-radius:var(--r-pill);background:var(--ink-3);font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:var(--fs-caption);color:var(--text-1);white-space:nowrap;transition:background-color var(--dur-base) var(--ease-standard),color var(--dur-base) var(--ease-standard)}
+.dl .icon-btn svg{width:20px;height:20px}
+.dl.is-urgent .dl-dot,.dl-pill.is-urgent .dl-dot{background:var(--rose-500);box-shadow:0 0 0 3px var(--rose-tint-3)}
+.dl.is-urgent .dl-cd,.dl-pill.is-urgent{background:var(--rose-500);color:var(--rose-ink)}
+.dl.is-over .dl-dot,.dl-pill.is-over .dl-dot{background:var(--warning-500);box-shadow:0 0 0 3px var(--warning-tint)}
+.dl.is-over .dl-cd{background:var(--warning-tint);color:var(--warning-500)}
+.dl-pill{position:fixed;right:var(--sp-4);bottom:calc(var(--sp-4) + env(safe-area-inset-bottom));z-index:30;display:inline-flex;align-items:center;gap:var(--sp-2);min-height:44px;padding:0 var(--sp-4);border:1px solid transparent;border-radius:var(--r-pill);background:var(--ink-4);box-shadow:var(--shadow-float);color:var(--text-1);font:inherit;font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:var(--fs-caption);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:scale var(--dur-fast) var(--ease-out),translate var(--dur-slow) var(--ease-out),opacity var(--dur-slow) var(--ease-out)}
+.dl-pill:not(:disabled):active{scale:.96}
+.dl-pill:focus-visible{outline:none;box-shadow:var(--focus-ring),var(--shadow-float)}
+.dl-pill.is-urgent .dl-dot{background:var(--rose-ink);box-shadow:none}
+.dl[hidden],.dl-pill[hidden]{display:none}
+@media (prefers-reduced-motion:no-preference){.dl.enter{animation:dlin var(--dur-slow) var(--ease-out) both}.dl-pill.enter{animation:rise var(--dur-slow) var(--ease-out) both}}
+@media (prefers-reduced-motion:reduce){.dl,.dl-pill{transition-property:opacity}.dl.enter,.dl-pill.enter{animation:viewin var(--dur-slow) var(--ease-out) both}}
+@keyframes dlin{from{translate:0 100%}}
+/* 手機鍵盤開啟時收起（不遮擋輸入中的欄位） */
+body.kb-open .dl,body.kb-open .dl-pill{translate:0 calc(100% + 24px);opacity:0;visibility:hidden;transition-duration:var(--dur-exit);transition-timing-function:var(--ease-in)}
+body.has-dl main{padding-bottom:calc(var(--sp-16) + var(--dl-h,64px) + env(safe-area-inset-bottom))}
+html.has-dl{scroll-padding-bottom:calc(var(--dl-h,64px) + var(--sp-4))}
+body.has-dl .toast-host{bottom:calc(var(--dl-h,64px) + var(--sp-3) + env(safe-area-inset-bottom))}
+@media (min-width:768px){.dl-tx{font-size:var(--fs-small)}}
+
+/* ── LINE 通知綁定（歡迎小票下方與完成票） ── */
+.lb{display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-3);margin-top:var(--sp-4)}
+.lb[hidden]{display:none}
+.lb-ok{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 12px;border-radius:var(--r-pill);background:var(--success-tint);color:var(--success-500);font-size:var(--fs-caption);font-weight:500;letter-spacing:.04em}
+.lb-ok svg{width:14px;height:14px}
+.lb-panel{width:100%;padding:var(--sp-4) var(--sp-5);border-radius:var(--r-md);background:var(--ink-3);box-shadow:var(--shadow-ring)}
+.lb-panel[hidden]{display:none}
+.lb-row{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-3);flex-wrap:wrap}
+.lb-code{font-family:var(--font-mono);font-size:1.5rem;font-weight:500;letter-spacing:.18em;color:var(--text-1);font-variant-numeric:tabular-nums}
+.lb-code small{font-family:var(--font-sans);font-size:11px;letter-spacing:.2em;color:var(--text-3);margin-right:var(--sp-2);vertical-align:middle}
+.lb-left{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:var(--fs-caption);color:var(--rose-300)}
+.lb-left.is-gone{color:var(--text-3)}
+.lb-panel p{margin:var(--sp-2) 0 0;font-size:var(--fs-small);line-height:1.6;color:var(--text-2)}
+.lb-panel p.sub{font-size:var(--fs-caption);color:var(--text-3)}
+.lb-panel .btn{margin-top:var(--sp-3)}
+.done2 .lb{margin-top:0}
+
+/* ── 完成票：準時完成章（與已收件章錯位；純 CSS 雙圈，香檳金） ── */
+.stamps{position:relative;display:block;flex:none}.stamps .stamp{display:block}
+.stamp2{position:absolute;left:-46px;bottom:-26px;display:grid;place-items:center;width:72px;height:72px;border-radius:50%;border:2.4px solid currentColor;rotate:9deg;color:var(--warning-500);opacity:.92;pointer-events:none}
+.stamp2::before{content:"";position:absolute;inset:4px;border-radius:50%;border:1px solid currentColor}
+.stamp2 b{font-family:var(--font-serif);font-size:15px;font-weight:700;letter-spacing:.04em;line-height:1.1;text-align:center}
+@media (min-width:768px){.stamp2{width:92px;height:92px;left:-60px;bottom:-30px}.stamp2 b{font-size:19px}}
+.tk-late{display:flex;align-items:center;gap:6px;margin:calc(var(--sp-2) * -1) 0 var(--sp-4);font-size:var(--fs-caption);color:var(--warning-500);letter-spacing:.04em}
+.tk-late svg{width:14px;height:14px}
+
 /* 列印後備：只印票券 */
 @media print{
   body.print-ticket{background:#fff}
@@ -1269,7 +1364,7 @@ body.is-done .side{display:none}
   } catch (e) { /* 儲存不可用時不導向，避免循環 */ }
 })();
 </script>
-<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.10.31_1409"};</script>
+<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.10.31_1738"};</script>
 <script>
 /*
  * G.R.A.C.E Academy《諮詢前置作業》作業欄位設定檔
@@ -1297,10 +1392,98 @@ body.is-done .side{display:none}
     title: '諮詢前置作業',
     tag: '優化作業',
     org: 'G.R.A.C.E Academy',
-    version: '2.3.0',
+    version: '2.5.0',
     timezone: 'Asia/Taipei',
     dateFormat: 'yyyy.mm.dd'
   };
+
+  /** 優先批次（截止時間）：Script Properties 儲存，每批成員上限 200 */
+  var BATCH = {
+    maxMembers: 200,
+    maxTitleLength: 40,
+    maxHintLength: 80,
+    maxCallNameLength: 20,
+    visibleAfterDeadlineDays: 30,  // 截止後 30 天內前台仍回傳批次（逾期可送出，onTime=false）
+    defaultHint: '越早完成，諮詢時段可優先安排',
+    idRe: /^[A-Za-z0-9_-]{4,40}$/,
+    keyRe: /^[0-9a-f]{16}$/           // 成員鍵＝名冊鍵雜湊（SHA-256 前 16 碼），不存帳號明文
+  };
+
+  /** 通知範本：變數以全形大括號外的 {名稱} 標示 */
+  var NOTIFY = {
+    maxTemplates: 10,
+    maxNameLength: 40,
+    maxBodyLength: 5000,           // 與 LINE 單則文字上限相同；渲染後超過 5000 字的訊息於推播時個別失敗
+    vars: ['稱呼', '截止時間', '作業連結', '綁定連結'],
+    workUrl: 'https://grace63188.github.io/consult-prep/?openExternalBrowser=1',
+    defaultTemplateId: 'consult-notice',
+    defaultTemplateName: '一對一諮詢前置作業繳交通知',
+    defaultTemplateBody: [
+      '📋《一對一諮詢｜前置作業繳交通知》',
+      '',
+      '親愛的{稱呼}學姊好♡',
+      '',
+      '由於學姊目前還有後續的一對一諮詢尚未進行，校長希望進一步了解學姊近期的執行成果，以及實際遇到的問題。',
+      '',
+      '因此，特別交代助教通知學姊，請於期限內完成《諮詢前置作業》，讓校長能根據學姊目前的實際進度，針對問題提供更具體的建議。',
+      '',
+      '▌一、作業入口與繳交期限',
+      '',
+      '✦ 截止時間：{截止時間}',
+      '',
+      '➥ 作業填寫入口',
+      '{作業連結}',
+      '',
+      '➥ LINE 通知綁定：{綁定連結}',
+      '',
+      '📌 越早完成作業繳交，就能越早安排後續的一對一諮詢！',
+      '',
+      '▌二、作業填寫與繳交流程',
+      '',
+      '❶【填寫作業】',
+      '點選上方連結，依序完成各區塊內容。',
+      '',
+      '❷【送出檢查】',
+      '填寫完成後，進入最後一頁「送出檢查」，確認各區塊的完成狀態。',
+      '',
+      '❸【正式繳交】',
+      '確認無誤後，點選「送出作業」即完成繳交。',
+      '',
+      '▌三、繳交注意事項',
+      '',
+      '✦ 學員帳號與本名須與官網註冊資料一致。',
+      '✦ 作業送出後無法再修改，請確認內容完整後再提交。',
+      '✦ 完成送出後，無需另外上傳官網或通知助教。',
+      '',
+      '📌 校長特別提醒',
+      '',
+      '這份作業是後續諮詢的重要參考，請學姊具體說明目前已完成的事項、執行成果，以及實際遇到的困難。',
+      '',
+      '作業內容越具體，校長越能掌握需要協助的問題，讓後續諮詢更有方向。',
+      '',
+      '請學姊把握時間，於截止期限前完成繳交！'
+    ].join('\n')
+  };
+
+  /** LINE 官方帳號綁定與推播（Messaging API） */
+  var LINE = {
+    oaId: '@52grace',
+    channelId: '2006775861',
+    monthlyQuota: 200,             // 免費方案每月則數
+    maxTextLength: 5000,
+    bindCommand: '綁定',
+    bindCodeLength: 6,
+    bindCodeAlphabet: 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789',   // 去除 I O 0 1
+    bindCodeMinutes: 15,           // 前台取得的綁定碼有效時間（CacheService）
+    adminCodeDays: 7,              // 通知範本內的綁定連結所附綁定碼有效天數（Script Properties）
+    tokenCacheMinutes: 14,         // stateless channel access token 有效 15 分鐘，快取 14 分鐘
+    bindUrlBase: 'https://line.me/R/oaMessage/@52grace/?',
+    bindDoneText: '{稱呼}學姊，LINE 通知綁定完成。',
+    bindFailText: '綁定碼已失效，請回到作業頁重新取得'
+  };
+
+  /** 常見複姓（稱呼去姓時優先比對） */
+  var COMPOUND_SURNAMES = ['歐陽', '司馬', '上官', '諸葛', '東方', '皇甫', '尉遲', '公孫', '慕容', '長孫', '司徒', '夏侯', '軒轅', '令狐', '宇文', '單于', '端木', '司空', '西門', '南宮', '鮮于', '呼延', '百里', '東郭', '范姜', '張簡', '張廖'];
 
   /** 學員名冊（Script Properties 分片儲存，不建立雲端檔案）與前台公開查詢的限制 */
   var ROSTER = {
@@ -1318,7 +1501,41 @@ body.is-done .side{display:none}
   var SESSION = {
     restartAfterDays: 90,          // 開始時間存在且未送出時不覆蓋，超過此天數視為新一輪
     progressTab: '填寫進度',
-    statuses: { filling: '填寫中', submitted: '已送出' }
+    statuses: { filling: '填寫中', submitted: '已送出', removed: '已移除' },
+    // 即時填寫進度（progress_ping）
+    pingEverySec: 60,              // 前台停留中每 60 秒回報一次（頁面可見時）
+    pingMinSec: 15,                // 伺服器：同一 clientKey 每 15 秒最多寫入 1 次
+    activeGapMin: 5,               // 兩次回報間隔 ≤ 5 分鐘才累加活動分鐘（排除閒置）
+    activeWithinMin: 5,            // 最後活動 ≤ 5 分鐘：活動中
+    idleWithinHours: 24,           // ≤ 24 小時：閒置；超過：停滯
+    listCacheSec: 20,              // progress_list 快取秒數
+    submittedDays: 7               // includeSubmitted 時回傳近 7 天已送出者
+  };
+
+  /** 刪除作業（delete_submission） */
+  var REMOVAL = {
+    maxBatch: 50,
+    confirmWord: '刪除',
+    restoreDays: 30
+  };
+
+  /**
+   * 作業封存結構（雲端硬碟資料夾與後台 zip 共用）：
+   *   本名_諮詢作業/
+   *     本名_作業內容.pdf、作業資料.json、雲端連結.txt
+   *     資料上傳/<類別名稱>/、客戶流程/<序號_步驟名稱>/、團隊流程/…、協作流程/…、對話紀錄/完成預約/、對話紀錄/詢問後未回覆/
+   */
+  var ARCHIVE = {
+    suffix: '_諮詢作業',
+    uploadsDir: '資料上傳',
+    dialogDir: '對話紀錄',
+    otherDir: '其他附件',
+    linksFile: '雲端連結.txt',
+    jsonFile: '作業資料.json',
+    pdfSuffix: '_作業內容.pdf',
+    driveOnlyFile: '需於雲端硬碟下載.txt',
+    maxFileBytes: 30 * 1024 * 1024,   // 單檔經資料中心取回的上限（Apps Script 回應約 50MB，base64 膨脹 1.33 倍）
+    allPrefix: '諮詢前置作業_全部_'
   };
 
   /** 雲端連結的共用對象（學員需將檔案共用給此帳號，可檢視即可） */
@@ -1756,7 +1973,7 @@ body.is-done .side{display:none}
   /* 匯出工作表（xlsx）                                                   */
   /* ------------------------------------------------------------------ */
   var EXPORT_TABS = [
-    { id: 'index', name: '索引', headers: ['回執編號', '送出時間', '本名', '學員帳號', '身分', '行業', '品牌名稱', '檔案數', '缺口數', '狀態', '資料夾連結', '開始時間', '填寫耗時（分）'] },
+    { id: 'index', name: '索引', headers: ['回執編號', '送出時間', '本名', '學員帳號', '身分', '行業', '品牌名稱', '檔案數', '缺口數', '狀態', '資料夾連結', '開始時間', '填寫耗時（分）', '批次', '準時'] },
     { id: 'profile', name: '基本輪廓', headers: ['回執編號', '本名', '身分', '下線夥伴', '行業類別', '品牌名稱', '任職公司', '職稱', '主要業務', '服務形式', '營運規模', '團隊人數'] },
     { id: 'uploads', name: '資料上傳', headers: ['回執編號', '本名', '類別', '狀態', '檔案數', '連結數', '補充說明'] },
     { id: 'links', name: '雲端連結', headers: ['回執編號', '本名', '類別', '網址', '說明'] },
@@ -2648,17 +2865,17 @@ body.is-done .side{display:none}
     return String(s == null ? '' : s).replace(/[\u0000-\u001f\u007f​﻿]/g, '').trim().toLowerCase().slice(0, ROSTER.maxKeyLength);
   }
 
-  /** 名冊同步列整理：{ account, email, name } → { keys:[正規化鍵], name } 或 null（無本名或無可用鍵） */
+  /**
+   * 名冊同步列整理：{ account[, email], name } → { keys:[正規化鍵], name } 或 null（無本名或無可用鍵）。
+   * 一人一鍵：以 account 正規化為唯一鍵（正式官網 uid 即 Email）；只有在沒有 account 時才退而以 email 作為鍵，不另存 Email 鍵。
+   * keys 維持陣列形狀（恆為一筆），供資料中心與 mock 共用。
+   */
   function rosterRow(row) {
     if (!row || typeof row !== 'object') return null;
     var name = String(row.name == null ? '' : row.name).replace(/[\u0000-\u001f\u007f]/g, '').replace(/\s+/g, ' ').trim();
     if (!name || name.length > ROSTER.maxNameLength) return null;
-    var keys = [];
-    [row.account, row.email].forEach(function (v) {
-      var k = rosterKey(v);
-      if (k && keys.indexOf(k) < 0) keys.push(k);
-    });
-    return keys.length ? { keys: keys, name: name } : null;
+    var key = rosterKey(row.account) || rosterKey(row.email);
+    return key ? { keys: [key], name: name } : null;
   }
 
   /** 填寫耗時文字：分鐘數 → 「X 天 Y 小時」「Y 小時 Z 分」「Z 分」；空值回 '' */
@@ -2689,7 +2906,351 @@ body.is-done .side{display:none}
     return Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3]), Number(m[4]) - 8, Number(m[5]), Number(m[6] || 0));
   }
 
+  /* ------------------------------------------------------------------ */
+  /* 稱呼、遮罩、截止時間、通知範本、優先批次（2.5.0）                       */
+  /* ------------------------------------------------------------------ */
+  /**
+   * 稱呼：本名去姓。複姓（COMPOUND_SURNAMES）優先去除；兩字名取後一字；三字名去首字；
+   * 含英文字母（英文名或中英混合）與四字以上非複姓的名字維持原樣。
+   */
+  function callName(fullName) {
+    var n = String(fullName == null ? '' : fullName).replace(/[\u0000-\u001f\u007f]/g, '').replace(/\s+/g, ' ').trim();
+    if (!n) return '';
+    if (/[A-Za-z]/.test(n)) return n;
+    n = n.replace(/\s+/g, '');
+    var chars = n.split('');
+    if (chars.length <= 1) return n;
+    if (chars.length === 2) return chars[1];
+    for (var i = 0; i < COMPOUND_SURNAMES.length; i++) {
+      var s = COMPOUND_SURNAMES[i];
+      if (n.indexOf(s) === 0 && chars.length > s.length) return n.slice(s.length);
+    }
+    if (chars.length === 3) return n.slice(1);
+    return n;
+  }
+
+  /** 遮罩帳號：Email 保留前兩碼與網域（ab***@gmail.com）；非 Email 保留前兩碼（ab***）；輸入先經 rosterKey 正規化 */
+  function maskKey(s) {
+    var k = rosterKey(s);
+    if (!k) return '';
+    var at = k.indexOf('@');
+    var head = at >= 0 ? k.slice(0, at) : k;
+    var tail = at >= 0 ? k.slice(at) : '';
+    var keep = head.length > 2 ? head.slice(0, 2) : head.slice(0, 1);
+    return keep + '***' + tail;
+  }
+
+  /**
+   * 截止時間解析 → 毫秒；無法解析回 null。
+   * 接受：毫秒數、含時區的 ISO（2026-11-05T12:00:00+08:00、…Z）、不含時區的 yyyy-mm-ddTHH:mm 或 yyyy.mm.dd HH:mm（視為 Asia/Taipei）。
+   */
+  function parseDeadline(v) {
+    if (v == null || v === '') return null;
+    if (typeof v === 'number' && isFinite(v)) return v;
+    var s = String(v).trim();
+    if (/(?:Z|[+\-]\d{2}:?\d{2})$/.test(s) && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(s)) {
+      var ms = Date.parse(s);
+      return isFinite(ms) ? ms : null;
+    }
+    return timeToMs(s);
+  }
+
+  /** 毫秒 → ISO（固定 +08:00）：yyyy-mm-ddTHH:mm:00+08:00（秒數歸零） */
+  function deadlineIso(ms) {
+    if (ms == null || !isFinite(ms)) return '';
+    var t = new Date(Math.floor(ms / 60000) * 60000 + 8 * 3600000);
+    var p = function (n) { return (n < 10 ? '0' : '') + n; };
+    return t.getUTCFullYear() + '-' + p(t.getUTCMonth() + 1) + '-' + p(t.getUTCDate()) + 'T' + p(t.getUTCHours()) + ':' + p(t.getUTCMinutes()) + ':00+08:00';
+  }
+
+  /** 截止時間顯示：yyyy.mm.dd（週X）HH:mm（Asia/Taipei；週為 一二三四五六日）；無法解析回 '' */
+  function formatDeadline(v) {
+    var ms = parseDeadline(v);
+    if (ms == null) return '';
+    var t = new Date(ms + 8 * 3600000);
+    var p = function (n) { return (n < 10 ? '0' : '') + n; };
+    var w = '日一二三四五六'.charAt(t.getUTCDay());
+    return t.getUTCFullYear() + '.' + p(t.getUTCMonth() + 1) + '.' + p(t.getUTCDate()) + '（週' + w + '）' + p(t.getUTCHours()) + ':' + p(t.getUTCMinutes());
+  }
+
+  /** 準時判斷：送出時間（yyyy.mm.dd HH:mm[:ss] 或毫秒）≤ 截止時間；任一無法解析回 null */
+  function isOnTime(submittedAt, deadline) {
+    var a = timeToMs(submittedAt), b = parseDeadline(deadline);
+    if (a == null || b == null) return null;
+    return a <= b;
+  }
+
+  /**
+   * 通知範本渲染：vars = { 稱呼, 截止時間, 作業連結, 綁定連結 }。
+   * 含 {綁定連結} 的行於值為空時整行移除；三個以上連續換行收斂為兩個；未知變數保留原文。
+   */
+  function renderTemplate(body, vars) {
+    vars = vars || {};
+    var lines = String(body == null ? '' : body).replace(/\r\n?/g, '\n').split('\n');
+    var out = [];
+    lines.forEach(function (line) {
+      if (line.indexOf('{綁定連結}') >= 0 && !vars['綁定連結']) return;
+      out.push(line.replace(/\{([^{}\n]{1,20})\}/g, function (m, name) {
+        return Object.prototype.hasOwnProperty.call(vars, name) && vars[name] != null ? String(vars[name]) : m;
+      }));
+    });
+    return out.join('\n').replace(/\n{3,}/g, '\n\n').replace(/\s+$/, '');
+  }
+
+  /** 範本內使用到的變數名稱（去重，依出現順序） */
+  function templateVars(body) {
+    var seen = {}, out = [];
+    String(body == null ? '' : body).replace(/\{([^{}\n]{1,20})\}/g, function (m, name) { if (!seen[name]) { seen[name] = 1; out.push(name); } return m; });
+    return out;
+  }
+
+  /** 範本整理：{ id?, name, body } → { ok:true, template:{ id, name, body } } 或 { ok:false, message } */
+  function normalizeTemplate(input) {
+    if (!input || typeof input !== 'object') return { ok: false, message: '範本格式錯誤' };
+    var id = String(input.id == null ? '' : input.id).trim();
+    if (id && !BATCH.idRe.test(id)) return { ok: false, message: '範本編號格式不正確' };
+    var name = String(input.name == null ? '' : input.name).replace(/[\u0000-\u001f\u007f]/g, '').replace(/\s+/g, ' ').trim();
+    if (!name) return { ok: false, message: '範本名稱為必填' };
+    if (name.length > NOTIFY.maxNameLength) return { ok: false, message: '範本名稱不可超過 ' + NOTIFY.maxNameLength + ' 字' };
+    var body = String(input.body == null ? '' : input.body).replace(/\r\n?/g, '\n').replace(/[\u0000-\u0008\u000b-\u001f\u007f]/g, '').replace(/\s+$/, '');
+    if (!body.trim()) return { ok: false, message: '範本內容為必填' };
+    if (body.length > NOTIFY.maxBodyLength) return { ok: false, message: '範本內容不可超過 ' + NOTIFY.maxBodyLength + ' 字' };
+    return { ok: true, template: { id: id, name: name, body: body } };
+  }
+
+  /** 綁定網址：https://line.me/R/oaMessage/@52grace/?綁定%20<碼>（訊息文字 URL 編碼） */
+  function bindUrl(code) {
+    return LINE.bindUrlBase + encodeURIComponent(LINE.bindCommand + ' ' + String(code || '').toUpperCase());
+  }
+
+  /** 綁定訊息解析：「綁定 XXXXXX」（大小寫、全半形空白皆可）→ 6 碼大寫；不符回 '' */
+  function parseBindMessage(text) {
+    var m = new RegExp('^\\s*' + LINE.bindCommand + '[\\s　]*([A-Za-z0-9]{' + LINE.bindCodeLength + '})\\s*$').exec(String(text == null ? '' : text));
+    return m ? m[1].toUpperCase() : '';
+  }
+
+  /**
+   * 批次整理：input = { id?, title, deadline, hint?, members:[{ key, name, masked?, callName? }], archived? }
+   *  → { ok:true, batch } 或 { ok:false, message }
+   * 成員鍵為名冊鍵雜湊（16 碼十六進位）；稱呼未填時由本名去姓；同鍵只保留第一筆。
+   */
+  function normalizeBatch(input) {
+    if (!input || typeof input !== 'object') return { ok: false, message: '批次格式錯誤' };
+    var clean = function (v, max) { return String(v == null ? '' : v).replace(/[\u0000-\u001f\u007f]/g, '').replace(/\s+/g, ' ').trim().slice(0, max); };
+    var id = String(input.id == null ? '' : input.id).trim();
+    if (id && !BATCH.idRe.test(id)) return { ok: false, message: '批次編號格式不正確' };
+    var title = clean(input.title, BATCH.maxTitleLength + 1);
+    if (!title) return { ok: false, message: '批次名稱為必填' };
+    if (title.length > BATCH.maxTitleLength) return { ok: false, message: '批次名稱不可超過 ' + BATCH.maxTitleLength + ' 字' };
+    var ms = parseDeadline(input.deadline);
+    if (ms == null) return { ok: false, message: '截止時間格式不正確' };
+    var hint = clean(input.hint, BATCH.maxHintLength + 1);
+    if (!hint) hint = BATCH.defaultHint;
+    if (hint.length > BATCH.maxHintLength) return { ok: false, message: '提示文字不可超過 ' + BATCH.maxHintLength + ' 字' };
+    var members = Array.isArray(input.members) ? input.members : [];
+    if (members.length > BATCH.maxMembers) return { ok: false, message: '成員不可超過 ' + BATCH.maxMembers + ' 位' };
+    var seen = {}, out = [];
+    for (var i = 0; i < members.length; i++) {
+      var m = members[i] || {};
+      var key = String(m.key == null ? '' : m.key).trim().toLowerCase();
+      if (!BATCH.keyRe.test(key)) return { ok: false, message: '成員鍵格式不正確（第 ' + (i + 1) + ' 位）' };
+      if (seen[key]) continue;
+      seen[key] = 1;
+      var name = clean(m.name, ROSTER.maxNameLength);
+      if (!name) return { ok: false, message: '成員本名為必填（第 ' + (i + 1) + ' 位）' };
+      var cn = clean(m.callName, BATCH.maxCallNameLength) || callName(name);
+      out.push({ key: key, name: name, masked: clean(m.masked, ROSTER.maxKeyLength), callName: cn });
+    }
+    return { ok: true, batch: { id: id, title: title, deadline: deadlineIso(ms), hint: hint, members: out, archived: input.archived === true } };
+  }
+
+  /** 批次是否於前台可見：未封存且截止後未超過 30 天 */
+  function batchVisible(batch, nowMs) {
+    if (!batch || batch.archived) return false;
+    var dl = parseDeadline(batch.deadline);
+    if (dl == null) return false;
+    return (nowMs - dl) <= BATCH.visibleAfterDeadlineDays * 86400000;
+  }
+
+  /**
+   * 由多個可見批次中挑選一筆：未截止者取截止最早；皆已截止取截止最近一筆；無則 null
+   */
+  function pickBatch(batches, nowMs) {
+    var open = [], past = [];
+    (batches || []).forEach(function (b) {
+      if (!batchVisible(b, nowMs)) return;
+      var dl = parseDeadline(b.deadline);
+      (dl >= nowMs ? open : past).push({ b: b, dl: dl });
+    });
+    if (open.length) { open.sort(function (x, y) { return x.dl - y.dl; }); return open[0].b; }
+    if (past.length) { past.sort(function (x, y) { return y.dl - x.dl; }); return past[0].b; }
+    return null;
+  }
+
+  /** 批次內成員：鍵相符的成員物件或 null */
+  function batchMember(batch, key) {
+    var k = String(key == null ? '' : key).toLowerCase();
+    var hit = null;
+    ((batch && batch.members) || []).forEach(function (m) { if (!hit && m.key === k) hit = m; });
+    return hit;
+  }
+
+  /** 前台用批次摘要：{ id, title, deadline, deadlineText, hint, callName, overdue } */
+  function batchBrief(batch, member, nowMs) {
+    if (!batch) return null;
+    var dl = parseDeadline(batch.deadline);
+    return { id: batch.id, title: batch.title, deadline: batch.deadline, deadlineText: formatDeadline(batch.deadline), hint: batch.hint || BATCH.defaultHint,
+      callName: (member && member.callName) || callName(member && member.name), overdue: dl != null && nowMs > dl };
+  }
+
   /** 前後台可用的 icon 語意名稱總表（區塊、身分、類別、步驟；plus 為自訂步驟） */
+  /* ------------------------------------------------------------------ */
+  /* 作業封存結構（雲端硬碟資料夾與 zip 共用）                            */
+  /* ------------------------------------------------------------------ */
+  /** 資料夾與檔名：\ / : * ? " < > | 與控制字元改全形底線，去頭尾句點與空白，長度上限 60 */
+  function archiveSafe(s, max) {
+    var out = String(s == null ? '' : s).replace(/[\\\/:*?"<>|\u0000-\u001f\u007f]/g, '＿').replace(/[\s　]+/g, ' ').replace(/^[.\s]+|[.\s]+$/g, '').trim();
+    if (!out) out = '未命名';
+    max = max || 60;
+    return out.length > max ? out.slice(0, max) : out;
+  }
+
+  /** 作業資料夾名稱：本名_諮詢作業；used（已用名稱，陣列或 has 函式）重複時加 _yyyy.mm.dd，再重複加 _02、_03… */
+  function archiveFolderName(name, dateStr, used) {
+    var has = typeof used === 'function' ? used : function (n) { return (used || []).indexOf(n) >= 0; };
+    var base = archiveSafe(name) + ARCHIVE.suffix;
+    if (!has(base)) return base;
+    var dated = base + (dateStr ? '_' + dateStr : '');
+    if (dateStr && !has(dated)) return dated;
+    for (var i = 2; i < 1000; i++) { var n = dated + '_' + (i < 10 ? '0' + i : i); if (!has(n)) return n; }
+    return dated + '_' + Date.now();
+  }
+
+  /**
+   * 附件 key → 封存子資料夾路徑（陣列）：
+   *   uploads.<類別> → ['資料上傳', 類別名稱]
+   *   <流程>.<步驟 id> → [流程名稱, '序號_步驟名稱']（序號依該份答案步驟順序，兩位數）
+   *   dialog.bookedShots／silentShots → ['對話紀錄', '完成預約'／'詢問後未回覆']
+   *   無法辨識 → ['其他附件']
+   */
+  function archiveDirForKey(key, answers) {
+    key = canonicalFileKey(String(key || ''));
+    var parts = key.split('.');
+    if (parts[0] === 'uploads') {
+      var c = categoryById(parts[1]);
+      return [ARCHIVE.uploadsDir, archiveSafe(c ? c.label : parts[1])];
+    }
+    if (isFlowId(parts[0])) {
+      var sec = sectionById(parts[0]);
+      var stages = answers ? flowStages(parts[0], answers) : defaultStages(parts[0]);
+      for (var i = 0; i < stages.length; i++) {
+        if (stages[i].id === parts[1]) return [sec.label, (i + 1 < 10 ? '0' : '') + (i + 1) + '_' + archiveSafe(stageDisplayName(stages[i]), 40)];
+      }
+      return [sec.label, '自訂步驟'];
+    }
+    if (parts[0] === 'dialog') {
+      var dsec = sectionById('dialog');
+      var f = null;
+      (dsec.fields || []).forEach(function (x) { if (x.id === parts[1]) f = x; });
+      return [ARCHIVE.dialogDir, archiveSafe(f ? f.label : parts[1])];
+    }
+    return [ARCHIVE.otherDir];
+  }
+
+  /** 雲端連結清單文字：一行一筆「類別或步驟｜說明｜網址」；無連結回 '' */
+  function archiveLinksText(labeled) {
+    var links = (labeled && (labeled.links || (labeled.gaps && labeled.gaps.links))) || [];
+    if (!links.length) return '';
+    return links.map(function (l) {
+      return [String(l.category || l.stage || '').replace(/[\r\n|｜]+/g, ' '), String(l.note || '—').replace(/[\r\n|｜]+/g, ' ') || '—', String(l.url || '')].join('｜');
+    }).join('\r\n') + '\r\n';
+  }
+
+  /**
+   * zip 內容清單（後台瀏覽器打包；與雲端硬碟資料夾結構無關，依附件 key 分類）：
+   *   detail：get() 回傳 { index, data, files:[{ fileId, name, size, mime, key?, label?, path? }], folderUrl }
+   *   opts：{ root（資料夾名，預設 本名_諮詢作業）, maxFileBytes }
+   * → { root, entries:[{ path, fileId?, text?, size, kind:'pdf'|'json'|'file'|'text' }], driveOnly:[{ path, name, size }] }
+   * 附件檔名保留資料中心命名（本名_yyyy.mm.dd_類別名[_序號].副檔名）；同一資料夾同名時加序號。
+   */
+  function zipEntries(detail, opts) {
+    opts = opts || {};
+    var d = detail || {}, data = d.data || null, ix = d.index || {};
+    var raw = data && data.raw ? normalizeAnswers(data.raw) : null;
+    var name = archiveSafe(ix.name || (data && data.student && data.student.name) || '未命名');
+    var root = opts.root || (name + ARCHIVE.suffix);
+    var max = opts.maxFileBytes || ARCHIVE.maxFileBytes;
+    var entries = [], driveOnly = [], seen = {};
+    function uniq(path) {
+      if (!seen[path]) { seen[path] = 1; return path; }
+      var m = /^(.*?)(\.[A-Za-z0-9]+)?$/.exec(path), n = 2, p;
+      do { p = m[1] + '_' + (n < 10 ? '0' : '') + n + (m[2] || ''); n++; } while (seen[p]);
+      seen[p] = 1; return p;
+    }
+    var files = (d.files || []).slice().sort(function (a, b) { return String(a.name) < String(b.name) ? -1 : 1; });
+    var hasJson = false;
+    files.forEach(function (f) {
+      var n = String(f.name || '');
+      var size = Number(f.size) || 0;
+      var path, kind = 'file';
+      if (f.label === '作業內容 PDF' || /_作業內容\.pdf$/.test(n)) { path = name + '_作業內容.pdf'; kind = 'pdf'; }
+      else if (f.label === '作業資料 JSON' || /_作業資料\.json$/.test(n)) { path = ARCHIVE.jsonFile; kind = 'json'; hasJson = true; }
+      else if (n === ARCHIVE.linksFile || n === ARCHIVE.driveOnlyFile || /_PDF產生失敗\.txt$/.test(n)) return;   // 由打包時重新產生
+      else {
+        var dir = f.key ? archiveDirForKey(f.key, raw) : (f.path ? String(f.path).split('/').filter(Boolean) : [ARCHIVE.otherDir]);
+        path = dir.join('/') + '/' + archiveSafe(n, 120);
+      }
+      path = uniq(path);
+      if (size > max) { driveOnly.push({ path: path, name: n, size: size }); return; }
+      entries.push({ path: path, fileId: f.fileId, size: size, kind: kind });
+    });
+    if (!hasJson && data) entries.push({ path: uniq(ARCHIVE.jsonFile), text: JSON.stringify(data, null, 2), kind: 'json' });
+    var lt = archiveLinksText(data);
+    if (lt) entries.push({ path: uniq(ARCHIVE.linksFile), text: lt, kind: 'text' });
+    if (driveOnly.length) {
+      var url = d.folderUrl || ix.folderUrl || '';
+      entries.push({ path: uniq(ARCHIVE.driveOnlyFile), kind: 'text', text: '以下檔案超過單次下載上限 ' + Math.round(max / 1048576) + 'MB，需於雲端硬碟下載' + (url ? '：' + url : '') + '\r\n' +
+        driveOnly.map(function (x) { return x.path + '｜' + (Math.round(x.size / 104857.6) / 10) + 'MB'; }).join('\r\n') + '\r\n' });
+    }
+    return { root: root, entries: entries, driveOnly: driveOnly };
+  }
+
+  /** 全部下載的壓縮檔名：諮詢前置作業_全部_yyyy.mm.dd.zip */
+  function archiveAllName(dateStr) { return ARCHIVE.allPrefix + dateStr + '.zip'; }
+
+  /* ------------------------------------------------------------------ */
+  /* 即時填寫進度                                                        */
+  /* ------------------------------------------------------------------ */
+  /** 狀態分類：submitted／active（最後活動 ≤ 5 分鐘）／idle（≤ 24 小時）／stalled */
+  function progressState(lastSeenMs, nowMs, submitted) {
+    if (submitted) return 'submitted';
+    if (lastSeenMs == null || !isFinite(lastSeenMs)) return 'stalled';
+    var gap = (nowMs - lastSeenMs) / 60000;
+    if (gap <= SESSION.activeWithinMin) return 'active';
+    if (gap <= SESSION.idleWithinHours * 60) return 'idle';
+    return 'stalled';
+  }
+  /** 活動分鐘累加：兩次回報間隔 ≤ 5 分鐘才計入（回傳新累計，四捨五入至 0.1） */
+  function addActiveMinutes(prevActive, prevMs, nowMs) {
+    var base = Number(prevActive) || 0;
+    if (prevMs == null || !isFinite(prevMs)) return base;
+    var gap = (nowMs - prevMs) / 60000;
+    if (gap <= 0 || gap > SESSION.activeGapMin) return base;
+    return Math.round((base + gap) * 10) / 10;
+  }
+  /** progress_ping 參數整理：null（格式不符）或 { sectionId, sectionLabel, sectionIndex, sectionTotal, percent } */
+  function pingFields(req) {
+    if (!req || typeof req !== 'object') return null;
+    var sid = String(req.sectionId || '');
+    if (!/^[A-Za-z]{1,30}$/.test(sid)) return null;
+    var idx = Math.floor(Number(req.sectionIndex)), tot = Math.floor(Number(req.sectionTotal)), pct = Math.round(Number(req.percent));
+    if (!isFinite(idx) || !isFinite(tot) || tot < 1 || tot > 30 || idx < 1 || idx > tot) return null;
+    if (!isFinite(pct)) pct = 0;
+    var sec = sectionById(sid);
+    var label = sec ? sec.label : ({ review: '送出檢查' })[sid] || cleanStr(req.sectionLabel).slice(0, 20);
+    return { sectionId: sid, sectionLabel: label, sectionIndex: idx, sectionTotal: tot, percent: Math.max(0, Math.min(100, pct)) };
+  }
+
   function iconKeys() {
     var set = { plus: 1 };
     SECTIONS.forEach(function (s) { set[s.icon] = 1; if (s.stages) s.stages.forEach(function (st) { set[st.icon] = 1; }); });
@@ -2702,6 +3263,37 @@ body.is-done .side{display:none}
     META: META,
     ROSTER: ROSTER,
     SESSION: SESSION,
+    REMOVAL: REMOVAL,
+    ARCHIVE: ARCHIVE,
+    BATCH: BATCH,
+    NOTIFY: NOTIFY,
+    LINE: LINE,
+    COMPOUND_SURNAMES: COMPOUND_SURNAMES,
+    callName: callName,
+    maskKey: maskKey,
+    parseDeadline: parseDeadline,
+    deadlineIso: deadlineIso,
+    formatDeadline: formatDeadline,
+    isOnTime: isOnTime,
+    renderTemplate: renderTemplate,
+    templateVars: templateVars,
+    normalizeTemplate: normalizeTemplate,
+    bindUrl: bindUrl,
+    parseBindMessage: parseBindMessage,
+    normalizeBatch: normalizeBatch,
+    batchVisible: batchVisible,
+    pickBatch: pickBatch,
+    batchMember: batchMember,
+    batchBrief: batchBrief,
+    archiveSafe: archiveSafe,
+    archiveFolderName: archiveFolderName,
+    archiveDirForKey: archiveDirForKey,
+    archiveLinksText: archiveLinksText,
+    archiveAllName: archiveAllName,
+    zipEntries: zipEntries,
+    progressState: progressState,
+    addActiveMinutes: addActiveMinutes,
+    pingFields: pingFields,
     LEGACY_CATEGORY_IDS: LEGACY_CATEGORY_IDS,
     SHARE_EMAIL: SHARE_EMAIL,
     LINK_HOSTS: LINK_HOSTS,
@@ -2818,7 +3410,10 @@ body.is-done .side{display:none}
     maxFileBytes: 20 * 1024 * 1024,
     retries: 3,
     retryDelayMs: 1500,
-    timeoutMs: 120000
+    timeoutMs: 45000,            // 一般請求逾時（2.3.0：120 秒 → 45 秒）
+    finishTimeoutMs: 25000,      // submit_finish 逾時；逾時後改輪詢 submit_status，不重送 finish
+    pollEveryMs: 4000,           // submit_status 輪詢間隔
+    pollMaxMs: 120000            // 輪詢上限 2 分鐘
   };
 
   function config() {
@@ -2829,7 +3424,10 @@ body.is-done .side{display:none}
       maxFileBytes: c.maxFileBytes || DEFAULTS.maxFileBytes,
       retries: c.retries != null ? c.retries : DEFAULTS.retries,
       retryDelayMs: c.retryDelayMs || DEFAULTS.retryDelayMs,
-      timeoutMs: c.timeoutMs || DEFAULTS.timeoutMs
+      timeoutMs: c.timeoutMs || DEFAULTS.timeoutMs,
+      finishTimeoutMs: c.finishTimeoutMs || DEFAULTS.finishTimeoutMs,
+      pollEveryMs: c.pollEveryMs || DEFAULTS.pollEveryMs,
+      pollMaxMs: c.pollMaxMs || DEFAULTS.pollMaxMs
     };
   }
 
@@ -2847,14 +3445,21 @@ body.is-done .side{display:none}
 
   function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
 
-  /** 單次呼叫（含逾時） */
-  function rawCall(payload) {
+  /** 單次呼叫（含逾時；timeoutMs 可由呼叫端指定） */
+  function rawCall(payload, timeoutMs) {
     var cfg = config();
-    if (useMock()) return root.CONSULT_MOCK_API.handle(payload);
+    var limit = timeoutMs || cfg.timeoutMs;
+    if (useMock()) {
+      // 離線模擬同樣套用逾時（回應遺失時的輪詢流程可於離線驗證）
+      return new Promise(function (resolve, reject) {
+        var t = setTimeout(function () { reject(new ApiError('連線逾時', 'ERR_NETWORK', 'TIMEOUT')); }, limit);
+        root.CONSULT_MOCK_API.handle(payload).then(function (d) { clearTimeout(t); resolve(d); }, function (e) { clearTimeout(t); reject(e instanceof ApiError ? e : new ApiError(e && e.message, e && e.code, e && e.detail)); });
+      });
+    }
     if (!cfg.GAS_URL) return Promise.reject(new ApiError('尚未設定資料中心網址', 'ERR_NO_ENDPOINT'));
 
     var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-    var timer = controller ? setTimeout(function () { controller.abort(); }, cfg.timeoutMs) : null;
+    var timer = controller ? setTimeout(function () { controller.abort(); }, limit) : null;
     var f = (root && root.fetch) || (typeof fetch !== 'undefined' ? fetch : null);
     if (!f) return Promise.reject(new ApiError('環境不支援 fetch', 'ERR_NO_FETCH'));
 
@@ -2877,7 +3482,7 @@ body.is-done .side{display:none}
       });
     }, function (err) {
       if (timer) clearTimeout(timer);
-      throw new ApiError(err && err.name === 'AbortError' ? '連線逾時' : '無法連線資料中心', 'ERR_NETWORK', String(err));
+      throw new ApiError(err && err.name === 'AbortError' ? '連線逾時' : '無法連線資料中心', 'ERR_NETWORK', err && err.name === 'AbortError' ? 'TIMEOUT' : String(err));
     });
   }
 
@@ -2889,7 +3494,7 @@ body.is-done .side{display:none}
     var payload = Object.assign({ action: action }, params || {});
     var attempt = 0;
     function run() {
-      return rawCall(payload).catch(function (err) {
+      return rawCall(payload, opts.timeoutMs).catch(function (err) {
         var retriable = err.code === 'ERR_NETWORK' || err.code === 'ERR_BAD_RESPONSE' || err.code === 'ERR_TEMPORARY';
         if (retriable && attempt < retries) {
           attempt++;
@@ -2899,6 +3504,22 @@ body.is-done .side{display:none}
       });
     }
     return run();
+  }
+
+  /**
+   * 不等待回應的輕量呼叫（fetch keepalive；頁面隱藏或關閉時仍會送出）。失敗靜默，不阻擋操作。
+   * 離線模擬時直接交給 CONSULT_MOCK_API。
+   */
+  function fire(action, params) {
+    var payload = Object.assign({ action: action }, params || {});
+    try {
+      if (useMock()) { root.CONSULT_MOCK_API.handle(payload).catch(function () {}); return true; }
+      var cfg = config();
+      var f = (root && root.fetch) || (typeof fetch !== 'undefined' ? fetch : null);
+      if (!cfg.GAS_URL || !f) return false;
+      f(cfg.GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload), keepalive: true, redirect: 'follow', credentials: 'omit' }).catch(function () {});
+      return true;
+    } catch (e) { return false; }
   }
 
   /* ------------------------------------------------------------------ */
@@ -3111,13 +3732,42 @@ body.is-done .side{display:none}
       }
 
       return uploadOne(0).then(function () {
-        notify({ phase: 'finish', percent: 100, overallLoaded: overallTotal, overallTotal: overallTotal, fileCount: files.length });
-        return call('submit_finish', { receiptId: receiptId, uploadToken: uploadToken });
+        notify({ phase: 'finish', percent: 100, overallLoaded: overallTotal, overallTotal: overallTotal, fileCount: files.length, startedAt: Date.now() });
+        return finishOrPoll(receiptId, uploadToken, notify);
       }).then(function (done) {
         delete sess.receiptId; delete sess.uploadToken; delete sess.signature;
         notify({ phase: 'done', percent: 100, receiptId: done.receiptId });
+        // 作業內容 PDF 改背景產生：收到回執後送出一次，不等待
+        if (done.pdf !== 'ready') fire('render_pdf', { receiptId: done.receiptId, uploadToken: uploadToken });
         return done;
       });
+    });
+  }
+
+  /**
+   * submit_finish 只送一次（逾時 25 秒、不重試）；回應遺失或逾時改每 4 秒輪詢 submit_status（最多 2 分鐘），
+   * 不重送 finish。輪詢時 onProgress({ phase:'poll', attempt, waitedSec })。
+   */
+  function finishOrPoll(receiptId, uploadToken, notify) {
+    var cfg = config();
+    var t0 = Date.now();
+    return call('submit_finish', { receiptId: receiptId, uploadToken: uploadToken }, { retries: 0, timeoutMs: cfg.finishTimeoutMs }).catch(function (err) {
+      var lost = err.code === 'ERR_NETWORK' || err.code === 'ERR_BAD_RESPONSE' || err.code === 'ERR_TEMPORARY';
+      if (!lost) throw err;
+      var attempt = 0;
+      function poll() {
+        if (Date.now() - t0 > cfg.pollMaxMs) return Promise.reject(new ApiError('資料中心確認收件逾時，作業可能已送達；稍後重新整理或聯繫學院確認', 'ERR_NETWORK', 'POLL_TIMEOUT'));
+        attempt++;
+        notify({ phase: 'poll', attempt: attempt, waitedSec: Math.round((Date.now() - t0) / 1000) });
+        return call('submit_status', { receiptId: receiptId, uploadToken: uploadToken }, { retries: 0, timeoutMs: Math.min(cfg.timeoutMs, 20000) }).then(function (st) {
+          if (st && st.done) return st;
+          return sleep(cfg.pollEveryMs).then(poll);
+        }, function (e) {
+          if (e.code === 'ERR_AUTH' || e.code === 'ERR_VALIDATION') throw e;
+          return sleep(cfg.pollEveryMs).then(poll);
+        });
+      }
+      return sleep(Math.min(cfg.pollEveryMs, 1000)).then(poll);
     });
   }
 
@@ -3162,12 +3812,24 @@ body.is-done .side{display:none}
   }
 
   /**
-   * rosterLookup(q) → { found:true, name } ｜ { found:false } ｜ { found:false, empty:true }
-   *   q 為學員帳號或 Email；只回本名。empty:true 表示名冊尚未同步，畫面改為手動輸入本名。
+   * rosterLookup(q) → { found:true, name, key, lookupToken, lineBound, batch|null } ｜ { found:false } ｜ { found:false, empty:true }
+   *   q 為學員帳號或 Email；只回本名與名冊鍵雜湊（key），不回帳號明文。empty:true 表示名冊尚未同步，畫面改為手動輸入本名。
+   *   batch：{ id, title, deadline, deadlineText, hint, callName, overdue }（該學姊屬於未封存且未逾期 30 天的優先批次時）
+   *   lookupToken：30 分鐘內可用於 bindCode（與同一裝置 clientKey 綁定）
    *   ERR_RATE_LIMIT：同裝置連續查無 5 次鎖 15 分鐘，或全站查詢過多。
    */
   function rosterLookup(q) {
     return call('roster_lookup', { q: String(q == null ? '' : q), clientKey: clientKey() }, { retries: 1 });
+  }
+
+  /**
+   * bindCode({ key, lookupToken }) → { code, bindUrl, text:'綁定 XXXXXX', expiresAt(毫秒), minutes:15 }
+   *   前台取得 LINE 通知綁定碼（免 token；需 rosterLookup 同次回傳的 key 與 lookupToken）。
+   *   ERR_LINE_NOT_CONFIGURED：LINE 尚未設定，畫面隱藏綁定入口；ERR_AUTH：憑證失效，請重新查詢帳號。
+   */
+  function bindCode(o) {
+    o = o || {};
+    return call('bind_code', { key: o.key, lookupToken: o.lookupToken, clientKey: clientKey() }, { retries: 1 });
   }
 
   /**
@@ -3179,6 +3841,18 @@ body.is-done .side{display:none}
     var params = { account: o.account, name: o.name, clientKey: clientKey() };
     if (o.role) params.role = o.role;
     return call('session_start', params, { retries: 1 });
+  }
+
+  /**
+   * progressPing({ account, name, role, sectionId, sectionLabel, sectionIndex, sectionTotal, percent })
+   *   即時填寫進度（免 token）：fetch keepalive、不等待回應、失敗靜默。account 以名冊鍵（正規化）送出。
+   */
+  function progressPing(o) {
+    o = o || {};
+    var S = root.CONSULT_SCHEMA;
+    var acc = S && S.rosterKey ? S.rosterKey(o.account) : String(o.account || '').trim().toLowerCase();
+    if (!acc || !o.name || !o.sectionId) return false;
+    return fire('progress_ping', { account: acc, name: String(o.name).slice(0, 60), role: o.role || '', sectionId: o.sectionId, sectionLabel: o.sectionLabel || '', sectionIndex: o.sectionIndex, sectionTotal: o.sectionTotal, percent: o.percent, clientKey: clientKey() });
   }
 
   /* ------------------------------------------------------------------ */
@@ -3252,10 +3926,10 @@ body.is-done .side{display:none}
   /** 登出：清除兩種儲存與記憶體中的 token */
   function logout() { clearSession(); expiredFlag = ''; }
 
-  function authed(action, params) {
+  function authed(action, params, opts) {
     var token = getToken();
     if (!token) return Promise.reject(new ApiError('尚未登入', 'ERR_AUTH'));
-    return call(action, Object.assign({ token: token }, params || {})).catch(function (err) {
+    return call(action, Object.assign({ token: token }, params || {}), opts).catch(function (err) {
       if (err.code === 'ERR_AUTH') clearSession();
       throw err;
     });
@@ -3312,8 +3986,50 @@ body.is-done .side{display:none}
   function rosterSync(rows) { return authed('roster_sync', { rows: rows || [] }); }
   /** rosterStatus() → { count, keys, shards, updatedAt, empty } */
   function rosterStatus() { return authed('roster_status', {}); }
-  /** progressList() → { rows:[{ account, name, role, startedAt, lastSeen, elapsedMin }], total }（已開始未送出） */
-  function progressList() { return authed('progress_list', {}); }
+  /**
+   * progressList({ includeSubmitted }) → { rows:[{ account, name, role, sectionId, sectionLabel, sectionIndex, sectionTotal, percent,
+   *   startedAt, lastSeen, elapsedMin, activeMin, status('active'|'idle'|'stalled'|'submitted') }], total, summary:{ active, idle, stalled, submitted } }
+   */
+  function progressList(o) { return authed('progress_list', { includeSubmitted: !!(o && o.includeSubmitted) }); }
+  /** deleteSubmissions(receiptIds) → { deleted:[{ receiptId, name }], failed:[{ receiptId, reason }] }（資料夾移至雲端硬碟垃圾桶） */
+  function deleteSubmissions(ids) { return authed('delete_submission', { receiptIds: (ids || []).slice(0, 50) }); }
+  /** renderPdf(receiptId) → { ready, existed?, busy?, failed? }（後台手動產生作業內容 PDF；冪等） */
+  function renderPdf(receiptId) { return authed('render_pdf', { receiptId: receiptId }); }
+  /** rosterSearch(q) → { rows:[{ key, name, masked }], total, truncated }（後台；以名字部分比對，最多 30 筆） */
+  function rosterSearch(q) { return authed('roster_search', { q: String(q == null ? '' : q) }); }
+  /* ---- 優先批次 ---- */
+  /** batchList({ includeArchived }) → { rows:[{ id, title, deadline, deadlineText, hint, count, archived, createdAt, updatedAt, overdue }], total } */
+  function batchList(o) { return authed('batch_list', { includeArchived: !!(o && o.includeArchived) }); }
+  /** batchSave({ id?, title, deadline, hint?, members:[{ key, name, masked?, callName? }], archived? }) → 批次（含 members、deadlineText）；無 id 為新增 */
+  function batchSave(b) { b = b || {}; return authed('batch_save', { id: b.id || '', title: b.title, deadline: b.deadline, hint: b.hint || '', members: b.members || [], archived: b.archived === true }); }
+  /** batchArchive(id, archived=true) → { id, archived } */
+  function batchArchive(id, archived) { return authed('batch_archive', { id: id, archived: archived !== false }); }
+  /** batchStatus(id) → { batch, members:[{ key, name, masked, callName, state:'none'|'filling'|'submitted', percent, sectionLabel, startedAt, lastSeen, receiptId, submittedAt, onTime, lineBound, lineBlocked, lastNotifiedAt, lastNotifyOk, lastNotifyError }], summary:{ none, filling, submitted, onTime, late, bound }, now } */
+  function batchStatus(id) { return authed('batch_status', { id: id }); }
+  /* ---- 通知範本 ---- */
+  /** templateList() → { rows:[{ id, name, body, updatedAt, vars }], total, vars } */
+  function templateList() { return authed('template_list', {}); }
+  /** templateSave({ id?, name, body }) → { id, name, body, updatedAt, vars } */
+  function templateSave(t) { t = t || {}; return authed('template_save', { id: t.id || '', name: t.name, body: t.body }); }
+  /** templateDelete(id) → { id, deleted:true }（最後一份不可刪除） */
+  function templateDelete(id) { return authed('template_delete', { id: id }); }
+  /** messagePreview({ batchId, templateId, keys? }) → { batch, template, lineConfigured, messages:[{ key, name, masked, callName, lineBound, text, length }] }（供複製通知） */
+  function messagePreview(o) { o = o || {}; return authed('message_preview', { batchId: o.batchId, templateId: o.templateId, keys: Array.isArray(o.keys) ? o.keys : undefined }); }
+  /* ---- LINE 推播 ---- */
+  /** lineSettingsSave({ channelId, channelSecret }) → { configured, channelId, secretTail, updatedAt, oaId, verified, error? }（secret 不回傳） */
+  function lineSettingsSave(o) { o = o || {}; return authed('line_settings_save', { channelId: o.channelId, channelSecret: o.channelSecret }); }
+  /** lineSettingsStatus() → { configured, channelId, secretTail, updatedAt, oaId, monthlyQuota, quota:{ limit, used, remaining }|null } */
+  function lineSettingsStatus() { return authed('line_settings_status', {}); }
+  /**
+   * linePush({ batchId, templateId, keys?, dryRun?, runId? })
+   *   dryRun → { dryRun:true, quota, toSend, messages:[…], skipped:[{ key, name, masked, reason }] }
+   *   正式 → { sent:[{ key, name, at, duplicate? }], failed:[{ key, name, error }], skipped, quota, runId }
+   *   ERR_LINE_NOT_CONFIGURED（改用 messagePreview 複製通知）、ERR_LINE_QUOTA（剩餘則數不足）
+   */
+  function linePush(o) { o = o || {}; return authed('line_push', { batchId: o.batchId, templateId: o.templateId, keys: Array.isArray(o.keys) ? o.keys : undefined, dryRun: !!o.dryRun, runId: o.runId || '' }, { retries: 0 }); }
+
+  /** submitStatus(receiptId, uploadToken) → { done, ... } */
+  function submitStatus(receiptId, uploadToken) { return call('submit_status', { receiptId: receiptId, uploadToken: uploadToken }, { retries: 0 }); }
 
   /** ping() → { version, time } */
   function ping() { return call('ping', {}, { retries: 0 }); }
@@ -3334,10 +4050,28 @@ body.is-done .side{display:none}
     submit: submit,
     clientKey: clientKey,
     rosterLookup: rosterLookup,
+    bindCode: bindCode,
     sessionStart: sessionStart,
     rosterSync: rosterSync,
     rosterStatus: rosterStatus,
+    rosterSearch: rosterSearch,
+    batchList: batchList,
+    batchSave: batchSave,
+    batchArchive: batchArchive,
+    batchStatus: batchStatus,
+    templateList: templateList,
+    templateSave: templateSave,
+    templateDelete: templateDelete,
+    messagePreview: messagePreview,
+    lineSettingsSave: lineSettingsSave,
+    lineSettingsStatus: lineSettingsStatus,
+    linePush: linePush,
     progressList: progressList,
+    progressPing: progressPing,
+    deleteSubmissions: deleteSubmissions,
+    renderPdf: renderPdf,
+    submitStatus: submitStatus,
+    fire: fire,
     login: login,
     logout: logout,
     getToken: getToken,
@@ -3621,6 +4355,12 @@ body.is-done .side{display:none}
       },
       /* 蓋章：低沉悶響（150→48Hz 下滑）＋紙張質感（低通 1.1kHz 雜訊＋高通 3.2kHz 細碎聲） */
       stamp: function (t) { tone('sine', 150, t, 0.004, 0.55, 0.22, { to: 48, glide: 0.16 }); noise(t, 0.002, 0.42, 0.09, 'lowpass', 1100); noise(t + 0.012, 0.002, 0.10, 0.05, 'highpass', 3200); },
+      /* 煙火綻放：遠處輕悶響（110→46Hz）＋帶通 2.6kHz 嘶聲 240ms＋高通 5.2kHz 細碎爆裂 4 粒（間隔 45ms），整體峰值 ≤0.18 */
+      firework: function (t) {
+        tone('sine', 110, t, 0.004, 0.16, 0.2, { to: 46, glide: 0.16 });
+        noise(t, 0.003, 0.12, 0.24, 'bandpass', 2600, 0.8);
+        for (var i = 0; i < 4; i++) noise(t + 0.09 + i * 0.045, 0.001, 0.05 - i * 0.008, 0.03, 'highpass', 5200);
+      },
       /* 錯誤：溫和低音（三角波 233→208Hz＋低八度正弦，約 180ms） */
       error: function (t) { tone('triangle', 233.08, t, 0.012, 0.20, 0.16, { to: 207.65 }); tone('sine', 116.54, t, 0.012, 0.10, 0.18); }
     };
@@ -3756,7 +4496,7 @@ body.is-done .side{display:none}
         else if (typeof v === 'string' && stageAt(fid, v) >= 0) UI.stage[fid] = v;
       });
       if (d.ui && d.ui.flowMode && typeof d.ui.flowMode === 'object') UI.flowMode = d.ui.flowMode;
-      if (d.ui && d.ui.roster && typeof d.ui.roster === 'object' && typeof d.ui.roster.key === 'string') UI.roster = { key: d.ui.roster.key, name: String(d.ui.roster.name || ''), locked: !!d.ui.roster.locked };
+      if (d.ui && d.ui.roster && typeof d.ui.roster === 'object' && typeof d.ui.roster.key === 'string') UI.roster = rosterFromDraft(d.ui.roster);
       if (d.ui && d.ui.session && typeof d.ui.session === 'object' && typeof d.ui.session.key === 'string') UI.session = { key: d.ui.session.key, startedAt: String(d.ui.session.startedAt || ''), resumed: !!d.ui.session.resumed };
       draftInfo = { view: (d.ui && d.ui.view) || 'student', savedAt: d.savedAt ? new Date(d.savedAt) : null };
       savedAt = draftInfo.savedAt;
@@ -4106,6 +4846,8 @@ body.is-done .side{display:none}
     var tools = view === 'intro' ? node.querySelector('.intro-tools') : null;
     if (tools) tools.appendChild(els.snd); else if (els.snd.parentNode !== els.barIn) els.barIn.appendChild(els.snd);
     paintHeader();
+    DL.paint();
+    PING.section();
     window.scrollTo(0, 0);
     var f = focusId && document.getElementById(focusId);
     if (f) {
@@ -4582,10 +5324,12 @@ body.is-done .side{display:none}
         var bad = [fa, fn].filter(function (f) { return !checkStudent(f, 'f-student-' + f.id); });
         if (bad.length) { SND.play('error'); document.getElementById('f-student-' + bad[0].id).focus(); return; }
         startSession();
+        var toRole = function () { if (UI.view === 'student') go('role'); };
+        if (BW.busy()) { BW.then(toRole); return; }   // 優先批次視窗：按「開始填寫」後接續前往
         var wait = Math.max(0, welcomeUntil - Date.now());
         if (!wait) { go('role'); return; }
         leaving = true;
-        setTimeout(function () { leaving = false; if (UI.view === 'student') go('role'); }, wait + 240);
+        setTimeout(function () { leaving = false; if (BW.busy()) BW.then(toRole); else toRole(); }, wait + 240);
       });
     } };
     var view = h('div', null, secHead(null, { icon: 'idcard', label: sec.label, desc: sec.desc + '；學員帳號與本名需與官網註冊資料相同。' }), card, pager('intro', nextBtn, '返回入口'));
@@ -4617,7 +5361,7 @@ body.is-done .side{display:none}
       return hold().then(function () { throw err; });
     }).then(function (r) {
       if (LK.key !== key) return r;
-      if (r && r.found && r.name) applyFound(key, String(r.name));
+      if (r && r.found && r.name) applyFound(key, String(r.name), r);
       else { LK.state = r && r.empty ? 'empty' : 'none'; paintLookup(LK.state); }
       return r;
     }, function (err) {
@@ -4631,15 +5375,19 @@ body.is-done .side{display:none}
     LK.p = p;
     return p;
   }
-  function applyFound(key, name) {
+  function applyFound(key, name, r) {
+    r = r || {};
     A.student.name = name;
-    UI.roster = { key: key, name: name, locked: true };
+    UI.roster = rosterFromDraft({ key: key, name: name, locked: true, hash: String(r.key || ''), lookupToken: String(r.lookupToken || ''), lookupAt: Date.now(), lineBound: !!r.lineBound, batch: r.batch || null });
     LK.state = 'found';
     changed();
     var ni = document.getElementById('f-student-name');
     if (ni) { ni.value = name; setErr('f-student-name', null); }
     paintLookup('found'); paintNameLock();
-    showWelcome(name, true);
+    var hasBatch = !!UI.roster.batch;
+    showWelcome(name, true, hasBatch);
+    // 優先批次：歡迎儀式（≤900ms；減少動態 200ms）結束後接續開啟滿版歡迎視窗；歡迎音效改由視窗開啟時播放
+    if (hasBatch) BW.schedule(Math.max(0, welcomeUntil - Date.now()));
     if (els.live) els.live.textContent = '歡迎，' + name + ' 學姊；本名已由學員名冊帶入。';
   }
   var LK_TEXT = {
@@ -4674,12 +5422,12 @@ body.is-done .side{display:none}
     if (locked) ni.setAttribute('aria-readonly', 'true'); else ni.removeAttribute('aria-readonly');
     if (ub) ub.hidden = !(UI.roster && UI.roster.key === acctKey() && UI.roster.locked);
   }
-  function removeWelcome() { var w = document.getElementById('welcome'); if (w) w.remove(); welcomeUntil = 0; }
+  function removeWelcome() { var w = document.getElementById('welcome'); if (w) w.remove(); var lb = document.getElementById('wk-lb'); if (lb) lb.remove(); welcomeUntil = 0; BW.reset(); }
   /**
    * 歡迎儀式（≤900ms）：小票面浮現 240ms → 驗證點亮起（180ms 起）→ 名字逐字以桃紅細線描繪後填色（260ms 起、每字間隔 ≤50ms、各 520ms）
    * → 桃紅細線由左畫出（300–860ms）；搭配 welcome 音效。減少動態：整張小票只淡入 200ms。
    */
-  function showWelcome(name, play) {
+  function showWelcome(name, play, quiet) {
     var host = document.getElementById('welcome-host');
     if (!host) return;
     host.innerHTML = '';
@@ -4694,7 +5442,8 @@ body.is-done .side{display:none}
         h('span', { class: 'wk-k', 'aria-hidden': 'true' }, '名冊核對完成'),
         h('p', { class: 'wk-t' }, h('span', { class: 'sr' }, '歡迎，' + name + ' 學姊'),
           h('span', { 'aria-hidden': 'true' }, '歡迎，'), nmEl, h('span', { class: 'wk-suf', 'aria-hidden': 'true' }, '學姊')))));
-    if (play) { welcomeUntil = Date.now() + (reduceMotion.matches ? 200 : 900); SND.play('welcome'); }
+    var lb = lineBlock(ROSTER_SRC, 'wk'); if (lb) host.appendChild(lb);
+    if (play) { welcomeUntil = Date.now() + (reduceMotion.matches ? 200 : 900); if (!quiet) SND.play('welcome'); }
   }
   function startSession() {
     var acc = String(A.student.account || '').trim(), nm = String(A.student.name || '').trim();
@@ -4707,13 +5456,333 @@ body.is-done .side{display:none}
       Promise.resolve().then(function () { return API.sessionStart({ account: acc, name: nm, role: roleId() || '' }); }).then(function (r) {
         startSession.pending = '';
         UI.session = { key: key, startedAt: String((r && r.startedAt) || ''), resumed: !!(r && r.resumed) };
-        save(); paintResume();
+        save(); paintResume(); PING.section();
       }, function () {
         tries++;
         if (tries < 2) setTimeout(attempt, 1500); else startSession.pending = '';   // 失敗不阻擋填寫
       });
     })();
   }
+  /* ================================================================ */
+  /* 2.5.0 優先批次：截止倒數、滿版歡迎視窗、底部截止提示列、LINE 通知綁定 */
+  /* ================================================================ */
+  /** 草稿中的名冊核對結果：只接受預期欄位（雜湊 16 碼、lookupToken 字串、批次摘要） */
+  function rosterFromDraft(o) {
+    var b = o.batch && typeof o.batch === 'object' && typeof o.batch.deadline === 'string' ? {
+      id: String(o.batch.id || ''), title: String(o.batch.title || ''), deadline: o.batch.deadline, deadlineText: String(o.batch.deadlineText || ''),
+      hint: String(o.batch.hint || ''), callName: String(o.batch.callName || ''), overdue: !!o.batch.overdue } : null;
+    return { key: o.key, name: String(o.name || ''), locked: !!o.locked, hash: typeof o.hash === 'string' && /^[0-9a-f]{16}$/.test(o.hash) ? o.hash : '',
+      lookupToken: typeof o.lookupToken === 'string' ? o.lookupToken : '', lookupAt: typeof o.lookupAt === 'number' ? o.lookupAt : 0, lineBound: !!o.lineBound, batch: b };
+  }
+  var LOOKUP_TTL = 29 * 60000;   // lookupToken 30 分鐘有效；提前 1 分鐘視為過期，綁定前重新查詢
+  function batchNow() { return UI.roster && UI.roster.key === acctKey() ? UI.roster.batch || null : null; }
+  function deadlineText(b) { return (b && b.deadlineText) || S.formatDeadline(b && b.deadline) || ''; }
+  function batchCallName(b) { return (b && b.callName) || S.callName(UI.roster ? UI.roster.name : '') || ''; }
+  /** 倒數：{ over, urgent, text }；24 小時以上「剩 X 天 X 小時」，24 小時內「剩 X 小時 X 分」 */
+  function countdown(b, now) {
+    var ms = b ? S.parseDeadline(b.deadline) : null;
+    if (ms == null) return { over: !!(b && b.overdue), urgent: false, text: '' };
+    var d = ms - (now == null ? Date.now() : now);
+    if (d <= 0) return { over: true, urgent: false, text: '已逾截止時間' };
+    var min = Math.floor(d / 60000);
+    if (d < 86400000) return { over: false, urgent: true, text: '剩 ' + Math.floor(min / 60) + ' 小時 ' + (min % 60) + ' 分' };
+    return { over: false, urgent: false, text: '剩 ' + Math.floor(min / 1440) + ' 天 ' + Math.floor((min % 1440) / 60) + ' 小時' };
+  }
+
+  /**
+   * 煙火（canvas）：5 發依序升空（260ms，ease-out 減速）後綻放，每發 ≤56 粒、總數 ≤300；
+   * 粒子初速 120–270px/s（依視窗縮放 0.7–1.25）、重力 300px/s²、阻力 e^(−1.9t)、壽命 900–1300ms、拖尾 6 點；
+   * 色彩比例 桃紅 5：淺桃紅 2：暖白 3：香檳金 1；requestAnimationFrame、頁面隱藏時暫停；全程約 2.5 秒。
+   */
+  function Fireworks(canvas, opt) {
+    opt = opt || {};
+    var c2 = canvas.getContext && canvas.getContext('2d');
+    var MAX = 300, PER = 56, G = 300, DRAG = 1.9, TRAIL = 6;
+    var COLORS = [['#FF2E8B', 5], ['#FF77B2', 2], ['#F6EFEA', 3], ['#E8B85C', 1]];
+    var plan = [[0, 0.5, 0.17], [300, 0.22, 0.26], [560, 0.78, 0.22], [860, 0.34, 0.12], [1120, 0.68, 0.1]];
+    var parts = [], rockets = [], t = 0, last = 0, raf = 0, w = 0, hh = 0, seed = 11, stats = { peak: 0, bursts: 0, frames: 0, running: false, paused: false };
+    function rnd() { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
+    function pick() { var r = rnd() * 11; for (var i = 0; i < COLORS.length; i++) { r -= COLORS[i][1]; if (r <= 0) return COLORS[i][0]; } return COLORS[0][0]; }
+    function size() {
+      var dpr = Math.min(2, window.devicePixelRatio || 1), r = canvas.getBoundingClientRect();
+      w = r.width || window.innerWidth; hh = r.height || window.innerHeight;
+      canvas.width = Math.round(w * dpr); canvas.height = Math.round(hh * dpr); c2.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    function burst(x, y) {
+      var k = Math.max(0.7, Math.min(1.25, Math.min(w, hh) / 620)), n = Math.min(PER, MAX - parts.length), base = pick();
+      for (var i = 0; i < n; i++) {
+        var a = (i / n) * Math.PI * 2 + rnd() * 0.2, sp = (120 + rnd() * 150) * k;
+        parts.push({ x: x, y: y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, life: 0, max: 900 + rnd() * 400, c: rnd() < 0.55 ? base : pick(), r: 1.1 + rnd() * 1.2, h: [] });
+      }
+      stats.bursts++; stats.peak = Math.max(stats.peak, parts.length);
+      if (opt.onBurst) opt.onBurst(stats.bursts);
+    }
+    function frame(now) {
+      var dt = last ? Math.min(40, now - last) : 16, s = dt / 1000, drag = Math.exp(-DRAG * s);
+      last = now; t += dt; stats.frames++;
+      plan.forEach(function (p) { if (!p.done && t >= p[0]) { p.done = true; rockets.push({ x: p[1] * w, y0: hh * 0.94, ty: p[2] * hh, life: 0 }); } });
+      c2.clearRect(0, 0, w, hh);
+      c2.globalCompositeOperation = 'lighter'; c2.lineCap = 'round';
+      rockets = rockets.filter(function (r) {
+        r.life += dt; var k = Math.min(1, r.life / 260), y = r.y0 + (r.ty - r.y0) * (1 - Math.pow(1 - k, 3));
+        c2.globalAlpha = 0.55 * (1 - k * 0.4); c2.strokeStyle = '#F6EFEA'; c2.lineWidth = 1.2;
+        c2.beginPath(); c2.moveTo(r.x, y + 22 * (1 - k)); c2.lineTo(r.x, y); c2.stroke();
+        if (k >= 1) { burst(r.x, r.ty); return false; }
+        return true;
+      });
+      parts = parts.filter(function (p) {
+        p.life += dt; if (p.life >= p.max) return false;
+        p.h.push(p.x, p.y); if (p.h.length > TRAIL * 2) p.h.splice(0, 2);
+        p.vx *= drag; p.vy = p.vy * drag + G * s; p.x += p.vx * s; p.y += p.vy * s;
+        var q = p.life / p.max, al = q < 0.55 ? 1 : 1 - (q - 0.55) / 0.45; al *= al;
+        c2.strokeStyle = p.c; c2.lineWidth = p.r;
+        for (var i = 0; i + 3 < p.h.length; i += 2) { c2.globalAlpha = al * (i / p.h.length) * 0.55; c2.beginPath(); c2.moveTo(p.h[i], p.h[i + 1]); c2.lineTo(p.h[i + 2], p.h[i + 3]); c2.stroke(); }
+        c2.globalAlpha = al; c2.fillStyle = p.c; c2.beginPath(); c2.arc(p.x, p.y, p.r, 0, Math.PI * 2); c2.fill();
+        return true;
+      });
+      c2.globalAlpha = 1; c2.globalCompositeOperation = 'source-over';
+      if (parts.length || rockets.length || plan.some(function (p) { return !p.done; })) raf = requestAnimationFrame(frame);
+      else { raf = 0; stats.running = false; c2.clearRect(0, 0, w, hh); }
+    }
+    function vis() {
+      if (document.hidden) { if (raf) { cancelAnimationFrame(raf); raf = 0; stats.paused = true; } }
+      else if (stats.paused) { stats.paused = false; last = 0; raf = requestAnimationFrame(frame); }
+    }
+    return {
+      start: function () { if (!c2) return; size(); stats.running = true; document.addEventListener('visibilitychange', vis); raf = requestAnimationFrame(frame); },
+      stop: function () { if (raf) cancelAnimationFrame(raf); raf = 0; stats.running = false; parts = []; rockets = []; document.removeEventListener('visibilitychange', vis); },
+      stats: function () { return { peak: stats.peak, bursts: stats.bursts, frames: stats.frames, running: stats.running, paused: stats.paused, live: parts.length, max: MAX }; }
+    };
+  }
+
+  /**
+   * 滿版歡迎視窗（優先批次）：歡迎儀式結束後接續開啟。典藏票延伸版票面（左票根＋主票面），
+   * 煙火於票面後方綻放；減少動態改為靜態桃紅光暈＋淡入；逾期為沉穩版（無煙火、無優先安排字樣）。
+   * 「開始填寫」關閉視窗；若此前已按下一步，關閉後接續前往身分選擇。
+   */
+  var BW = (function () {
+    var dlg = null, fx = null, tick = null, waitT = null, fxT = null, pending = false, afters = [], lastStats = null;
+    function busy() { return pending || !!(dlg && dlg.open); }
+    function then(fn) { afters.push(fn); }
+    function flush() { var a = afters; afters = []; a.forEach(function (f) { f(); }); return a.length; }
+    function schedule(delay) {
+      pending = true; clearTimeout(waitT);
+      waitT = setTimeout(function () { waitT = null; pending = false; if (UI.view === 'student' && batchNow()) open(); else flush(); }, delay);
+    }
+    function open() {
+      var b = batchNow(); if (!b || dlg) return;
+      var cd = countdown(b), over = cd.over, i = 0;
+      var st = function () { return '--i:' + (i++); };
+      var mode = over ? 'none' : reduceMotion.matches ? 'glow' : 'fireworks';
+      var cdEl = h('dd', { id: 'bw-cd' }, cd.text);
+      var goBtn = h('button', { type: 'button', class: 'btn btn-primary btn-lg bw-go', id: 'bw-go', 'data-autofocus': true, onclick: close }, '開始填寫');
+      var main = h('div', { class: 'bw-main' },
+        h('span', { class: 'tag', style: st() }, b.title || '優先批次'),
+        h('h2', { class: 'bw-name', id: 'bw-h', style: st() }, batchCallName(b), h('small', null, '學姊')),
+        over ? h('p', { class: 'bw-line', id: 'bw-line', style: st() }, '此份作業已逾截止時間 ', h('b', null, deadlineText(b)), '，仍可完成送出')
+          : [h('p', { class: 'bw-line', id: 'bw-line', style: st() }, '此份作業請於 ', h('b', null, deadlineText(b)), ' 前完成'),
+            h('p', { class: 'bw-hint', id: 'bw-hint', style: st() }, b.hint || S.BATCH.defaultHint),
+            h('dl', { class: 'bw-cd', style: st() }, h('dt', null, '距離截止'), cdEl)]);
+      goBtn.setAttribute('style', st()); main.appendChild(goBtn);
+      var canvas = mode === 'fireworks' ? h('canvas', { class: 'bw-fx', 'aria-hidden': 'true' }) : null;
+      dlg = h('dialog', { class: 'bw' + (over ? ' is-over' : ''), id: 'batch-welcome', 'aria-labelledby': 'bw-h', 'aria-describedby': 'bw-line', 'data-fx': mode },
+        canvas, mode === 'glow' ? h('div', { class: 'bw-glow', 'aria-hidden': 'true' }) : null,
+        h('article', { class: 'bw-card' }, h('div', { class: 'bw-side', 'aria-hidden': 'true' }, h('span', null, over ? 'DEADLINE' : 'PRIORITY')), main));
+      dlg.addEventListener('cancel', function (e) { e.preventDefault(); close(); });
+      document.body.appendChild(dlg);
+      openDlg(dlg);
+      if (!over) SND.play('welcome');
+      if (canvas) {
+        fx = Fireworks(canvas, { onBurst: function () { SND.play('firework'); } });
+        fxT = setTimeout(function () { fxT = null; if (fx) fx.start(); }, 160);   // 票面進場 160ms 後升空，視線先落在名字
+      }
+      if (!over) tick = setInterval(function () { var c = countdown(b); cdEl.textContent = c.text; }, 30000);
+    }
+    function close() {
+      if (!dlg) return;
+      var d = dlg; dlg = null;
+      clearInterval(tick); tick = null; clearTimeout(fxT); fxT = null;
+      if (fx) { lastStats = fx.stats(); fx.stop(); fx = null; }
+      closeDlg(d, function () {
+        d.remove();
+        if (!flush()) { var nb = document.querySelector('.pager .next'); if (nb) nb.focus(); }
+      });
+    }
+    function reset() { clearTimeout(waitT); waitT = null; pending = false; afters = []; if (dlg) close(); }
+    return { schedule: schedule, busy: busy, then: then, close: close, reset: reset, stats: function () { return fx ? fx.stats() : lastStats; } };
+  })();
+
+  /**
+   * 底部截止提示列：學員資料頁之後每頁（完成頁除外）。每分鐘更新倒數；24 小時內轉桃紅並顯示到分鐘；逾期改為「已逾截止時間，仍可完成送出」。
+   * 頁面底部加上提示列高度的留白（--dl-h）與 scroll-padding；觸控裝置鍵盤開啟時收起；可收合為膠囊（收合狀態記於 localStorage）。
+   */
+  var DL = (function () {
+    var KEY = 'consult_dl_collapsed', bar = null, pill = null, tx, cd, pillT, timer = null, shown = false, collapsed = false;
+    try { collapsed = localStorage.getItem(KEY) === '1'; } catch (e) { collapsed = false; }
+    function build() {
+      tx = h('p', { class: 'dl-tx', id: 'dl-tx' });
+      cd = h('span', { class: 'dl-cd', id: 'dl-cd' });
+      var col = h('button', { type: 'button', class: 'icon-btn', id: 'dl-collapse', 'aria-label': '收合截止提示', 'aria-controls': 'dl-bar', 'aria-expanded': 'true', onclick: function () { setCollapsed(true); pill.focus(); } }, icon('i-chev'));
+      bar = h('div', { class: 'dl', id: 'dl-bar', role: 'region', 'aria-label': '截止時間提示', hidden: true }, h('div', { class: 'dl-in' }, h('span', { class: 'dl-dot', 'aria-hidden': 'true' }), h('div', { class: 'dl-main' }, tx, cd), col));
+      pillT = h('span', { id: 'dl-pill-t' });
+      pill = h('button', { type: 'button', class: 'dl-pill', id: 'dl-pill', 'aria-controls': 'dl-bar', 'aria-expanded': 'false', hidden: true, onclick: function () { setCollapsed(false); var c = document.getElementById('dl-collapse'); if (c) c.focus(); } },
+        h('span', { class: 'dl-dot', 'aria-hidden': 'true' }), pillT, h('span', { class: 'sr' }, '，展開截止提示'));
+      [bar, pill].forEach(function (el) { el.addEventListener('animationend', function () { el.classList.remove('enter'); }); document.body.appendChild(el); });
+      if (window.ResizeObserver) new ResizeObserver(measure).observe(bar);
+    }
+    function measure() { if (bar && !bar.hidden) document.documentElement.style.setProperty('--dl-h', bar.offsetHeight + 'px'); }
+    function setCollapsed(v) { collapsed = !!v; try { localStorage.setItem(KEY, collapsed ? '1' : '0'); } catch (e) { /* 僅本次有效 */ } shown = false; paint(); }
+    function on() { var v = UI.view; return !!batchNow() && v !== 'intro' && v !== 'student' && v !== 'done'; }
+    function paint() {
+      var vis = on();
+      if (!bar) { if (!vis) return; build(); }
+      if (!vis) {
+        bar.hidden = true; pill.hidden = true; shown = false;
+        document.body.classList.remove('has-dl'); document.documentElement.classList.remove('has-dl');
+        clearInterval(timer); timer = null;
+        return;
+      }
+      var b = batchNow(), c = countdown(b), nm = batchCallName(b);
+      tx.innerHTML = '';
+      if (c.over) add(tx, [h('b', null, nm + '學姊'), '，已逾截止時間，仍可完成送出']);
+      else add(tx, [h('b', null, nm + '學姊'), '，此份作業請於 ', h('span', { class: 'dt' }, deadlineText(b)), ' 前完成']);
+      cd.textContent = c.text; cd.hidden = c.over;
+      pillT.textContent = c.over ? '已逾截止時間' : c.text;
+      [bar, pill].forEach(function (el) { el.classList.toggle('is-urgent', c.urgent); el.classList.toggle('is-over', c.over); });
+      var wasBar = !bar.hidden, wasPill = !pill.hidden;
+      bar.hidden = collapsed; pill.hidden = !collapsed;
+      if (!shown) { if (!collapsed && !wasBar) bar.classList.add('enter'); if (collapsed && !wasPill) pill.classList.add('enter'); }
+      shown = true;
+      document.body.classList.toggle('has-dl', !collapsed); document.documentElement.classList.toggle('has-dl', !collapsed);
+      measure();
+      if (!timer) timer = setInterval(paint, 60000);
+    }
+    document.addEventListener('visibilitychange', function () { if (!document.hidden && bar) paint(); });
+    /* 觸控裝置：文字欄位聚焦（或可視區高度縮減）視為鍵盤開啟 */
+    var coarse = window.matchMedia ? window.matchMedia('(pointer: coarse)') : { matches: false };
+    function typing(el) { return !!el && (el.tagName === 'TEXTAREA' || el.isContentEditable || (el.tagName === 'INPUT' && !/^(checkbox|radio|file|button|submit|range|color)$/i.test(el.type))); }
+    document.addEventListener('focusin', function (e) { if (coarse.matches && typing(e.target)) document.body.classList.add('kb-open'); });
+    document.addEventListener('focusout', function () { setTimeout(function () { if (!typing(document.activeElement)) document.body.classList.remove('kb-open'); }, 80); });
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', function () {
+      var small = window.visualViewport.height < window.innerHeight * 0.78;
+      if (small && coarse.matches) document.body.classList.add('kb-open'); else if (!typing(document.activeElement)) document.body.classList.remove('kb-open');
+    });
+    return { paint: paint };
+  })();
+
+  /**
+   * LINE 通知綁定：bindCode({ key, lookupToken }) → 開啟 bindUrl（LINE 開啟 @52grace 聊天室並帶入「綁定 XXXXXX」）。
+   * 手機以 location.href 開啟；桌機開新分頁（被攔截時保留「開啟 LINE 聊天室」連結）並列出綁定碼供手機傳送（不另產生 QR）。
+   * lookupToken 逾 29 分鐘先重新查詢；ERR_AUTH 重新查詢一次；ERR_LINE_NOT_CONFIGURED 隱藏所有綁定入口。
+   */
+  var LINE_OFF = false;
+  function isMobileUA() { var u = navigator.userAgent || ''; return /Android|iPhone|iPad|iPod|Mobile/i.test(u) || (navigator.maxTouchPoints > 1 && /Macintosh/.test(u)); }
+  function freshLookup(r, q) {
+    if (r.hash && r.lookupToken && Date.now() - (r.lookupAt || 0) < LOOKUP_TTL) return Promise.resolve(r);
+    if (!q) return Promise.reject(Object.assign(new Error('查詢憑證已失效，請重新輸入學員帳號'), { code: 'ERR_AUTH' }));
+    return API.rosterLookup(q).then(function (x) {
+      if (!x || !x.found || !x.key || !x.lookupToken) throw Object.assign(new Error('學員名冊暫時無法核對'), { code: 'ERR_AUTH' });
+      r.hash = x.key; r.lookupToken = x.lookupToken; r.lookupAt = Date.now(); r.lineBound = !!x.lineBound;
+      if (x.batch) r.batch = x.batch;
+      if (r === UI.roster) save();
+      return r;
+    });
+  }
+  function lineBlock(src, idp) {
+    var r = src.get();
+    if (!r || !r.hash || LINE_OFF) return null;
+    var box = h('div', { class: 'lb', id: idp + '-lb' });
+    if (r.lineBound) { box.appendChild(h('span', { class: 'lb-ok', id: idp + '-lb-ok' }, icon('i-ok'), 'LINE 通知已綁定')); return box; }
+    var panel = h('div', { class: 'lb-panel', id: idp + '-lb-panel', hidden: true });
+    var btn = h('button', { type: 'button', class: 'btn btn-secondary icon-l', id: idp + '-lb-btn', onclick: function () { bindLine(src, btn, panel, idp); } }, icon('i-chat'), '綁定 LINE 通知');
+    add(box, [btn, panel]);
+    return box;
+  }
+  function bindLine(src, btn, panel, idp) {
+    var r = src.get(); if (!r) return;
+    var retried = false;
+    setLoading(btn, true, '取得綁定碼');
+    function req() { return freshLookup(r, src.q()).then(function (x) { return API.bindCode({ key: x.hash, lookupToken: x.lookupToken }); }); }
+    req().catch(function (e) {
+      if (e && e.code === 'ERR_AUTH' && !retried && src.q()) { retried = true; r.lookupToken = ''; return req(); }
+      throw e;
+    }).then(function (res) {
+      setLoading(btn, false); btn.hidden = true;
+      showCode(res, btn, panel, idp);
+      var mobile = isMobileUA();
+      if (mobile) { location.href = res.bindUrl; return; }
+      try { window.open(res.bindUrl, '_blank', 'noopener'); } catch (e) { /* 被攔截時使用面板內連結 */ }
+    }, function (e) {
+      setLoading(btn, false);
+      if (e && e.code === 'ERR_LINE_NOT_CONFIGURED') {
+        LINE_OFF = true;
+        Array.prototype.forEach.call(document.querySelectorAll('.lb'), function (x) { x.hidden = true; });
+        toast('LINE 通知綁定暫未開放', { icon: 'i-info', cls: 't-rose' });
+        return;
+      }
+      toast((e && e.message) || '綁定碼取得失敗，稍後再試', { icon: 'i-alert', cls: 't-warn' });
+    });
+  }
+  function showCode(res, btn, panel, idp) {
+    panel.hidden = false; panel.innerHTML = '';
+    var left = h('span', { class: 'lb-left', id: idp + '-lb-left' });
+    var mobile = isMobileUA();
+    add(panel, [
+      h('div', { class: 'lb-row' }, h('span', { class: 'lb-code', id: idp + '-lb-code' }, h('small', null, '綁定碼'), res.code), left),
+      h('p', { role: 'status' }, '聊天室開啟後按送出即完成綁定'),
+      mobile ? null : h('p', { class: 'sub' }, '手機 LINE 亦可加入 ' + S.LINE.oaId + ' 好友，傳送「' + (res.text || ('綁定 ' + res.code)) + '」完成綁定'),
+      h('a', { class: 'btn btn-secondary icon-l', id: idp + '-lb-open', href: res.bindUrl, target: '_blank', rel: 'noopener' }, icon('i-chat'), '開啟 LINE 聊天室')]);
+    var exp = Number(res.expiresAt) || (Date.now() + (res.minutes || S.LINE.bindCodeMinutes) * 60000);
+    var tm = setInterval(paintLeft, 1000);
+    function paintLeft() {
+      if (!document.contains(panel)) { clearInterval(tm); return; }
+      var s = Math.max(0, Math.round((exp - Date.now()) / 1000));
+      if (s > 0) { left.textContent = pad(Math.floor(s / 60)) + ':' + pad(s % 60) + ' 內有效'; return; }
+      clearInterval(tm);
+      left.textContent = '綁定碼已失效'; left.classList.add('is-gone');
+      var a = document.getElementById(idp + '-lb-open'); if (a) a.remove();
+      btn.hidden = false; btn.lastChild.textContent = '重新取得綁定碼';
+    }
+    paintLeft();
+  }
+  var ROSTER_SRC = { get: function () { return UI.roster && UI.roster.key === acctKey() ? UI.roster : null; }, q: function () { return String(A.student.account || '').trim(); } };
+
+  /**
+   * 即時填寫進度（progress_ping）：進入新區塊時送一次、停留中每 60 秒（頁面可見時）、頁面隱藏或關閉時補送一次。
+   * fetch keepalive、不等待回應、失敗靜默；資料中心每 15 秒最多收 1 次，短時間內連續換區塊時延後合併為最後一次。
+   */
+  var PING = (function () {
+    var last = 0, lastView = '', timer = null, tick = null;
+    var GAP = ((S.SESSION && S.SESSION.pingMinSec) || 15) * 1000 + 300, EVERY = ((S.SESSION && S.SESSION.pingEverySec) || 60) * 1000;
+    function payload() {
+      var acc = String(A.student.account || '').trim(), nm = String(A.student.name || '').trim();
+      var v = UI.view;
+      if (!acc || !nm || !UI.session || v === 'intro' || v === 'done') return null;   // session_start 完成後才回報
+      var l = steps(), i = stepIndex(v);
+      if (i < 0) return null;
+      return { account: acc, name: nm, role: roleId(), sectionId: v, sectionLabel: l[i].label, sectionIndex: i + 1, sectionTotal: l.length, percent: overallPct() };
+    }
+    function send(force) {
+      var p = payload(); if (!p) return;
+      var now = Date.now();
+      if (!force && now - last < GAP) { if (!timer) timer = setTimeout(function () { timer = null; send(); }, GAP - (now - last)); return; }
+      clearTimeout(timer); timer = null;
+      last = now; lastView = p.sectionId;
+      try { API.progressPing(p); } catch (e) { /* 靜默 */ }
+    }
+    function arm() {
+      clearInterval(tick);
+      tick = setInterval(function () { if (!document.hidden) send(); }, EVERY);
+    }
+    document.addEventListener('visibilitychange', function () { if (document.hidden) send(true); else arm(); });
+    window.addEventListener('pagehide', function () { send(true); });
+    arm();
+    return {
+      section: function () { if (UI.view !== lastView) send(); },
+      send: send
+    };
+  })();
+
   /** 身分頁頂部：續填時顯示「上次開始於 yyyy.mm.dd」 */
   function resumeNote() {
     var p = h('p', { class: 'resume-note', id: 'resume-note', hidden: true });
@@ -5649,6 +6718,20 @@ body.is-done .side{display:none}
     setLoading(document.getElementById('submit-btn'), true, '送出中');
     window.addEventListener('beforeunload', guard);
     var session = {};
+    // 收件確認分段：建立作業資料（0–4 秒）→ 確認收件（4–12 秒）→ 資料中心回應較慢，持續確認中（附已等待秒數）；輪詢時顯示「重新確認收件 第 N 次」
+    var finT0 = 0, finTimer = null, pollN = 0;
+    function finishText() {
+      var sec = Math.max(0, Math.round((Date.now() - finT0) / 1000));
+      if (pollN) return '重新確認收件 第 ' + pollN + ' 次（已等待 ' + sec + ' 秒）';
+      if (sec < 4) return '建立作業資料…';
+      if (sec < 12) return '確認收件…';
+      return '資料中心回應較慢，持續確認中（已等待 ' + sec + ' 秒）';
+    }
+    function finishStage(t0) {
+      finT0 = t0; status.textContent = finishText(); status.dataset.stage = pollN ? 'poll' : 'finish';
+      if (!finTimer) finTimer = setInterval(function () { status.textContent = finishText(); }, 1000);
+    }
+    function stopFinish() { clearInterval(finTimer); finTimer = null; pollN = 0; }
     function setOverall(p) { pct.textContent = p + '%'; fill.style.transform = 'scaleX(' + p / 100 + ')'; track.setAttribute('aria-valuenow', String(p)); }
     function run() {
       errBox.innerHTML = ''; acts.innerHTML = ''; setOverall(0);
@@ -5663,12 +6746,16 @@ body.is-done .side{display:none}
           }
           setOverall(e.percent || 0);
           status.textContent = '上傳中：第 ' + (e.fileIndex + 1) + '／' + e.fileCount + ' 個附件';
-        } else if (e.phase === 'finish') { setOverall(100); status.textContent = '整理作業內容…'; }
+        } else if (e.phase === 'finish') { setOverall(100); finishStage(e.startedAt || Date.now()); }
+        else if (e.phase === 'poll') { pollN = e.attempt; finishStage(finT0); }
+        else if (e.phase === 'done') stopFinish();
         else if (e.phase === 'begin') status.textContent = files.length ? '建立作業資料夾…' : '送出作業內容…';
       }, session).then(function (res) {
+        stopFinish();
         busy = false; window.removeEventListener('beforeunload', guard);
         closeDlg(d, function () { d.remove(); finish(res, files.length); });
       }, function (err) {
+        stopFinish();
         busy = false; window.removeEventListener('beforeunload', guard);
         var msg = (err && err.message) || '送出失敗';
         var hint = err && (err.code === 'ERR_NETWORK' || err.code === 'ERR_TEMPORARY' || err.code === 'ERR_BAD_RESPONSE' || err.code === 'ERR_CHUNK_ORDER') ? '網路連線不穩定，已填內容仍保留在此瀏覽器；重試時從已上傳的進度接續。'
@@ -5688,10 +6775,13 @@ body.is-done .side{display:none}
 
   var RESULT = null;
   function finish(res, n) {
-    RESULT = { receiptId: res.receiptId, submittedAt: normalizeTime(res.submittedAt), fileCount: res.fileCount != null ? res.fileCount : n, name: String(A.student.name || '').trim(), startedAt: res.startedAt || '', durationMin: res.durationMin != null ? res.durationMin : null };
+    var ro = ROSTER_SRC.get();
+    RESULT = { receiptId: res.receiptId, submittedAt: normalizeTime(res.submittedAt), fileCount: res.fileCount != null ? res.fileCount : n, name: String(A.student.name || '').trim(), startedAt: res.startedAt || '', durationMin: res.durationMin != null ? res.durationMin : null,
+      batchId: res.batchId || '', onTime: res.onTime === true ? true : res.onTime === false ? false : null, deadline: res.deadline || '',
+      bind: ro && ro.hash ? { hash: ro.hash, lookupToken: ro.lookupToken, lookupAt: ro.lookupAt, lineBound: ro.lineBound, q: String(A.student.account || '').trim() } : null };
     clearDraft();
     A = S.emptyAnswers(); FILES = {}; BLOBS = {}; UI.stage = {}; UI.flowMode = {}; UI.openCat = ''; UI.roster = null; UI.session = null; draftInfo = null; savedAt = null;
-    LK.key = ''; LK.p = null; LK.state = '';
+    LK.key = ''; LK.p = null; LK.state = ''; BW.reset();
     UI.view = 'done';
     try { history.replaceState(null, '', '#done'); } catch (e) { /* ignore */ }
     render();
@@ -5744,7 +6834,9 @@ body.is-done .side{display:none}
         h('div', { class: 'tk-head' }, h('img', { class: 'in-logo', src: LOGO, alt: 'G.R.A.C.E Academy', width: '520', height: '295' }), h('span', { class: 'tk-ed', 'aria-hidden': 'true' }, 'RECEIPT ARCHIVE')),
         h('span', { class: 'tag' }, S.META.tag),
         h('h1', { id: 'done-h', tabindex: '-1' }, S.META.title, h('span', { class: 'sep', 'aria-hidden': 'true' }, '｜'), h('span', { class: 'sr' }, '，'), h('span', { class: 'ok' }, '已收件')),
-        h('div', { class: 'tk-who' }, h('p', { id: 'done-name' }, r.name || '', h('small', null, '學姊')), stamp),
+        h('div', { class: 'tk-who' }, h('p', { id: 'done-name' }, r.name || '', h('small', null, '學姊')),
+          h('span', { class: 'stamps' }, stamp, r.onTime === true ? h('span', { class: 'stamp2', id: 'done-ontime', role: 'img', 'aria-label': '準時完成印章' }, h('span', { 'aria-hidden': 'true' }, h('b', null, '準時', h('br'), '完成'))) : null)),
+        r.onTime === false ? h('p', { class: 'tk-late', id: 'done-late' }, icon('i-clock'), '逾截止時間完成') : null,
         kv),
       h('div', { class: 'tk-stub', 'aria-hidden': 'true' },
         h('div', { class: 'tk-foot' },
@@ -5757,10 +6849,12 @@ body.is-done .side{display:none}
     var saveBtn = h('button', { type: 'button', class: 'btn btn-primary icon-l', id: 'save-ticket', onclick: function () { saveTicket(saveBtn, r); } }, icon('i-download'), '儲存票券');
     var copyBtn = h('button', { type: 'button', class: 'btn btn-secondary icon-l', id: 'copy-rid', onclick: function () { copyText(r.receiptId, '回執編號已複製'); } }, icon('i-copy'), '複製回執編號');
     setTimeout(function () { doneRitual(tk); }, 0);
+    var doneSrc = { get: function () { return r.bind || null; }, q: function () { return r.bind ? r.bind.q : ''; } };
     return h('div', { class: 'done2' },
       h('p', { class: 'done-k' }, icon('i-ok'), '作業已送出・回執已產生'),
       tk,
       h('div', { class: 'done-acts' }, saveBtn, copyBtn),
+      lineBlock(doneSrc, 'done'),
       h('div', { class: 'note n-info' }, icon('i-info'), h('div', null, h('b', null, '回執保存'), h('p', null, '回執編號為後續諮詢與補件的對應依據；票券可儲存為圖片保存。'))),
       foot());
   }
@@ -5768,10 +6862,21 @@ body.is-done .side{display:none}
     if (!document.contains(tk)) return;
     var dots = tk.querySelectorAll('.pt'), stamp = tk.querySelector('.stamp');
     var light = function (i) { Array.prototype.forEach.call(tk.querySelectorAll('.tk-pts'), function (g) { var p = g.querySelectorAll('.pt')[i]; if (p) p.classList.add('on'); }); };
+    var s2 = tk.querySelector('.stamp2');
     if (reduceMotion.matches || !stamp.animate) {
       [0, 1, 2].forEach(light);
       setTimeout(function () { SND.play('stamp'); }, 200);
       return;
+    }
+    // 準時完成章：已收件章壓下 300ms 後錯位補蓋（1.08→1、220ms），掃光順延 340ms，同一時間只有一個焦點
+    if (s2) {
+      s2.style.opacity = '0';
+      setTimeout(function () {
+        if (!document.contains(tk)) return;
+        s2.style.opacity = '';
+        s2.animate([{ opacity: 0, scale: '1.08' }, { opacity: 0.92, scale: '1', offset: 0.6 }, { opacity: 0.92, scale: '1' }], { duration: 220, easing: 'cubic-bezier(0.2,0,0,1)', fill: 'backwards' });
+        setTimeout(function () { SND.play('stamp'); }, 60);
+      }, DONE_RITUAL.stampAt + 300);
     }
     stamp.style.opacity = '0';
     DONE_RITUAL.pts.forEach(function (ms, i) { setTimeout(function () { light(i); }, ms); });
@@ -5790,7 +6895,7 @@ body.is-done .side{display:none}
         { opacity: 1, offset: 0.18 }, { opacity: 1, offset: 0.72 },
         { transform: 'translateX(' + Math.round(w + 96) + 'px) skewX(-14deg)', opacity: 0 }
       ], { duration: DONE_RITUAL.sweep, easing: 'cubic-bezier(.22,.61,.36,1)' });   // 結束後回到隱藏位置（不保留於票面右側外）
-    }, DONE_RITUAL.sweepAt);
+    }, DONE_RITUAL.sweepAt + (s2 ? 340 : 0));
     void dots;
   }
 
@@ -5904,6 +7009,17 @@ body.is-done .side{display:none}
       }
       c.textBaseline = 'alphabetic'; spaced(c, 2); c.fillText(day, 0, 38); spaced(c, 0);
       c.restore(); c.textAlign = 'left';
+      // 準時完成章（2.5.0）：香檳金雙圈，與已收件章錯位
+      if (r.onTime === true) {
+        c.save(); c.translate(SX - 214, Y + 318); c.rotate(9 * Math.PI / 180); c.globalAlpha = 0.92;
+        c.strokeStyle = '#E8B85C'; c.fillStyle = '#E8B85C'; c.textAlign = 'center';
+        c.lineWidth = 2.4; c.beginPath(); c.arc(0, 0, 40, 0, Math.PI * 2); c.stroke();
+        c.lineWidth = 1; c.beginPath(); c.arc(0, 0, 35, 0, Math.PI * 2); c.stroke();
+        c.font = '700 17px ' + FONT_SERIF; c.fillText('準時', 0, -4); c.fillText('完成', 0, 16);
+        c.restore(); c.textAlign = 'left';
+      } else if (r.onTime === false) {
+        c.font = '500 14px ' + FONT_SANS; c.fillStyle = '#E8B85C'; c.fillText('逾截止時間完成', L, Y + 336);
+      }
       // 票根
       var SL = SX + 36;
       var stub = [['回執編號', r.receiptId, '#FF77B2', 22], ['送出日期', day, '#F6EFEA', 20]];
@@ -5975,7 +7091,7 @@ body.is-done .side{display:none}
       if (UI.view !== 'intro' && UI.view !== 'student' && UI.view !== 'role') render();
     }
   });
-  window.CONSULT_FRONT = { state: function () { return { answers: A, files: FILES, view: UI.view, result: RESULT, ui: UI }; }, go: go, sound: SND.state, ticketFileName: ticketFileName };
+  window.CONSULT_FRONT = { state: function () { return { answers: A, files: FILES, view: UI.view, result: RESULT, ui: UI }; }, go: go, sound: SND.state, ticketFileName: ticketFileName, fx: BW.stats, countdown: countdown };
 })();
 
 </script>

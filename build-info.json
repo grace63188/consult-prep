@@ -1,7 +1,7 @@
 {
   "mode": "gas",
   "gas": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec",
-  "build": "2026.10.31_1409",
-  "schema": "2.3.0",
-  "bookmarkletBytes": 23193
+  "build": "2026.10.31_1738",
+  "schema": "2.5.0",
+  "bookmarkletBytes": 23004
 }
