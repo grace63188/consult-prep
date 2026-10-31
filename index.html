@@ -1364,7 +1364,7 @@ body.has-dl .toast-host{bottom:calc(var(--dl-h,64px) + var(--sp-3) + env(safe-ar
   } catch (e) { /* 儲存不可用時不導向，避免循環 */ }
 })();
 </script>
-<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.10.31_1738"};</script>
+<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.10.31_2113"};</script>
 <script>
 /*
  * G.R.A.C.E Academy《諮詢前置作業》作業欄位設定檔
@@ -1392,7 +1392,7 @@ body.has-dl .toast-host{bottom:calc(var(--dl-h,64px) + var(--sp-3) + env(safe-ar
     title: '諮詢前置作業',
     tag: '優化作業',
     org: 'G.R.A.C.E Academy',
-    version: '2.5.0',
+    version: '2.6.0',
     timezone: 'Asia/Taipei',
     dateFormat: 'yyyy.mm.dd'
   };
@@ -1413,6 +1413,8 @@ body.has-dl .toast-host{bottom:calc(var(--dl-h,64px) + var(--sp-3) + env(safe-ar
   var NOTIFY = {
     maxTemplates: 10,
     maxNameLength: 40,
+    maxRecipients: 200,            // 發送通知（notify_preview／notify_push）一次上限
+    maxLogs: 50,                   // 發送紀錄保留筆數（notify_log）
     maxBodyLength: 5000,           // 與 LINE 單則文字上限相同；渲染後超過 5000 字的訊息於推播時個別失敗
     vars: ['稱呼', '截止時間', '作業連結', '綁定連結'],
     workUrl: 'https://grace63188.github.io/consult-prep/?openExternalBrowser=1',
@@ -1479,10 +1481,40 @@ body.has-dl .toast-host{bottom:calc(var(--dl-h,64px) + var(--sp-3) + env(safe-ar
     tokenCacheMinutes: 14,         // stateless channel access token 有效 15 分鐘，快取 14 分鐘
     bindUrlBase: 'https://line.me/R/oaMessage/@52grace/?',
     bindDoneText: '{稱呼}學姊，LINE 通知綁定完成。',
-    bindFailText: '綁定碼已失效，請回到作業頁重新取得'
+    bindFailText: '綁定碼已失效，請回到作業頁重新取得',
+    chatBase: 'https://chat.line.biz/',            // LINE 官方帳號管理的聊天（後台手動綁定與「開啟聊天室」）
+    chatHosts: ['chat.line.biz', 'manager.line.biz'],
+    userIdRe: /^U[0-9a-f]{32}$/
   };
 
   /** 常見複姓（稱呼去姓時優先比對） */
+  /**
+   * 智慧輸入（2.5.0 後台批次成員）：roster_match 以名冊本名比對任意貼上文字。
+   * 比對規則：全名出現，或去姓後的名字（≥ 2 字）出現；去姓名字為停用詞時不比對（避免常見詞誤判）。
+   */
+  var ROSTER_MATCH = {
+    maxTextLength: 20000,
+    minGivenLength: 2,
+    maxMatchesPerGroup: 8,
+    maxGroups: 200,
+    maxMissing: 30,
+    debounceMs: 200,
+    /** 常見非人名詞彙：去姓名字或疑似名字片段與之相同時不視為人名 */
+    stopwords: [
+      '學姊', '學姐', '學長', '學妹', '學弟', '同學', '老師', '校長', '助教', '助理', '小姐', '先生', '大家', '各位', '所有', '每位', '親愛', '親愛的',
+      '時間', '截止', '截止時間', '期限', '日期', '今天', '明天', '後天', '昨天', '本週', '下週', '上週', '中午', '早上', '上午', '下午', '晚上', '傍晚', '凌晨', '週末',
+      '作業', '前置', '前置作業', '諮詢', '一對一', '優先', '批次', '關注', '關注名單', '通知', '連結', '網址', '填寫', '送出', '完成', '繳交', '準時', '逾期', '進度', '成果', '問題', '建議',
+      '具體', '實際', '目前', '近期', '後續', '希望', '了解', '根據', '提供', '執行', '安排', '時段', '越早', '盡快', '提醒', '公告', '訊息', '名單', '以下', '如下', '上述',
+      '課程', '上課', '下課', '學院', '教室', '報名', '資料', '內容', '檔案', '照片', '影片', '流程', '客戶', '工作', '團隊', '品牌', '產品', '服務', '活動', '直播',
+      '謝謝', '感謝', '收到', '好的', '麻煩', '辛苦', '辛苦了', '加油', '一起', '恭喜', '歡迎', '再見', '晚安', '早安', '午安', '抱歉', '不好意思', '沒問題', '了解了',
+      '平安', '快樂', '美好', '美麗', '如意', '吉祥', '幸福', '健康', '順利', '開心', '溫暖', '光明', '文化', '中華', '台灣', '臺灣', '台北', '臺北', '新竹', '台中', '臺中', '高雄',
+      '官方', '帳號', '群組', '記事本', '相簿', '已讀', '回覆', '貼圖', '表情', '圖片', '語音', '來電', '視訊', '收回', '標註', '置頂', '公告欄'
+    ],
+    honorifics: ['學姊', '學姐', '同學', '老師', '小姐', '先生', '姊姊', '姐姐', '姊', '姐'],
+    /** 疑似名字片段含下列字時不視為名字（虛詞、代詞、禮貌用語） */
+    nonNameChars: '的了嗎呢吧啊喔哦唷囉啦耶您們請謝要會能到這那個是在有與及或就都也還很好被讓把給從對於為以及已將並但而且所其之此每各位些'
+  };
+
   var COMPOUND_SURNAMES = ['歐陽', '司馬', '上官', '諸葛', '東方', '皇甫', '尉遲', '公孫', '慕容', '長孫', '司徒', '夏侯', '軒轅', '令狐', '宇文', '單于', '端木', '司空', '西門', '南宮', '鮮于', '呼延', '百里', '東郭', '范姜', '張簡', '張廖'];
 
   /** 學員名冊（Script Properties 分片儲存，不建立雲端檔案）與前台公開查詢的限制 */
@@ -2929,6 +2961,261 @@ body.has-dl .toast-host{bottom:calc(var(--dl-h,64px) + var(--sp-3) + env(safe-ar
     return n;
   }
 
+  /**
+   * 去姓後的名字（供文字比對）：複姓優先；其餘去首字；含英文字母或結果不足 2 字回 ''。
+   * 與 callName 不同：兩字名回 ''（單字不比對），四字以上非複姓去首字（陳大文豪 → 大文豪）。
+   */
+  function givenName(fullName) {
+    var n = String(fullName == null ? '' : fullName).replace(/\s+/g, '');
+    if (!n || /[A-Za-z]/.test(n)) return '';
+    var g = '';
+    for (var i = 0; i < COMPOUND_SURNAMES.length; i++) {
+      if (n.indexOf(COMPOUND_SURNAMES[i]) === 0 && n.length > COMPOUND_SURNAMES[i].length) { g = n.slice(COMPOUND_SURNAMES[i].length); break; }
+    }
+    if (!g) g = n.slice(1);
+    return g.length >= ROSTER_MATCH.minGivenLength ? g : '';
+  }
+
+  /** 全形英數與標點轉半形、全形空白轉半形（比對與截止時間解析共用；長度不變，位置一一對應） */
+  function halfWidth(s) {
+    return String(s == null ? '' : s).replace(/[！-～]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); }).replace(/　/g, ' ');
+  }
+
+  /** 名冊搜尋比對：本名或稱呼部分符合（不分大小寫、去空白）；q 需已正規化（去空白、小寫） */
+  function rosterNameHit(name, q) {
+    if (!q) return false;
+    var n = halfWidth(name).replace(/\s+/g, '').toLowerCase();
+    if (n.indexOf(q) >= 0) return true;
+    var c = callName(name).replace(/\s+/g, '').toLowerCase();
+    return !!c && c.indexOf(q) >= 0;
+  }
+
+  function isStopword(t) { return ROSTER_MATCH.stopwords.indexOf(t) >= 0; }
+  function stripHonorific(t) {
+    for (var i = 0; i < ROSTER_MATCH.honorifics.length; i++) {
+      var h = ROSTER_MATCH.honorifics[i];
+      if (t.length > h.length + 1 && t.slice(-h.length) === h) return t.slice(0, -h.length);
+    }
+    return t;
+  }
+  function looksLikeName(t) {
+    if (!/^[㐀-鿿]{2,4}$/.test(t) || isStopword(t)) return false;
+    for (var i = 0; i < t.length; i++) if (ROSTER_MATCH.nonNameChars.indexOf(t.charAt(i)) >= 0) return false;
+    return true;
+  }
+
+  /**
+   * 疑似名字片段（未找到區使用）：LINE 標註「@名字」、名單分隔片段（2–4 個中文字）、「名字＋學姊／同學…」。
+   * 回傳 [{ token, s, e }]（位置以 halfWidth 後文字計）。
+   */
+  function nameCandidates(text) {
+    var t = halfWidth(text), out = [], seen = {};
+    function push(tok, s) {
+      tok = stripHonorific(tok);
+      if (!looksLikeName(tok) || seen[tok]) return;
+      seen[tok] = 1; out.push({ token: tok, s: s, e: s + tok.length });
+    }
+    var m, re = /@([^\s@,，、。:;!?()「」『』\[\]<>~]{2,12})/g;
+    while ((m = re.exec(t))) push(m[1], m.index + 1);
+    var seg = /[^\n\r、,，;；|｜\/\t ]+/g;
+    while ((m = seg.exec(t))) {
+      var raw = m[0], s = m.index;
+      var lead = /^(?:\d{1,3}[.)、．]|[-•・●*‧①-⑳]+)/.exec(raw);
+      if (lead) { raw = raw.slice(lead[0].length); s += lead[0].length; }
+      raw = raw.replace(/[。.!?！？~～♡♥:：]+$/, '');
+      if (raw.charAt(0) === '@') continue;
+      push(raw, s);
+    }
+    var hon = /([㐀-鿿]{2,3})(?=學姊|學姐|同學)/g;
+    while ((m = hon.exec(t))) {
+      var cand = m[1];
+      if (cand.length === 3 && !looksLikeName(cand)) push(cand.slice(1), m.index + 1); else push(cand, m.index);
+    }
+    return out;
+  }
+
+  /**
+   * 以名冊比對任意文字（LINE 群組訊息、名單、公告全文）。
+   * entries: [{ key, name, masked?, … }]（其餘欄位原樣帶回）。
+   * 規則：全名出現，或去姓後名字（≥ 2 字、非停用詞）出現；去姓名字出現在已比對全名內者不重複計；
+   *       去姓名字群組的候選含「已以全名唯一確定」的學姊時，視為同一人而略過。
+   * 回傳 { groups:[{ token, matches:[entry…] }] }，依文字中首次出現位置排序；未找到的疑似名字以 matches:[] 列在最後。
+   */
+  function matchRosterText(text, entries) {
+    var C = ROSTER_MATCH;
+    var t = halfWidth(text).slice(0, C.maxTextLength);
+    var tl = t.toLowerCase();
+    // 文字中所有長度 2–8 的子字串（中文名查表用，避免逐名 indexOf）
+    var subs = {};
+    for (var i = 0; i < t.length; i++) for (var L = 2; L <= 8 && i + L <= t.length; L++) subs[t.substr(i, L)] = 1;
+    // 以「比對字串」為單位（同名或同去姓名字的多位學姊共用同一字串，位置只找一次），每個字串保存出現位置與對應學姊；
+    // 效能：文字 20000 字、名冊 5000 位、名字重複出現數千次時仍為線性掃描，不做逐筆兩兩比較。
+    var tokens = {}, tokenOrder = [], posCache = {};
+    function positions(hay, needle) {
+      var c = posCache[needle];
+      if (c) return c;
+      c = [];
+      var p = hay.indexOf(needle);
+      while (p >= 0) { c.push(p); p = hay.indexOf(needle, p + 1); }
+      posCache[needle] = c;
+      return c;
+    }
+    function addToken(tok, pos, en, full) {
+      var g = tokens[tok];
+      if (!g) { g = tokens[tok] = { token: tok, full: false, pos: pos, keys: {}, matches: [] }; tokenOrder.push(tok); }
+      if (full) g.full = true;
+      if (en && !g.keys[en.key]) { g.keys[en.key] = 1; g.matches.push(en); }
+    }
+    (entries || []).forEach(function (en) {
+      var nm = halfWidth(en && en.name).replace(/\s+/g, ' ').trim();
+      if (!nm) return;
+      if (/[A-Za-z]/.test(nm)) {
+        var low = nm.toLowerCase();
+        if (low.length < 2) return;
+        var byText = {};
+        positions(tl, low).forEach(function (p) {
+          var a = tl.charAt(p - 1), b = tl.charAt(p + low.length);
+          if (/[a-z0-9]/.test(a) || /[a-z0-9]/.test(b)) return;
+          var tok = t.substr(p, low.length);
+          (byText[tok] = byText[tok] || []).push(p);
+        });
+        Object.keys(byText).forEach(function (tok) { addToken(tok, byText[tok], en, true); });
+        return;
+      }
+      var n = nm.replace(/\s+/g, '');
+      if (n.length >= 2 && (n.length > 8 || subs[n])) { var pn = positions(t, n); if (pn.length) addToken(n, pn, en, true); }
+      var g = givenName(n);
+      if (g && !isStopword(g) && (g.length > 8 || subs[g])) { var pg = positions(t, g); if (pg.length) addToken(g, pg, en, false); }
+    });
+    // 區間：每個字串的每個出現位置一筆；依起點遞增、長度遞減、全名優先排序後單趟掃描：
+    //   最長比對：被較長全名涵蓋的較短全名（王美 ⊂ 王美好）不列入；去姓名字出現在已比對全名內者不列入。
+    var iv = [];
+    tokenOrder.forEach(function (k) { var g = tokens[k]; g.pos.forEach(function (p) { iv.push({ s: p, e: p + k.length, token: k, full: g.full }); }); });
+    iv.sort(function (a, b) { return a.s - b.s || b.e - a.e || (a.full === b.full ? 0 : a.full ? -1 : 1); });
+    var occ = [], maxFullEnd = -1;
+    iv.forEach(function (o) {
+      if (maxFullEnd >= o.e) return;
+      if (o.full) maxFullEnd = o.e;
+      occ.push(o);
+    });
+    var groups = {}, order = [];
+    occ.forEach(function (o) {
+      var k = o.token;
+      if (groups[k]) return;
+      var g = tokens[k];
+      groups[k] = { token: k, s: o.s, full: g.full, matches: g.matches.slice() };
+      order.push(k);
+    });
+    var sure = {};
+    order.forEach(function (k) { var g = groups[k]; if (g.full && g.matches.length === 1) sure[g.matches[0].key] = 1; });
+    var out = [];
+    order.forEach(function (k) {
+      var g = groups[k];
+      if (!g.full && g.matches.some(function (m) { return sure[m.key]; })) return;
+      g.matches.sort(function (a, b) { return a.name < b.name ? -1 : a.name > b.name ? 1 : (String(a.masked) < String(b.masked) ? -1 : 1); });
+      out.push({ token: g.token, matches: g.matches.slice(0, C.maxMatchesPerGroup), total: g.matches.length });
+    });
+    // 未找到：疑似名字片段不與任何比對位置重疊、也不與已比對字串互相包含
+    var tokens = out.map(function (g) { return g.token; });
+    var miss = nameCandidates(t).filter(function (c) {
+      if (occ.some(function (o) { return c.s < o.e && c.e > o.s; })) return false;
+      return !tokens.some(function (k) { return k.indexOf(c.token) >= 0 || c.token.indexOf(k) >= 0; });
+    }).slice(0, C.maxMissing);
+    return { groups: out.slice(0, C.maxGroups).concat(miss.map(function (c) { return { token: c.token, matches: [], total: 0 }; })) };
+  }
+
+  /**
+   * 從任意文字找出截止時間 → { ms, iso, text, hasTime } 或 null。
+   * 支援：2026.11.05（四）12:00、2026/11/5 12:00、2026-11-05 12:00、2026年11月5日、11月5日中午12點、11/5 下午3點半、截止時間：…。
+   * 無年份時取 nowMs 所在年（早於 nowMs 60 天以上改為隔年）；無時間時為 23:59。
+   * 多個日期時以「截止／期限／繳交」字樣在前、或「前」在後、含時間、含年份者優先。
+   */
+  function findDeadline(text, nowMs) {
+    var t = halfWidth(text);
+    if (!t || !/\d/.test(t)) return null;
+    nowMs = nowMs == null ? Date.now() : nowMs;
+    var re = /(?:(\d{4})\s*[年.\/-]\s*)?(\d{1,2})\s*([月.\/-])\s*(\d{1,2})(?!\d)\s*[日號号]?(?:\s*\(\s*(?:週|周|星期|禮拜)?\s*[一二三四五六日天]\s*\)|\s*(?:週|周|星期|禮拜)\s*[一二三四五六日天])?(?:\s*(上午|早上|中午|下午|晚上|傍晚|凌晨|AM|PM|am|pm)?\s*(?:(\d{1,2})(?!\d)\s*(?::\s*(\d{2})|[點点時]\s*(?:(\d{1,2})\s*分|(半)|整)?)|(中午|午夜)))?/g;
+    var m, best = null, nowY = new Date(nowMs + 8 * 3600000).getUTCFullYear();
+    while ((m = re.exec(t))) {
+      if (!m[0]) { re.lastIndex++; continue; }
+      var start = m.index;
+      if (start > 0 && /\d/.test(t.charAt(start - 1))) continue;
+      var hasYear = !!m[1];
+      var mo = Number(m[2]), d = Number(m[4]), sep = m[3];
+      var hasTime = m[6] != null || !!m[10];
+      var before = t.slice(Math.max(0, start - 16), start), after = t.slice(m.index + m[0].length, m.index + m[0].length + 6);
+      var label = /截止|期限|繳交|deadline|due/i.test(before) || /^\s*(?:前|之前|以前|截止)/.test(after);
+      if (!hasYear && sep !== '月' && !label && !hasTime) continue;   // 11/5、2.5 這類需有字樣或時間佐證
+      if (mo < 1 || mo > 12 || d < 1 || d > 31) continue;
+      var h = 23, mi = 59;
+      if (m[10]) { h = m[10] === '中午' ? 12 : 23; mi = m[10] === '中午' ? 0 : 59; }
+      else if (m[6] != null) {
+        h = Number(m[6]); mi = m[7] != null ? Number(m[7]) : m[8] != null ? Number(m[8]) : m[9] ? 30 : 0;
+        var pd = m[5] || '';
+        if (/下午|晚上|傍晚|pm/i.test(pd) && h < 12) h += 12;
+        else if (pd === '中午' && h < 6) h += 12;
+        else if (/上午|早上|凌晨|am/i.test(pd) && h === 12) h = 0;
+        if (h === 24 && mi === 0) { h = 23; mi = 59; }
+        if (h > 23 || mi > 59) continue;
+      }
+      var y = hasYear ? Number(m[1]) : nowY;
+      var ms = Date.UTC(y, mo - 1, d, h - 8, mi);
+      var chk = new Date(ms + 8 * 3600000);
+      if (chk.getUTCMonth() !== mo - 1 || chk.getUTCDate() !== d) continue;
+      if (!hasYear && ms < nowMs - 60 * 86400000) ms = Date.UTC(y + 1, mo - 1, d, h - 8, mi);
+      var score = (label ? 4 : 0) + (hasTime ? 2 : 0) + (hasYear ? 1 : 0);
+      if (!best || score > best.score) best = { ms: ms, score: score, text: t.slice(start, m.index + m[0].length).trim(), hasTime: hasTime };
+    }
+    return best ? { ms: best.ms, iso: deadlineIso(best.ms), text: best.text, hasTime: best.hasTime } : null;
+  }
+
+  /**
+   * 解析 LINE 官方帳號聊天室網址或 userId → { userId, accountId } 或 null。
+   * 支援：https://chat.line.biz/<accountId>/chat/U…（含查詢字串、#、結尾斜線、URL 編碼）、
+   *       https://manager.line.biz/account/<accountId>/chat/U…、chat.line.biz/… 省略協定、單獨的 userId（U＋32 碼小寫十六進位）。
+   * 其他網域、userId 格式不符（長度、大寫、非十六進位）一律回 null。
+   */
+  function parseLineChat(input) {
+    var s = String(input == null ? '' : input).trim();
+    if (!s) return null;
+    try { s = decodeURIComponent(s); } catch (e) { /* 保留原文 */ }
+    s = s.replace(/[\s​]+/g, '');
+    if (LINE.userIdRe.test(s)) return { userId: s, accountId: '' };
+    var m = /^(?:https?:\/\/)?([a-z0-9.-]+)(\/[^?#]*)?/i.exec(s);
+    if (!m || LINE.chatHosts.indexOf(m[1].toLowerCase()) < 0) return null;
+    var path = m[2] || '';
+    var c = /^\/(?:account\/)?([A-Za-z0-9@._-]{2,64})\/chat\/([^\/]+)\/?$/.exec(path);
+    if (!c || !LINE.userIdRe.test(c[2])) return null;
+    return { userId: c[2], accountId: c[1] };
+  }
+  /**
+   * LINE 對應分類（書籤回傳的個人聊天候選 → 後台三區）：
+   *  auto：恰好 1 位候選、為好友，且管理者設定名稱（nickname）或好友自取名稱（name）包含完整本名（不分大小寫、去空白、全形轉半形）
+   *  pick：其餘有好友候選者（多筆，或 1 筆但名稱不含本名），候選只列好友
+   *  none：無候選或皆非好友
+   *  對話帳號比對（書籤讀取候選對話，以對話中的官網帳號雜湊與名冊鍵比對）：候選帶 verified:true 者恰好一位（且為好友）時
+   *  由 pick 提升為 auto，via 為 'chat'；零位或多位相符時維持 pick（各候選保留 verified 標示）
+   * → { kind, pick:候選|null, options:[好友候選…], via:'name'|'chat'|'' }
+   */
+  function classifyLineMap(fullName, candidates) {
+    var norm = function (x) { return halfWidth(x).replace(/\s+/g, '').toLowerCase(); };
+    var n = norm(fullName);
+    var list = (Array.isArray(candidates) ? candidates : []).filter(function (c) { return c && LINE.userIdRe.test(String(c.userId || '')); });
+    var friends = list.filter(function (c) { return c.friend === true; });
+    if (!friends.length) return { kind: 'none', pick: null, options: [], via: '' };
+    var has = function (c) { return !!n && (norm(c.nickname).indexOf(n) >= 0 || norm(c.name).indexOf(n) >= 0); };
+    if (list.length === 1 && has(friends[0])) return { kind: 'auto', pick: friends[0], options: friends, via: 'name' };
+    var ver = friends.filter(function (c) { return c.verified === true; });
+    if (ver.length === 1) return { kind: 'auto', pick: ver[0], options: friends, via: 'chat' };
+    return { kind: 'pick', pick: null, options: friends, via: '' };
+  }
+
+  /** 官方帳號聊天室網址（accountId 未知時回 ''） */
+  function lineChatUrl(accountId, userId) {
+    if (!accountId || !LINE.userIdRe.test(String(userId || ''))) return '';
+    return LINE.chatBase + encodeURIComponent(accountId).replace(/%40/g, '@') + '/chat/' + userId;
+  }
+
   /** 遮罩帳號：Email 保留前兩碼與網域（ab***@gmail.com）；非 Email 保留前兩碼（ab***）；輸入先經 rosterKey 正規化 */
   function maskKey(s) {
     var k = rosterKey(s);
@@ -2952,7 +3239,10 @@ body.has-dl .toast-host{bottom:calc(var(--dl-h,64px) + var(--sp-3) + env(safe-ar
       var ms = Date.parse(s);
       return isFinite(ms) ? ms : null;
     }
-    return timeToMs(s);
+    var exact = timeToMs(s);
+    if (exact != null) return exact;
+    var f = findDeadline(s);                 // 寬鬆格式：2026/11/5 12:00、2026.11.05（四）12:00、11月5日中午12點…
+    return f ? f.ms : null;
   }
 
   /** 毫秒 → ISO（固定 +08:00）：yyyy-mm-ddTHH:mm:00+08:00（秒數歸零） */
@@ -2982,7 +3272,7 @@ body.has-dl .toast-host{bottom:calc(var(--dl-h,64px) + var(--sp-3) + env(safe-ar
 
   /**
    * 通知範本渲染：vars = { 稱呼, 截止時間, 作業連結, 綁定連結 }。
-   * 含 {綁定連結} 的行於值為空時整行移除；三個以上連續換行收斂為兩個；未知變數保留原文。
+   * 含 {綁定連結} 的行於值為空時整行移除；{截止時間} 值為空字串時該行移除（發送通知無批次且未指定）；三個以上連續換行收斂為兩個；未知變數保留原文。
    */
   function renderTemplate(body, vars) {
     vars = vars || {};
@@ -2990,6 +3280,7 @@ body.has-dl .toast-host{bottom:calc(var(--dl-h,64px) + var(--sp-3) + env(safe-ar
     var out = [];
     lines.forEach(function (line) {
       if (line.indexOf('{綁定連結}') >= 0 && !vars['綁定連結']) return;
+      if (line.indexOf('{截止時間}') >= 0 && vars['截止時間'] === '') return;   // 發送通知：無批次且未指定截止時間時整行移除
       out.push(line.replace(/\{([^{}\n]{1,20})\}/g, function (m, name) {
         return Object.prototype.hasOwnProperty.call(vars, name) && vars[name] != null ? String(vars[name]) : m;
       }));
@@ -3035,13 +3326,13 @@ body.has-dl .toast-host{bottom:calc(var(--dl-h,64px) + var(--sp-3) + env(safe-ar
    * 成員鍵為名冊鍵雜湊（16 碼十六進位）；稱呼未填時由本名去姓；同鍵只保留第一筆。
    */
   function normalizeBatch(input) {
-    if (!input || typeof input !== 'object') return { ok: false, message: '批次格式錯誤' };
+    if (!input || typeof input !== 'object') return { ok: false, message: '名單格式錯誤' };
     var clean = function (v, max) { return String(v == null ? '' : v).replace(/[\u0000-\u001f\u007f]/g, '').replace(/\s+/g, ' ').trim().slice(0, max); };
     var id = String(input.id == null ? '' : input.id).trim();
-    if (id && !BATCH.idRe.test(id)) return { ok: false, message: '批次編號格式不正確' };
+    if (id && !BATCH.idRe.test(id)) return { ok: false, message: '名單編號格式不正確' };
     var title = clean(input.title, BATCH.maxTitleLength + 1);
-    if (!title) return { ok: false, message: '批次名稱為必填' };
-    if (title.length > BATCH.maxTitleLength) return { ok: false, message: '批次名稱不可超過 ' + BATCH.maxTitleLength + ' 字' };
+    if (!title) return { ok: false, message: '名單名稱為必填' };
+    if (title.length > BATCH.maxTitleLength) return { ok: false, message: '名單名稱不可超過 ' + BATCH.maxTitleLength + ' 字' };
     var ms = parseDeadline(input.deadline);
     if (ms == null) return { ok: false, message: '截止時間格式不正確' };
     var hint = clean(input.hint, BATCH.maxHintLength + 1);
@@ -3269,6 +3560,16 @@ body.has-dl .toast-host{bottom:calc(var(--dl-h,64px) + var(--sp-3) + env(safe-ar
     NOTIFY: NOTIFY,
     LINE: LINE,
     COMPOUND_SURNAMES: COMPOUND_SURNAMES,
+    ROSTER_MATCH: ROSTER_MATCH,
+    givenName: givenName,
+    halfWidth: halfWidth,
+    rosterNameHit: rosterNameHit,
+    nameCandidates: nameCandidates,
+    matchRosterText: matchRosterText,
+    findDeadline: findDeadline,
+    parseLineChat: parseLineChat,
+    classifyLineMap: classifyLineMap,
+    lineChatUrl: lineChatUrl,
     callName: callName,
     maskKey: maskKey,
     parseDeadline: parseDeadline,
@@ -3995,8 +4296,28 @@ body.has-dl .toast-host{bottom:calc(var(--dl-h,64px) + var(--sp-3) + env(safe-ar
   function deleteSubmissions(ids) { return authed('delete_submission', { receiptIds: (ids || []).slice(0, 50) }); }
   /** renderPdf(receiptId) → { ready, existed?, busy?, failed? }（後台手動產生作業內容 PDF；冪等） */
   function renderPdf(receiptId) { return authed('render_pdf', { receiptId: receiptId }); }
-  /** rosterSearch(q) → { rows:[{ key, name, masked }], total, truncated }（後台；以名字部分比對，最多 30 筆） */
+  /** rosterSearch(q) → { rows:[{ key, name, masked, batches:[{ id, title }] }], total, truncated }（後台；本名或稱呼部分比對，最多 30 筆；batches 為所在進行中批次） */
   function rosterSearch(q) { return authed('roster_search', { q: String(q == null ? '' : q) }); }
+  /** rosterMatch(text) → { groups:[{ token, matches:[{ key, name, masked, batches }], total }], empty }（後台；以名冊本名比對貼上文字，matches 0 筆＝未找到） */
+  function rosterMatch(text) { return authed('roster_match', { text: String(text == null ? '' : text) }); }
+  /* ---- LINE 手動綁定（後台）：lineBindManual({ key, chatUrl|userId, preview? }) → { key, name, userIdTail, displayName|null, accountId, preview, bound, boundAt?, chatUrl }；404 非好友 → ERR_LINE_NOT_FRIEND ---- */
+  function lineBindManual(o) { return authed('line_bind_manual', { key: o.key, chatUrl: o.chatUrl || '', userId: o.userId || '', preview: !!o.preview }); }
+  /** lineUnbind(key) → { key, bound:false, removed } */
+  function lineUnbind(key) { return authed('line_unbind', { key: key }); }
+  /* ---- 發送通知（不限批次） ---- */
+  /** notifyRecipients({ kind:'keys'|'bound'|'batch'|'batchOpen'|'stalled', keys?, batchId? }) → { rows:[{ key, name, masked, callName, lineBound, lineBlocked, lineName, chatUrl }], total } */
+  function notifyRecipients(o) { return authed('notify_recipients', o || {}); }
+  /** notifyPreview({ keys, templateId?, bodyOverride?, deadline?, callNames? }) → { template, lineConfigured, messages:[…], missing } */
+  function notifyPreview(o) { return authed('notify_preview', o || {}); }
+  /** notifyPush({ keys, templateId?, bodyOverride?, deadline?, callNames?, dryRun?, runId? })：dryRun 回預覽與額度；正式回 sent／failed／skipped／quota／logId */
+  function notifyPush(o) { return authed('notify_push', o || {}); }
+  /** notifyLog({ limit? }) → { rows:[{ id, at, source, title, template, summary, count, ok, fail, skipped, results:[{ name, state, note }] }] }（最近 50 筆） */
+  function notifyLog(o) { return authed('notify_log', o || {}); }
+  /* ---- LINE 對應（書籤比對後寫入） ---- */
+  /** lineMapStatus() → { total, bound, pending:[{ key, name, masked }], chatAccountId }（啟用學姊＝名冊） */
+  function lineMapStatus() { return authed('line_map_status', {}); }
+  /** lineBindBulk(items, accountId?) → { bound, skipped:[{ key, reason }], invalid }；items=[{ key, userId, label? }]，已綁定者略過 */
+  function lineBindBulk(items, accountId) { return authed('line_bind_bulk', { items: items || [], accountId: accountId || '' }); }
   /* ---- 優先批次 ---- */
   /** batchList({ includeArchived }) → { rows:[{ id, title, deadline, deadlineText, hint, count, archived, createdAt, updatedAt, overdue }], total } */
   function batchList(o) { return authed('batch_list', { includeArchived: !!(o && o.includeArchived) }); }
@@ -4055,6 +4376,15 @@ body.has-dl .toast-host{bottom:calc(var(--dl-h,64px) + var(--sp-3) + env(safe-ar
     rosterSync: rosterSync,
     rosterStatus: rosterStatus,
     rosterSearch: rosterSearch,
+    rosterMatch: rosterMatch,
+    lineBindManual: lineBindManual,
+    lineUnbind: lineUnbind,
+    notifyRecipients: notifyRecipients,
+    notifyPreview: notifyPreview,
+    notifyPush: notifyPush,
+    notifyLog: notifyLog,
+    lineMapStatus: lineMapStatus,
+    lineBindBulk: lineBindBulk,
     batchList: batchList,
     batchSave: batchSave,
     batchArchive: batchArchive,
@@ -5577,7 +5907,7 @@ body.has-dl .toast-host{bottom:calc(var(--dl-h,64px) + var(--sp-3) + env(safe-ar
       var cdEl = h('dd', { id: 'bw-cd' }, cd.text);
       var goBtn = h('button', { type: 'button', class: 'btn btn-primary btn-lg bw-go', id: 'bw-go', 'data-autofocus': true, onclick: close }, '開始填寫');
       var main = h('div', { class: 'bw-main' },
-        h('span', { class: 'tag', style: st() }, b.title || '優先批次'),
+        h('span', { class: 'tag', style: st() }, b.title || '官方關注名單'),
         h('h2', { class: 'bw-name', id: 'bw-h', style: st() }, batchCallName(b), h('small', null, '學姊')),
         over ? h('p', { class: 'bw-line', id: 'bw-line', style: st() }, '此份作業已逾截止時間 ', h('b', null, deadlineText(b)), '，仍可完成送出')
           : [h('p', { class: 'bw-line', id: 'bw-line', style: st() }, '此份作業請於 ', h('b', null, deadlineText(b)), ' 前完成'),
