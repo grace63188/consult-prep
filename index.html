@@ -597,6 +597,67 @@ h1.h{font-size:var(--fs-h1);margin:4px 0 10px}
   .xa-note{grid-area:n}
 }
 
+
+/* ── 必填檢查、待補清單、補填模式 ── */
+.fix-bad{box-shadow:inset 0 0 0 1.5px var(--error-line)!important;border-radius:var(--r-md)}
+section.sec.fix-bad,.dgrp.fix-bad{padding:10px 12px;margin-left:-12px;margin-right:-12px}
+.field.fix-bad{padding:8px 10px}
+.fix-msg{display:flex;gap:6px;align-items:flex-start;margin:8px 0 0;font-size:var(--fs-small);line-height:1.5;color:var(--error-500);flex-basis:100%;grid-column:1/-1}
+.fix-msg .ic{width:16px;height:16px;margin-top:2px}
+.pr + .fix-msg{margin:0;padding:4px 12px 8px}
+.case.fix-bad > .fix-msg{padding:0 16px 12px}
+.row.todo .nm b::after{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--warning-500);margin-left:6px;vertical-align:middle}
+@keyframes fixflash{0%,100%{outline-color:transparent}30%,70%{outline-color:var(--error-500)}}
+.fix-flash{outline:2px solid transparent;outline-offset:3px}
+@media (prefers-reduced-motion:no-preference){.fix-flash{animation:fixflash 1.2s var(--ease-out) 2}}
+@media (prefers-reduced-motion:reduce){.fix-flash{outline-color:var(--error-500)}}
+.page-todo{margin:0 0 16px}
+.fixlist{align-items:flex-start}
+.fixlist .sub{display:block;margin:2px 0 8px;color:var(--text-2)}
+.fix-ol{list-style:none;margin:0;padding:0;display:grid;gap:6px;max-height:320px;overflow:auto}
+.fix-it{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;padding:8px 10px;border:0;border-radius:var(--r-sm);background:var(--ink-0);box-shadow:inset 0 0 0 1px var(--line-2);color:var(--text-1);font:inherit;font-size:14px;text-align:left;cursor:pointer}
+.fix-it:hover{box-shadow:inset 0 0 0 1px var(--error-line)}
+.fix-it .s{flex:none;font-size:12px;color:var(--error-500);font-weight:600;min-width:4.5em}
+.fix-it .m{flex:1;min-width:0;line-height:1.45}
+.fix-it .ic{flex:none;color:var(--text-3)}
+.fixbar{position:fixed;left:0;right:0;bottom:0;z-index:31;background:var(--ink-2);border-top:1px solid var(--line-2);box-shadow:0 -16px 32px -20px rgba(0,0,0,.7);padding:10px var(--gutter) calc(10px + env(safe-area-inset-bottom))}
+.fixbar .in{max-width:var(--container);margin:0 auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.fixbar small{flex:1 1 100%;font-size:12px;color:var(--text-3)}
+.fixbar .b{flex:1;display:flex;gap:8px}
+.fixbar .btn{flex:1;height:48px;cursor:pointer}
+@media (min-width:640px){.fixbar small{flex:1 1 auto}.fixbar .b{flex:none}.fixbar .btn{flex:none;width:auto;padding:0 22px}}
+body.has-fix #app{padding-bottom:110px}
+body.has-fix .toasts{bottom:120px}
+body.has-fix .dl{display:none}
+.rail .rs{flex:1;display:flex;align-items:center;min-height:16px;padding:0;margin:-6px 0;border:0;background:transparent}
+.rail .rs i{flex:1}
+.rail button.rs{cursor:pointer;min-height:24px}
+.rail button.rs:hover i{box-shadow:0 0 0 1px var(--rose-line-2)}
+.rail button.rs:focus-visible{outline:2px solid var(--rose-500);outline-offset:2px;border-radius:2px}
+.yn{display:inline-flex;gap:4px;flex:none;padding:3px;background:var(--ink-0);border-radius:var(--r-pill);box-shadow:inset 0 0 0 1px var(--line-2)}
+.yn button{min-width:46px;height:34px;padding:0 12px;border:0;border-radius:var(--r-pill);background:transparent;color:var(--text-2);font:inherit;font-size:14px;cursor:pointer}
+.yn button.on{background:var(--rose-500);color:var(--rose-ink);font-weight:600}
+.yn button.off{background:var(--ink-4);color:var(--text-1);font-weight:600}
+.group-lbl .rest-none{margin-left:auto;order:3;border:0;background:transparent;color:var(--rose-300);font:inherit;font-size:12px;text-decoration:underline;text-underline-offset:3px;cursor:pointer;min-height:32px;padding:0 4px;white-space:nowrap}
+.lk-ok{display:inline-flex;align-items:center;gap:2px;flex:none;font-size:12px;color:var(--success-500)}
+.lk-ok .ic{width:14px;height:14px}
+/* ── 電腦：QR Code、複製、LINE 電腦版 ── */
+.xa-desk[hidden],#xa-form[hidden]{display:none}
+.xa-qr{display:grid;justify-items:center;gap:8px;margin:2px 0 14px}
+.xa-qr .qbox{background:#fff;padding:10px;border-radius:var(--r-md);line-height:0;max-width:100%;box-sizing:border-box}
+.xa-qr svg{display:block;max-width:100%;height:auto}
+.xa-qr small{font-size:12px;color:var(--text-3)}
+.xa-bub.sm{max-width:100%;margin:0 0 12px;font-size:13px;line-height:1.65;border-radius:var(--r-md)}
+.xa-dk{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.xa-dk .btn{height:44px;font-size:14px;text-decoration:none;cursor:pointer;margin:0;padding:0 10px;white-space:nowrap}
+.xa-dk .btn.done{box-shadow:inset 0 0 0 1px var(--success-line);color:var(--success-500,#5ccfa3)}
+.xa-dk .xa-line{width:18px;height:18px}
+.xa-hint{margin-top:10px}
+.xa-hint[hidden]{display:none}
+.xa-act2{display:flex;justify-content:space-between;gap:8px;margin-top:16px}
+.xa-act2 .btn{width:auto;margin:0;cursor:pointer;padding:0 22px}
+@media (max-width:379px){.xa-dk{grid-template-columns:1fr}}
+
 /* ── 3.1 前台：互動元件（以確認稿 ui.css 為基準，改為可操作元素） ── */
 button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
 button:disabled{cursor:not-allowed}
@@ -967,7 +1028,7 @@ button.tool.add{min-height:36px;margin-top:2px}
   } catch (e) { /* 儲存不可用時不導向 */ }
 })();
 </script>
-<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.01_1410", "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com", "GOOGLE_API_KEY": "AIzaSyAM11cAROO9pStVWp74jsapBWB_iE8HLQE", "GOOGLE_APP_ID": "423060878330"};</script>
+<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.01_1607", "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com", "GOOGLE_API_KEY": "AIzaSyAM11cAROO9pStVWp74jsapBWB_iE8HLQE", "GOOGLE_APP_ID": "423060878330"};</script>
 <script>
 /*
  * G.R.A.C.E Academy《諮詢前置作業》作業欄位設定檔
@@ -1081,17 +1142,20 @@ button.tool.add{min-height:36px;margin-top:2px}
     kinds: ['remind48', 'remind24', 'noAck', 'thanks', 'submitNotify', 'digest', 'overdue'],
     labels: { remind48: '截止前 48 小時提醒', remind24: '截止前 24 小時提醒', noAck: '通知後 24 小時未回覆確認提醒', thanks: '送出致謝', submitNotify: '送出通知管理收件人', digest: '每日摘要（有變化才發）', overdue: '逾期通知管理收件人', ackReply: '回覆確認的自動回覆' },
     audience: { remind48: 'student', remind24: 'student', noAck: 'student', thanks: 'student', submitNotify: 'admin', digest: 'admin', overdue: 'admin', ackReply: 'student' },
-    vars: { remind48: ['稱呼', '截止時間', '作業連結'], remind24: ['稱呼', '截止時間', '作業連結'], noAck: ['稱呼', '截止時間', '作業連結'], thanks: ['稱呼'], submitNotify: ['本名', '送出時間', '準時'], digest: ['日期', '摘要'], overdue: ['名單'], ackReply: ['稱呼', '截止時間'] },
+    vars: { remind48: ['名字', '截止時間', '作業網址'], remind24: ['名字', '截止時間', '作業網址'], noAck: ['名字', '截止時間', '作業網址'], thanks: ['名字', '作業網址'], submitNotify: ['本名', '送出時間', '準時'], digest: ['日期', '摘要', '總數', '已繳交數', '準時數', '逾期繳交數', '填寫中數', '未開始數', '已確認數', '逾期未送出數', '無法送達數', '已繳交名單', '填寫中名單', '未開始名單', '逾期名單', '今日送出名單', '已用則數', '剩餘則數', '提醒暫停'], overdue: ['學姊名單', '人數'], ackReply: ['名字', '截止時間', '作業網址'] },
+    // 學姊端文字變數：{名字}＝稱呼（舊名 {稱呼} 仍可用）、{作業網址}＝作業連結（舊名 {作業連結} 仍可用）、{截止時間}（無截止時間時整行省略）
     texts: {
       remind48: '{稱呼}學姊好♡\n提醒您《諮詢前置作業》將於 {截止時間} 截止，目前尚未送出。\n越早完成，諮詢時段可優先安排。\n作業入口：{作業連結}',
       remind24: '{稱呼}學姊好♡\n《諮詢前置作業》將於 {截止時間} 截止（剩不到 24 小時），目前尚未送出。\n作業入口：{作業連結}',
       noAck: '{稱呼}學姊好♡\n昨天發出的《諮詢前置作業》通知尚未收到回覆，請學姊看到後回覆「確認」，謝謝♡\n截止時間：{截止時間}\n作業入口：{作業連結}',
       thanks: '{稱呼}學姊，已收到作業，謝謝學姊♡\n校長會依作業內容準備諮詢，若需補充資料會再另行通知。',
       submitNotify: '📥 作業送出通知\n{本名} 學姊已送出《諮詢前置作業》（{送出時間}）。{準時}',
-      digest: '📊 諮詢前置作業 每日摘要 {日期}\n{摘要}',
-      overdue: '⏰ 逾期提醒\n以下學姊已超過截止時間仍未送出：\n{名單}',
-      ackReply: '{稱呼}學姊，已收到確認，謝謝♡\n作業截止：{截止時間}'
+      digest: '📊 諮詢前置作業 每日摘要 {日期}\n追蹤名單 {總數} 位\n\n✅ 已繳交（{已繳交數}）：{已繳交名單}\n✍️ 填寫中（{填寫中數}）：{填寫中名單}\n⏳ 未開始（{未開始數}）：{未開始名單}\n⏰ 逾期未送出（{逾期未送出數}）：{逾期名單}\n\n已回覆確認 {已確認數}、LINE 無法送達 {無法送達數}\n本月 LINE 已用 {已用則數} 則（剩 {剩餘則數}）{提醒暫停}',
+      overdue: '⏰ 逾期提醒\n以下學姊已超過截止時間仍未送出：\n{學姊名單}',
+      ackReply: '收到學姊的確認了，謝謝學姊♡\n提醒學姊：《諮詢前置作業》截止時間是 {截止時間}，請在截止前完成並送出。\n作業連結：{作業網址}'
     },
+    // 舊版預設文字（未曾修改者讀取時改用新預設）
+    legacyTexts: { ackReply: ['{稱呼}學姊，已收到確認，謝謝♡\n作業截止：{截止時間}'], overdue: ['⏰ 逾期提醒\n以下學姊已超過截止時間仍未送出：\n{名單}'], digest: ['📊 諮詢前置作業 每日摘要 {日期}\n{摘要}'] },
     digestHour: 9,
     maxRecipients: 10,
     maxTextLength: 2000,
@@ -2909,6 +2973,23 @@ button.tool.add{min-height:36px;margin-top:2px}
    * 通知範本渲染：vars = { 稱呼, 截止時間, 作業連結 }。
    * 含 {綁定連結} 的行一律整行移除（2.6.1：LINE 對應改由後台完成，通知不再附綁定連結；既有範本相容）；{截止時間} 值為空字串時該行移除（發送通知無批次且未指定）；三個以上連續換行收斂為兩個；未知變數保留原文。
    */
+  /** 截止時間（yyyy.mm.dd HH:mm，台北時間；無效回 ''） */
+  function formatDeadlinePlain(v) {
+    var ms = parseDeadline(v);
+    if (ms == null) return '';
+    var t = new Date(ms + 8 * 3600000), p = function (n) { return (n < 10 ? '0' : '') + n; };
+    return t.getUTCFullYear() + '.' + p(t.getUTCMonth() + 1) + '.' + p(t.getUTCDate()) + ' ' + p(t.getUTCHours()) + ':' + p(t.getUTCMinutes());
+  }
+  /**
+   * 學姊端自動訊息變數（含別名）：{名字}／{稱呼}、{截止時間}、{作業網址}／{作業連結}
+   * o = { callName, deadline（iso 或 ''）, plain?（true：yyyy.mm.dd HH:mm；否則含星期） }；無截止時間時 {截止時間}＝''（renderTemplate 整行省略）
+   */
+  function automationVars(o) {
+    o = o || {};
+    var dl = o.deadline ? (o.plain ? formatDeadlinePlain(o.deadline) : formatDeadline(o.deadline)) : '';
+    var cn = String(o.callName || '');
+    return { '名字': cn, '稱呼': cn, '截止時間': dl, '作業網址': NOTIFY.workUrl, '作業連結': NOTIFY.workUrl };
+  }
   function renderTemplate(body, vars) {
     vars = vars || {};
     var lines = String(body == null ? '' : body).replace(/\r\n?/g, '\n').split('\n');
@@ -3249,6 +3330,8 @@ button.tool.add{min-height:36px;margin-top:2px}
     ISSUE_CODES: ISSUE_CODES,
     STATUSES: STATUSES,
     AUTOMATION: AUTOMATION,
+    formatDeadlinePlain: formatDeadlinePlain,
+    automationVars: automationVars,
     ROLES: ROLES,
     LEAD_ROLES: LEAD_ROLES,
     EMPLOYED_ROLES: EMPLOYED_ROLES,
@@ -8459,11 +8542,11 @@ button.tool.add{min-height:36px;margin-top:2px}
     return {
       schema: 31,
       student: { account: '', name: '' },
-      business: { name: '', industryCode: '', industrySub: '', industryOther: '', stage: '', incomes: [], incomeOther: '', mainIncome: '', otherRoles: '' },
+      business: { name: '', industryCode: '', industrySub: '', industryOther: '', stage: '', incomes: [], incomeOther: '', mainIncome: '', otherRoles: '', otherRolesNone: false },
       duties: { items: [], other: [], handover: [] },
       steps: { receive: { none: false, sources: [], sourcesOther: [], channels: [], channelsOther: [], cycle: '', stages: [] }, lead: { none: false, role: '', stages: [] }, task: { none: false, name: '', stages: [] } },
       authority: { items: V31().authority.items.map(function (x) { return { id: x.id, label: x.label, mode: '' }; }), askTargets: [], askOther: '' },
-      resources: { data: {}, dataOther: [], sites: [], tools: {}, toolsOther: [], companySystemName: '' },
+      resources: { data: {}, dataOther: [], sites: [], sitesNone: false, tools: {}, toolsNone: {}, toolsOther: [], companySystemName: '' },
       place: { links: {} },
       drive: { mode: '', rootFolderId: '', rootUrl: '', folders: {}, ownerEmail: '', linkUrl: '' }
     };
@@ -8521,6 +8604,7 @@ button.tool.add{min-height:36px;margin-top:2px}
     if (!mainOk) main = pickable.length === 1 ? pickable[0] : '';
     out.business = { name: cleanStr(b.name, 40), industryCode: code, industrySub: sub, industryOther: code === 'X' ? cleanStr(b.industryOther, 40) : '', stage: byId(v.stages, b.stage) ? b.stage : '',
       incomes: incomes, incomeOther: incomes.indexOf('other') >= 0 ? cleanStr(b.incomeOther, 20) : '', mainIncome: main, otherRoles: cleanStr(b.otherRoles, 60) };
+    out.business.otherRolesNone = !out.business.otherRoles && b.otherRolesNone === true;   // 明確「目前沒有」（與未作答區分）
     var d = a.duties || {};
     var dutyIds = v.duties.map(function (x) { return x.id; });
     var items = listOf(d.items).map(String).filter(function (id, i, arr) { return dutyIds.indexOf(id) >= 0 && arr.indexOf(id) === i; });
@@ -8532,7 +8616,15 @@ button.tool.add{min-height:36px;margin-top:2px}
     out.steps.receive = { none: rc.none === true, sources: strList(rc.sources, 20, 30), sourcesOther: strList(rc.sourcesOther, 10, 30), channels: strList(rc.channels, 20, 30), channelsOther: strList(rc.channelsOther, 10, 30), cycle: cycles.indexOf(rc.cycle) >= 0 ? rc.cycle : '', stages: normStages31(rc.stages) };
     out.steps.lead = { none: ld.none === true, role: cleanStr(ld.role, 30), stages: normStages31(ld.stages) };
     out.steps.task = { none: tk.none === true, name: cleanStr(tk.name, 40), stages: normStages31(tk.stages) };
-    ['receive', 'lead', 'task'].forEach(function (k) { if (out.steps[k].none) { out.steps[k].stages = []; } });
+    // 案例「目前沒有」：前台收合不顯示的內容一併清空（步驟、客人來源、成交管道、週期、對象職位、任務名稱）
+    ['receive', 'lead', 'task'].forEach(function (k) {
+      var c = out.steps[k];
+      if (!c.none) return;
+      c.stages = [];
+      if (k === 'receive') { c.sources = []; c.sourcesOther = []; c.channels = []; c.channelsOther = []; c.cycle = ''; }
+      if (k === 'lead') c.role = '';
+      if (k === 'task') c.name = '';
+    });
     var au = a.authority || {}, modes = v.authority.modes.map(function (m) { return m.id; });
     var auItems = [], seenAu = {};
     arrOf(au.items).forEach(function (it, i) {
@@ -8549,7 +8641,7 @@ button.tool.add{min-height:36px;margin-top:2px}
     var r = a.resources || {}, srcIds = ['self', 'company'];
     var data = {}, dataIn = r.data && typeof r.data === 'object' ? r.data : {};
     var fixedIds = {}; v.resources.data.forEach(function (g) { g.items.forEach(function (it) { fixedIds[it.id] = 1; }); });
-    Object.keys(dataIn).forEach(function (id) { if (!fixedIds[id]) return; var e = dataIn[id]; if (e && e.has === true) data[id] = { has: true, source: srcIds.indexOf(e.source) >= 0 ? e.source : 'self' }; });
+    Object.keys(dataIn).forEach(function (id) { if (!fixedIds[id]) return; var e = dataIn[id]; if (e && e.has === true) data[id] = { has: true, source: srcIds.indexOf(e.source) >= 0 ? e.source : 'self' }; else if (e && e.has === false) data[id] = { has: false }; });
     var dataOther = [];
     arrOf(r.dataOther).forEach(function (o, i) { if (!o || typeof o !== 'object') return; var label = cleanStr(o.label, 40); if (!label) return; var id = o.id && /^c_[a-f0-9]{8}$/.test(String(o.id)) ? String(o.id) : customId('c', label); if (dataOther.some(function (x) { return x.id === id; })) return; dataOther.push({ id: id, label: label, source: srcIds.indexOf(o.source) >= 0 ? o.source : 'self' }); });
     var sites = [];
@@ -8566,7 +8658,11 @@ button.tool.add{min-height:36px;margin-top:2px}
     Object.keys(toolsIn).forEach(function (name) { if (!toolNames[name]) return; var e = toolsIn[name]; if (e && (e.has === true || e.source || e.status)) tools[name] = toolEntry(e); });
     var toolsOther = [];
     arrOf(r.toolsOther).forEach(function (o) { if (!o || typeof o !== 'object') return; var label = cleanStr(o.label, 30); if (!label || toolsOther.some(function (x) { return x.label === label; })) return; toolsOther.push(toolEntry(o, label)); });
-    out.resources = { data: data, dataOther: dataOther.slice(0, v.resources.maxCustomData), sites: sites.slice(0, v.resources.sites.max), tools: tools, toolsOther: toolsOther.slice(0, v.resources.maxCustomTools), companySystemName: cleanStr(r.companySystemName, 40) };
+    // 明確「目前沒有」：網站帳號（無任何列時）、工具系統各分組（該組無點亮工具時）
+    var toolsNone = {}, tnIn = r.toolsNone && typeof r.toolsNone === 'object' ? r.toolsNone : {};
+    v.resources.tools.forEach(function (g) { if (tnIn[g.id] === true && !g.items.some(function (t) { return tools[t]; })) toolsNone[g.id] = true; });
+    sites = sites.slice(0, v.resources.sites.max);
+    out.resources = { data: data, dataOther: dataOther.slice(0, v.resources.maxCustomData), sites: sites, sitesNone: !sites.length && r.sitesNone === true, tools: tools, toolsNone: toolsNone, toolsOther: toolsOther.slice(0, v.resources.maxCustomTools), companySystemName: cleanStr(r.companySystemName, 40) };
     var planIds = {}; folderPlan31(out).forEach(function (p) { planIds[p.itemId] = 1; });
     var links = {}, linksIn = a.place && a.place.links && typeof a.place.links === 'object' ? a.place.links : {};
     Object.keys(linksIn).forEach(function (itemId) {
@@ -8612,8 +8708,69 @@ button.tool.add{min-height:36px;margin-top:2px}
     });
     a.authority.items.forEach(function (it) { if (!it.mode) add('authority.' + it.id, '權限規則', '請標示「' + it.label + '」的決定方式'); });
     if (a.authority.items.some(function (it) { return it.mode === 'ask'; }) && !a.authority.askTargets.length && !a.authority.askOther) add('authority.askTargets', '請示對象', '有需要請示的事項時，請點選請示對象');
-    a.resources.sites.forEach(function (s, i) { if (s.platform && !s.url) add('resources.sites.' + i + '.url', '網站帳號網址', s.platform + '：請填寫網址'); if (s.url && !s.platform) add('resources.sites.' + i + '.platform', '網站帳號平台', '請選擇平台'); });
+    // 網站帳號：提示以平台名稱或網址辨識，不用編號（資料中心已去除空白列，編號會與前台畫面不一致）
+    a.resources.sites.forEach(function (s, i) { if (s.platform && !s.url) add('resources.sites.' + i + '.url', '網站帳號網址', '網站帳號「' + (s.platform === '其他' && s.platformOther ? s.platformOther : s.platform) + '」：請填寫網址'); if (s.url && !s.platform) add('resources.sites.' + i + '.platform', '網站帳號平台', '網站帳號「' + s.url.slice(0, 40) + '」：請選擇平台'); });
     return miss;
+  }
+  /**
+   * 3.1 作答完整度規則（前台送出、補件補填共用；資料中心只用於標示未作答，不據此拒收）：
+   * validate31 之外，每題都須明確作答（填寫內容或選「目前沒有」）。可傳前台原始答案或正規化後答案。
+   * 網站帳號路徑編號＝傳入答案的列序（前台為畫面順序）。回傳 [{ path, label, message }]
+   */
+  function answerRules31(a) {
+    a = a || {};
+    var v = V31(), RV = v.resources, out = [], add = function (p, l, m) { out.push({ path: p, label: l, message: m }); };
+    var t = function (x) { return String(x == null ? '' : x).trim(); };
+    var b = a.business || {}, d = a.duties || {}, st = a.steps || {}, au = a.authority || {}, r = a.resources || {};
+    if (!t(b.otherRoles) && b.otherRolesNone !== true) add('business.otherRoles', '其他身分或工作', '請填寫其他身分或工作，沒有的請選「目前沒有」');
+    if (((d.items || []).length || (d.other || []).length) && !(d.handover || []).length) add('duties.handover', '優先移交項目', '請至少標出一項優先移交項目');
+    var rc = st.receive || {}, ld = st.lead || {};
+    if (rc.none !== true) {
+      if (!(rc.sources || []).length && !(rc.sourcesOther || []).length) add('steps.receive.sources', '客人來源', '接待客人：請至少點選一項客人來源');
+      if (!(rc.channels || []).length && !(rc.channelsOther || []).length) add('steps.receive.channels', '成交管道', '接待客人：請至少點選一項成交管道');
+      if (!rc.cycle) add('steps.receive.cycle', '成交週期', '接待客人：請選擇成交週期');
+    }
+    if (ld.none !== true && !t(ld.role)) { var lc = byId(v.cases, 'lead'); add('steps.lead.role', lc.roleLabel, lc.label + '：請填寫' + lc.roleLabel); }
+    if ((au.askTargets || []).indexOf('其他') >= 0 && !t(au.askOther)) add('authority.askOther', '其他請示對象', '請填寫其他請示對象');
+    var data = r.data || {};
+    RV.data.forEach(function (g) {
+      var n = g.items.filter(function (it) { var e = data[it.id]; return !e || (e.has !== true && e.has !== false); }).length;
+      if (n) add('resources.dataGroup.' + g.id, g.label, '資料「' + g.label + '」：還有 ' + n + ' 項未選擇有或沒有');
+    });
+    var sites = arrOf(r.sites);
+    if (!sites.length && r.sitesNone !== true) add('resources.sites', '網站帳號', '請新增網站帳號，沒有的請選「目前沒有網站帳號」');
+    var stReq = function (e, base, name) {
+      if (!e.status || e.status === 'active') return;
+      if (!t(e.plannedUse)) add(base + '.plannedUse', '預計用途', name + '：請填寫預計用途');
+      if (!t(e.progress)) add(base + '.progress', '目前進度', name + '：請填寫目前進度');
+      if (!e.planOwner) add(base + '.planOwner', '負責對象', name + '：請選擇負責對象');
+    };
+    sites.forEach(function (s, i) {
+      var nm = '網站帳號 ' + (i + 1), base = 'resources.sites.' + i;
+      if (!s.platform && !t(s.url)) add(base + '.platform', '網站帳號平台', nm + '：請選擇平台，或移除此列');
+      else if (!s.platform) add(base + '.platform', '網站帳號平台', nm + '：請選擇平台');
+      else if (!t(s.url)) add(base + '.url', '網站帳號網址', nm + '：請填寫網址');
+      if (s.platform === '其他' && !t(s.platformOther)) add(base + '.platformOther', '平台名稱', nm + '：請填寫平台名稱');
+      if (!(s.uses || []).length) add(base + '.uses', '用途', nm + '：請至少點選一項用途');
+      stReq(s, base, nm);
+    });
+    var tools = r.tools || {}, tn = r.toolsNone || {}, n = 0;
+    RV.tools.forEach(function (g) {
+      var anyOn = g.items.some(function (x) { return tools[x]; });
+      if (!anyOn && tn[g.id] !== true) add('resources.tools.' + g.id, g.label, '工具系統「' + g.label + '」：請點亮使用中的工具，沒有的請選「目前沒有」');
+      if (g.id === 'company' && anyOn && !t(r.companySystemName)) add('resources.companySystemName', g.systemNameLabel || '系統名稱', '請填寫' + (g.systemNameLabel || '系統名稱'));
+    });
+    RV.tools.forEach(function (g) { g.items.forEach(function (x) { if (tools[x]) { stReq(tools[x], 'resources.toolDetail.' + n, x); n++; } }); });
+    arrOf(r.toolsOther).forEach(function (o) { stReq(o, 'resources.toolDetail.' + n, o.label); n++; });
+    return out;
+  }
+  /** 明確「目前沒有」的題目（後台、PDF、匯出共用）：[{ id, label, display }]；案例另見 noneCases、資料項目另見 notYet */
+  function noneFields31(a) {
+    var v = V31(), out = [];
+    if (a.business && a.business.otherRolesNone) out.push({ id: 'business.otherRoles', label: '其他身分或工作', display: '目前沒有' });
+    if (a.resources && a.resources.sitesNone) out.push({ id: 'resources.sites', label: '網站帳號', display: '目前沒有網站帳號' });
+    v.resources.tools.forEach(function (g) { if (a.resources && a.resources.toolsNone && a.resources.toolsNone[g.id]) out.push({ id: 'resources.tools.' + g.id, label: '工具系統｜' + g.label, display: '目前沒有' }); });
+    return out;
   }
   /**
    * 3.1 放入資料檢查：每個點亮項目至少 1 個檔案（driveStatus.folders[itemId].count）；未建資料夾者亦列出。
@@ -8660,15 +8817,28 @@ button.tool.add{min-height:36px;margin-top:2px}
     var a = answers, fo = (driveStatus && driveStatus.folders) || {}, have = (a.drive && a.drive.folders) || {};
     var lit = {}; litDataItems(a).forEach(function (it) { lit[it.id] = it; });
     var g = { notYet: [], emptyFolders: [], unanswered: [], placed: [], noneStages: [], manualStages: [], naStages: [], unansweredStages: [], incompleteStages: [], flows: {}, overflow: [], legacy: false, v31: true, noneCases: [] };
+    // 資料項目：明確選「沒有」者列入尚未具備（none:true）；未選有或沒有者列入 unanswered。
+    // 舊版前台送出的作業沒有「沒有」記錄（explicitNone:false），未點亮項目沿用舊判定一律列入尚未具備。
+    var dmap = (a.resources && a.resources.data) || {};
+    var explicit = Object.keys(dmap).some(function (k) { return dmap[k] && dmap[k].has === false; });
+    g.explicitNone = explicit;
     resourceDataItems(a).forEach(function (it) {
       var row = { id: it.id, label: it.label, group: it.groupLabel, def: it.def };
-      if (!lit[it.id]) { if (!it.custom) g.notYet.push(row); return; }
+      if (!lit[it.id]) {
+        if (it.custom) return;
+        var isNo = !!(dmap[it.id] && dmap[it.id].has === false);
+        row.none = isNo; row.answer = isNo ? 'none' : explicit ? 'unanswered' : 'legacy'; row.answerLabel = isNo ? '沒有' : explicit ? '未作答' : '未點亮';
+        if (isNo || !explicit) g.notYet.push(row); else g.unanswered.push(row);
+        return;
+      }
       var f = fo[it.id], n = f ? (Number(f.count) || 0) : 0, nl = ((a.place && a.place.links && a.place.links[it.id]) || []).length;
       row.count = n; row.linkCount = nl; row.folderId = have[it.id] || ''; row.source = lit[it.id].sourceLabel;
       if (n + nl > 0) g.placed.push(row); else g.emptyFolders.push(row);
     });
     ['receive', 'lead', 'task'].forEach(function (k) { if (a.steps[k].none) g.noneCases.push({ id: k, label: byId(V31().cases, k).label }); });
     g.building = buildingList31(a);
+    g.noneFields = noneFields31(a);
+    g.unansweredFields = answerRules31(a).filter(function (m) { return m.path.indexOf('resources.dataGroup.') !== 0; });   // 資料項目未作答已列於 unanswered
     g.gapCount = g.emptyFolders.length;
     return g;
   }
@@ -8687,7 +8857,7 @@ button.tool.add{min-height:36px;margin-top:2px}
   function dataCompleteness31(answers, driveStatus) {
     var g = computeGaps31(answers, driveStatus);
     var yes = g.placed.length + g.emptyFolders.length;
-    return { yes: yes, placed: g.placed.length, no: g.notYet.length, unanswered: 0, total: yes + g.notYet.length, text: g.placed.length + '／' + yes, v31: true };
+    return { yes: yes, placed: g.placed.length, no: g.notYet.length, unanswered: g.unanswered.length, total: yes + g.notYet.length + g.unanswered.length, text: g.placed.length + '／' + yes, v31: true };
   }
   /** 3.1 摘要（索引、票券、後台列表） */
   function workSummary31(answers) {
@@ -8695,7 +8865,7 @@ button.tool.add{min-height:36px;margin-top:2px}
     return { legacy: false, v31: true, name: b.name, roleLabel: '', industryId: b.industryCode, industryCode: b.industryCode, industrySub: b.industrySub, industryLabel: industry31Label(a), industryMain: (industry31ByCode(b.industryCode) || {}).label || (b.industryCode === 'X' ? '其他' : ''),
       stage: b.stage, stageLabel: stage31Label(b.stage),
       mainIncome: b.mainIncome ? { id: b.mainIncome, label: income31Label(b.mainIncome, a) } : null,
-      incomes: b.incomes.map(function (id) { return { id: id, label: income31Label(id, a) }; }), incomeOther: b.incomeOther, otherRoles: b.otherRoles,
+      incomes: b.incomes.map(function (id) { return { id: id, label: income31Label(id, a) }; }), incomeOther: b.incomeOther, otherRoles: b.otherRoles, otherRolesNone: !!b.otherRolesNone,
       modules: [], superior: null, performType: null, weeklyHours: '', otherWorks: [],
       dutyCount: a.duties.items.length + a.duties.other.length, handover: a.duties.handover.map(function (id) { return duty31Label(id, a); }),
       caseCount: ['receive', 'lead', 'task'].filter(function (k) { return !a.steps[k].none; }).length };
@@ -8715,7 +8885,7 @@ button.tool.add{min-height:36px;margin-top:2px}
       { id: 'stage', label: '經營階段', value: a.business.stage, display: w.stageLabel },
       { id: 'incomes', label: '收入來源', value: a.business.incomes.slice(), display: w.incomes.map(function (x) { return x.label; }).join('、'), items: w.incomes.map(function (x) { return x.label; }) },
       { id: 'mainIncome', label: '主要收入', value: a.business.mainIncome, display: w.mainIncome ? w.mainIncome.label : '' },
-      { id: 'otherRoles', label: '其他身分或工作', value: a.business.otherRoles, display: a.business.otherRoles }
+      { id: 'otherRoles', label: '其他身分或工作', value: a.business.otherRoles, display: a.business.otherRoles || (a.business.otherRolesNone ? '目前沒有' : ''), none: !!a.business.otherRolesNone }
     ] });
     var dutyLabels = a.duties.items.map(function (id) { return duty31Label(id, a); }).concat(a.duties.other);
     sections.push({ id: 'duties', label: '職務內容', kind: 'duties', icon: 'list', desc: byId(SECTIONS31, 'duties').desc, items: dutyLabels, handover: w.handover, fields: [
@@ -8748,6 +8918,13 @@ button.tool.add{min-height:36px;margin-top:2px}
       var items = lit.filter(function (it) { return it.groupId === g.id; }).map(function (it) { return { id: it.id, label: it.label, example: it.example, source: it.source, sourceLabel: it.sourceLabel }; });
       if (items.length) dataGroups.push({ id: g.id, label: g.label, items: items });
     });
+    // 明確選「沒有」的資料項目（依分組）
+    var dmap = a.resources.data || {}, noneGroups = [];
+    v.resources.data.forEach(function (g) {
+      var items = g.items.filter(function (it) { return dmap[it.id] && dmap[it.id].has === false; }).map(function (it) { return { id: it.id, label: it.label, display: '沒有' }; });
+      if (items.length) noneGroups.push({ id: g.id, label: g.label, items: items });
+    });
+    var noneCount = noneGroups.reduce(function (n, g) { return n + g.items.length; }, 0);
     var custom = lit.filter(function (it) { return it.custom; });
     if (custom.length) dataGroups.push({ id: 'custom', label: '其他資料', items: custom.map(function (it) { return { id: it.id, label: it.label, example: '', source: it.source, sourceLabel: it.sourceLabel, custom: true }; }) });
     var toolGroups = [];
@@ -8761,8 +8938,10 @@ button.tool.add{min-height:36px;margin-top:2px}
     if (a.resources.toolsOther.length) toolGroups.push({ id: 'custom', label: '其他工具', items: a.resources.toolsOther.map(function (t) { return withStatusO({ label: t.label, source: t.source, sourceLabel: t.source === 'company' ? '公司提供' : '自行使用', custom: true }, t); }) });
     var building = buildingList31(a);
     sections.push({ id: 'resources', label: '資源清單', kind: 'resources', icon: 'folder', desc: byId(SECTIONS31, 'resources').desc,
-      data: { groups: dataGroups, count: lit.length }, sites: a.resources.sites.map(function (s) { return withStatusO({ platform: s.platform === '其他' && s.platformOther ? s.platformOther : s.platform, url: s.url, owner: s.owner, ownerLabel: s.owner === 'company' ? '公司或總部' : '個人', uses: s.uses.slice() }, s); }),
-      tools: { groups: toolGroups, count: toolGroups.reduce(function (n, g) { return n + g.items.length; }, 0) }, building: building, buildingCount: building.length });
+      data: { groups: dataGroups, count: lit.length, noneGroups: noneGroups, noneCount: noneCount, unansweredCount: computeGaps31(a, null).unanswered.length },
+      sitesNone: !!a.resources.sitesNone, sitesDisplay: a.resources.sites.length ? '' : a.resources.sitesNone ? '目前沒有網站帳號' : '',
+      sites: a.resources.sites.map(function (s) { return withStatusO({ platform: s.platform === '其他' && s.platformOther ? s.platformOther : s.platform, url: s.url, owner: s.owner, ownerLabel: s.owner === 'company' ? '公司或總部' : '個人', uses: s.uses.slice() }, s); }),
+      tools: { groups: toolGroups, count: toolGroups.reduce(function (n, g) { return n + g.items.length; }, 0), noneGroups: v.resources.tools.filter(function (g) { return a.resources.toolsNone && a.resources.toolsNone[g.id]; }).map(function (g) { return { id: g.id, label: g.label, display: '目前沒有' }; }) }, building: building, buildingCount: building.length });
     var plan = folderPlan31(a);
     var placeItems = plan.map(function (p) {
       var f = fo[p.itemId] || null, fid = have[p.itemId] || '';
@@ -8795,11 +8974,11 @@ button.tool.add{min-height:36px;margin-top:2px}
     var sec = function (sid) { return labeled.sections.filter(function (s) { return s.id === sid; })[0]; };
     var h = w.handover || [];
     var dutyLabels = (sec('duties') || { items: [] }).items;
-    rows.business31.push([id, nm, w.name, w.industryMain, w.industrySub || (w.industryCode === 'X' ? w.industryLabel : ''), w.stageLabel, w.incomes.map(function (x) { return x.label; }).join('、'), w.mainIncome ? w.mainIncome.label : '', w.otherRoles || '', dutyLabels.join('、'), h[0] || '', h[1] || '', h[2] || '']);
+    rows.business31.push([id, nm, w.name, w.industryMain, w.industrySub || (w.industryCode === 'X' ? w.industryLabel : ''), w.stageLabel, w.incomes.map(function (x) { return x.label; }).join('、'), w.mainIncome ? w.mainIncome.label : '', w.otherRoles || (w.otherRolesNone ? '目前沒有' : ''), dutyLabels.join('、'), h[0] || '', h[1] || '', h[2] || '']);
     (sec('steps') || { cases: [] }).cases.forEach(function (c) {
       var hd = function (k) { var f = (c.head || []).filter(function (x) { return x.id === k; })[0]; return f ? f.display : ''; };
       var who = c.id === 'lead' ? hd('role') : c.id === 'task' ? hd('name') : '';
-      if (c.none || !c.stages.length) { rows.steps31.push([id, nm, c.label, c.none ? '是' : '', hd('sources'), hd('channels'), hd('cycle'), who, '', '', '']); return; }
+      if (c.none || !c.stages.length) { rows.steps31.push([id, nm, c.label, c.none ? '是' : '', hd('sources'), hd('channels'), hd('cycle'), who, '', c.none ? c.noneLabel : '', '']); return; }
       c.stages.forEach(function (st) { rows.steps31.push([id, nm, c.label, '', hd('sources'), hd('channels'), hd('cycle'), who, st.order, st.name, st.tools.join('、')]); });
     });
     var au = sec('authority');
@@ -8807,8 +8986,11 @@ button.tool.add{min-height:36px;margin-top:2px}
     var rs = sec('resources');
     if (rs) {
       rs.data.groups.forEach(function (g) { g.items.forEach(function (it) { rows.resources31.push([id, nm, '資料', g.label, it.label, it.sourceLabel, '', '', '', '', '', '']); }); });
+      ((rs.data && rs.data.noneGroups) || []).forEach(function (g) { g.items.forEach(function (it) { rows.resources31.push([id, nm, '資料', g.label, it.label, '', '', '', '沒有', '', '', '']); }); });
+      if (!rs.sites.length && rs.sitesNone) rows.resources31.push([id, nm, '網站帳號', '', '目前沒有網站帳號', '', '', '', '目前沒有', '', '', '']);
       rs.sites.forEach(function (s) { rows.resources31.push([id, nm, '網站帳號', '', s.platform, s.ownerLabel, s.url, s.uses.join('、'), s.statusLabel || '', s.plannedUse || '', s.progress || '', s.planOwnerLabel || '']); });
       rs.tools.groups.forEach(function (g) { g.items.forEach(function (it) { rows.resources31.push([id, nm, '工具系統', g.label, it.label, it.sourceLabel, '', '', it.statusLabel || '', it.plannedUse || '', it.progress || '', it.planOwnerLabel || '']); }); });
+      ((rs.tools && rs.tools.noneGroups) || []).forEach(function (g) { rows.resources31.push([id, nm, '工具系統', g.label, '目前沒有', '', '', '', '目前沒有', '', '', '']); });
       (rs.building || []).forEach(function (b) { rows.building31.push([id, nm, b.typeLabel, b.group, b.label, b.statusLabel, b.plannedUse, b.progress, b.ownerLabel, b.url]); });
     }
     var pl = sec('place');
@@ -8954,6 +9136,8 @@ button.tool.add{min-height:36px;margin-top:2px}
     emptyAnswers31: emptyAnswers31,
     normalizeAnswers31: normalizeAnswers31,
     validate31: validate31,
+    answerRules31: answerRules31,
+    noneFields31: noneFields31,
     placementIssues31: placementIssues31,
     checkSubmission31: checkSubmission31,
     computeGaps31: computeGaps31,
@@ -9678,10 +9862,10 @@ button.tool.add{min-height:36px;margin-top:2px}
   /** driveCheckLink(url) → { ok:true, kind:'folder'|'file', id, name, count? } ｜ { ok:false, reason, code? }（不授權者貼自己共用的連結） */
   function driveCheckLink(url) { return call('drive_check_link', { url: String(url == null ? '' : url), clientKey: clientKey() }, { retries: 1 }); }
   /**
-   * supplementCreate({ receiptId, items:[{ type:'section'|'data'|'custom', ref?, title?, note?, due? }], due?, notify?, body? })（後台）
+   * supplementCreate({ receiptId, items:[{ type:'section'|'data'|'custom', ref?, title?, note?, due? }], due?, notify?, body?, imageId? })（後台；imageId＝notice_image 圖卡，與文字同一則推播）
    *   → { request, notice, link, pushed:{ sent, failed, skipped }|null, lineConfigured }；notify:true 且 LINE 可送達時立即推播，否則以 notice 複製
    */
-  function supplementCreate(o) { o = o || {}; return authed('supplement_create', { receiptId: o.receiptId, items: o.items || [], due: o.due || '', notify: !!o.notify, body: o.body || '' }, { retries: 0 }); }
+  function supplementCreate(o) { o = o || {}; var p = { receiptId: o.receiptId, items: o.items || [], due: o.due || '', notify: !!o.notify, body: o.body || '' }; if (o.imageId) p.imageId = o.imageId; return authed('supplement_create', p, { retries: 0 }); }
   /** supplementList({ receiptId? }) → { rows:[request…], total }（後台；無 receiptId 列全部，供作業總覽、關注名單、填寫進度標示「待補件」） */
   function supplementList(o) { o = o || {}; return authed('supplement_list', o.receiptId ? { receiptId: o.receiptId } : {}); }
   /**
@@ -9739,6 +9923,10 @@ button.tool.add{min-height:36px;margin-top:2px}
   /** lineRecentSenders() → { rows:[{ userId, userIdTail, displayName|null, reachable, text, at, kind, boundKey, boundName, isRecipient }], bot }（Webhook 記錄的最近傳訊者；userId 為 Messaging API 真正可推播的 ID） */
   function lineRecentSenders() { return authed('line_recent_senders', {}); }
   /** lineBindVerify() → { checked, reachable, notFound:[{ key, name, by }], failed }（唯讀，不發訊息） */
+  /** lineFollowersMatch({ apply? }) → { available, followers, matched, ambiguous, notFound, reachable, applied }（不發訊息） */
+  function lineFollowersMatch(o) { o = o || {}; return authed('line_followers_match', { apply: !!o.apply, hints: o.hints || undefined }, { retries: 0, timeoutMs: 360000 }); }
+  /** lineFollowersSync({ budget?, restart? }) → { available, total, profiled, remaining, complete, fetchedNow, jobUsedToday, jobLimit, urlFetch }（額度安全、可續跑；不發訊息） */
+  function lineFollowersSync(o) { o = o || {}; var p = { restart: !!o.restart }; if (o.budget != null) p.budget = o.budget; return authed('line_followers_sync', p, { retries: 0, timeoutMs: 360000 }); }
   function lineBindVerify() { return authed('line_bind_verify', {}, { timeoutMs: 120000 }); }
   function automationRun(o) { o = o || {}; return authed('automation_run', { dry: !!o.dry, forceDigest: !!o.forceDigest }, { retries: 0, timeoutMs: 120000 }); }
   /** undoDelete(undoToken) → { restored, kind, label, detail }（10 分鐘內；涵蓋作業、追蹤名單、發送紀錄、範本、通知圖卡、管理收件人） */
@@ -9823,6 +10011,8 @@ button.tool.add{min-height:36px;margin-top:2px}
     automationRun: automationRun,
     lineRecentSenders: lineRecentSenders,
     lineBindVerify: lineBindVerify,
+    lineFollowersMatch: lineFollowersMatch,
+    lineFollowersSync: lineFollowersSync,
     undoDelete: undoDelete,
     notifyLogDelete: notifyLogDelete,
     fire: fire,
@@ -9906,7 +10096,13 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
   var V = S3.v31();
   var reduceMotion = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
   var LOGO = 'assets/logo-light.png';
-  var OA = '%4052grace';
+  /* 設定：LINE 官方帳號 ID（含 @）。進階 ID 失效時改為基本 ID '@fjg6756p'；也可由 CONSULT_CONFIG.LINE_OA_ID 覆寫 */
+  var CONFIG = { lineOaId: (window.CONSULT_CONFIG && window.CONSULT_CONFIG.LINE_OA_ID) || '@52grace' };
+  /** 手機（iOS／Android／iPadOS／LINE 內建瀏覽器）；其餘視為電腦 */
+  function isMobileDevice() {
+    var ua = navigator.userAgent || '';
+    return /Android|iPhone|iPad|iPod|Mobile|\bLine\//i.test(ua) || (/Macintosh/.test(ua) && (navigator.maxTouchPoints || 0) > 1);
+  }
   var ORDER = ['intro', 'identity', 'business', 'duties', 'steps', 'authority', 'resources', 'place', 'done'];
   var PAGES = V.pages;
 
@@ -10160,9 +10356,119 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
   }
   function issuesBy() {
     var by = { identity: [], business: [], duties: [], steps: [], authority: [], resources: [] };
-    S3.validate31(norm()).forEach(function (m) { var s = sectionOfPath(m.path); (by[s] = by[s] || []).push(m); });
+    allRules().forEach(function (m) { var s = sectionOfPath(m.path); (by[s] = by[s] || []).push(m); });
     if (!UI.idOk) by.identity.push({ path: 'student.account', label: '學員帳號', message: '請學姊核對學員帳號' });
     return by;
+  }
+  /**
+   * 前台作答規則＝資料中心 validate31（網站帳號列除外，改以畫面順序檢查）＋ S3.answerRules31（每題明確作答，含「目前沒有」）。
+   * 資料中心正規化會去除空白網站帳號列，validate31 的列號與畫面不一致，因此網站帳號列一律以 answerRules31（畫面順序）為準。
+   */
+  function allRules() {
+    return S3.validate31(norm()).filter(function (m) { return !/^resources\.sites\.\d+\./.test(m.path); }).concat(S3.answerRules31(A));
+  }
+  /** 題目對應畫面位置：view、box（標示範圍）、focus（聚焦欄位）、pre（切換分頁） */
+  function fieldOf(path) {
+    var s = String(path || ''), p = s.split('.'), sid = sectionOfPath(s);
+    var q = function (sel) { return sel ? function () { return document.querySelector(sel); } : null; };
+    var up = function (sel, cl) { return function () { var n = document.querySelector(sel); return n && (n.closest(cl) || n); }; };
+    var K = function (k) { return '[data-k="' + k + '"]'; };
+    var f = { view: sid, box: null, focus: null, pre: null };
+    if (p[0] === 'student') { f.box = up(p[1] === 'name' ? '#f-name' : '#f-account', '.field'); f.focus = q(p[1] === 'name' ? '#f-name' : '#f-account'); }
+    else if (p[0] === 'business') {
+      f.box = q({ name: '#s-name', industryCode: '#s-industry', industryOther: '#s-industry', stage: '#s-stage', incomes: '#s-incomes', incomeOther: '#s-incomes', mainIncome: '#s-main', otherRoles: '#s-other' }[p[1]] || '#s-name');
+      f.focus = q({ name: '#f-name-biz', industryCode: K('ind-sel'), industryOther: '#f-industryOther', incomeOther: '#f-incomeOther', otherRoles: '#f-otherRoles' }[p[1]]);
+    } else if (p[0] === 'duties') f.box = q(p[1] === 'handover' ? '#s-handover' : '#s-duties');
+    else if (p[0] === 'steps') {
+      f.box = q(p.length === 1 ? '.cols3' : '#case-' + p[1]);
+      f.focus = q({ name: '#f-task-name', role: '#f-lead-role', sources: '[data-k^="src-"]', channels: '[data-k^="ch-"]', cycle: '#case-receive .seg button' }[p[2]] || (p.length > 1 ? K('none-' + p[1]) : null));
+    } else if (p[0] === 'authority') {
+      if (p[1] === 'askTargets' || p[1] === 'askOther') { f.box = q('#s-ask'); f.focus = q(p[1] === 'askOther' ? '#f-askOther' : '[data-k^="ask-"]'); }
+      else { f.box = up(K('pl-' + p[1]), '.pr'); f.focus = q(K('pl-' + p[1])); }
+    } else if (p[0] === 'resources') {
+      var tab = p[1] === 'dataGroup' ? 'data' : p[1] === 'sites' ? 'sites' : 'tools';
+      f.pre = function () { UI.resTab = tab; };
+      if (p[1] === 'dataGroup') { f.box = q('#dg-' + p[2]); f.focus = q('#dg-' + p[2] + ' .row.todo button'); }
+      else if (p[1] === 'sites' && p.length === 2) { f.box = q('#s-sites'); f.focus = q(K('sites-none')); }
+      else if (p[1] === 'sites') { var k = '#site' + p[2]; f.box = up(k + '-url', '.card'); f.focus = q({ platformOther: k + '-po', uses: '[data-k^="site' + p[2] + '-u-"]', plannedUse: k + '-use', progress: k + '-prog' }[p[3]] || k + '-url'); }
+      else if (p[1] === 'tools') { f.box = q('#tg-' + p[2]); f.focus = q(K('tg-none-' + p[2])); }
+      else if (p[1] === 'toolDetail') { f.box = up('#tl' + p[2] + '-use', '.card'); f.focus = q('#tl' + p[2] + ({ progress: '-prog' }[p[3]] || '-use')); }
+      else if (p[1] === 'companySystemName') { f.box = up('#f-csys', '.field'); f.focus = q('#f-csys'); }
+    }
+    return f;
+  }
+  function allIssues() {
+    var by = issuesBy();
+    return ['identity', 'business', 'duties', 'steps', 'authority', 'resources'].reduce(function (o, id) { return o.concat(by[id]); }, []);
+  }
+  var FORM_VIEWS = ['identity', 'business', 'duties', 'steps', 'authority', 'resources'];
+  /** 就地標示未完成欄位（按下一步或補填模式後） */
+  function markIssues() {
+    if (!app) return;
+    Array.prototype.forEach.call(app.querySelectorAll('.fix-msg'), function (n) { n.remove(); });
+    Array.prototype.forEach.call(app.querySelectorAll('.fix-bad'), function (n) { n.classList.remove('fix-bad'); });
+    if (UI.errView !== UI.view || FORM_VIEWS.indexOf(UI.view) < 0) return;
+    (issuesBy()[UI.view] || []).forEach(function (m) {
+      var f = fieldOf(m.path), el = f.box && f.box();
+      if (!el) return;
+      el.classList.add('fix-bad');
+      var msg = h('p', { class: 'fix-msg', 'data-fix': m.path }, ic('alert', 'sm'), h('span', null, m.message));
+      if (el.classList.contains('pr')) el.parentNode.insertBefore(msg, el.nextSibling); else el.appendChild(msg);
+    });
+  }
+  function flashEl(el, focusFn) {
+    el.scrollIntoView({ block: 'center', behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+    el.classList.remove('fix-flash'); void el.offsetWidth; el.classList.add('fix-flash');
+    var t = (focusFn && focusFn()) || el.querySelector('input,textarea,button:not([disabled]),a[href]');
+    if (t && t.focus) t.focus({ preventScroll: true });
+  }
+  /** 本頁還有未完成的題目：就地標示並捲到第一個，不前進 */
+  function pageBlocked() {
+    var v = UI.view, list = issuesBy()[v] || [];
+    if (!list.length) return false;
+    UI.errView = v;
+    var f0 = fieldOf(list[0].path); if (f0.pre) f0.pre();
+    rerender();
+    var marked = app.querySelectorAll('.fix-bad'), first = marked[0];
+    var f = first ? null : f0;
+    if (first) list.some(function (m) { var g = fieldOf(m.path); if (g.box && g.box() === first) { f = g; return true; } return false; });
+    if (first) flashEl(first, f && f.focus);
+    toast('本頁還有 ' + list.length + ' 題未完成，請學姊每一題都作答', { cls: 'err' });
+    return true;
+  }
+  /** 從待補清單前往：進入補填模式 */
+  function jumpTo(m) {
+    var f = fieldOf(m.path);
+    UI.fix = { path: m.path }; UI.errView = f.view;
+    if (f.pre) f.pre();
+    if (UI.view !== f.view) go(f.view); else rerender();
+    setTimeout(function () { var el = f.box && f.box(); if (el) flashEl(el, f.focus); }, 80);
+  }
+  function fixBar() {
+    if (!UI.fix || UI.suppEdit || FORM_VIEWS.indexOf(UI.view) < 0) return null;
+    var rest = allIssues(), at = -1;
+    rest.forEach(function (m, n) { if (at < 0 && m.path === UI.fix.path) at = n; });
+    var nextM = at >= 0 ? (rest[at + 1] || rest.filter(function (m) { return m.path !== UI.fix.path; })[0]) : rest[0];
+    return h('div', { class: 'fixbar', id: 'fixbar', role: 'region', 'aria-label': '補填' }, h('div', { class: 'in' },
+      h('small', { id: 'fix-left' }, rest.length ? '尚有 ' + rest.length + ' 項待補' : '待補項目已完成'),
+      h('div', { class: 'b' },
+        nextM ? h('button', { type: 'button', class: 'btn sec', id: 'fix-next', onclick: function () { jumpTo(nextM); } }, '下一個待補', ic('chev', 'sm')) : null,
+        h('button', { type: 'button', class: 'btn pri', id: 'fix-back', onclick: function () { UI.fix = null; UI.errView = null; go('place', '#submit-btn'); } }, ic('send', 'sm'), '回到送出'))));
+  }
+  function paintFix() {
+    var old = document.getElementById('fixbar'), n = fixBar();
+    if (old) old.remove();
+    if (n) document.body.appendChild(n);
+    document.body.classList.toggle('has-fix', !!n);
+  }
+  function pageTodo() {
+    var v = UI.view;
+    if (FORM_VIEWS.indexOf(v) < 1 || UI.suppEdit) return null;
+    var n = (issuesBy()[v] || []).length;
+    if (!n) return null;
+    var hard = UI.errView === v;
+    return h('div', { class: 'note ' + (hard ? 'err' : 'info') + ' page-todo', id: 'page-todo', role: 'status' }, ic(hard ? 'alert' : 'info'),
+      h('div', null, h('b', null, '本頁還有 ' + n + ' 題未完成'), '請學姊每一題都作答，沒有的請選「目前沒有」。'));
   }
   function plan() { return S3.folderPlan31(A); }
   function cntOf(id) {
@@ -10209,6 +10515,8 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
   function idx(v) { return ORDER.indexOf(v); }
   function gated(v) { return idx(v) >= 2 && v !== 'done' && !UI.idOk; }
   function go(v, focusSel) {
+    if (UI.view === 'place' || UI.view === 'supplement') flushLinks();
+    if (v === 'place' || v === 'intro' || v === 'done' || v === 'supplement') { UI.fix = null; if (v !== 'place') UI.errView = null; }
     if (v === 'supplement') { if (!UI.idOk || !SUP.req) v = UI.idOk ? 'identity' : 'identity'; }
     else if (idx(v) < 0) v = 'intro';
     if (gated(v)) v = 'identity';
@@ -10244,12 +10552,24 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
     var VIEWS = { supplement: viewSupplement, intro: viewIntro, identity: viewIdentity, business: viewBusiness, duties: viewDuties, steps: viewSteps, authority: viewAuthority, resources: viewResources, place: viewPlace, done: viewDone };
     var main = (VIEWS[v] || viewIntro)();
     if (UI.enter) main.classList.add('enter');
+    placeTodo(main);
     app.appendChild(main);
+    markIssues();
+    paintFix();
     if (v !== 'place' || A.drive.mode) app.appendChild(foot());
     DL.paint();
     XA.setName(trim(A.student.name));
   }
+  /** 「本頁還有 N 題未完成」置於頁首說明下方 */
+  function placeTodo(main) {
+    var old = main.querySelector('#page-todo'); if (old) old.remove();
+    var n = pageTodo(); if (!n) return;
+    var at = main.querySelector('p.lead') || main.querySelector('h1');
+    if (at && at.parentNode === main) main.insertBefore(n, at.nextSibling); else main.insertBefore(n, main.firstChild);
+  }
   function paintTop() {
+    var m = app.querySelector('main'); if (m) placeTodo(m);
+    paintFix();
     var t = app.querySelector('header.top'); if (!t) return;
     var n = topBar(idx(UI.view));
     t.parentNode.replaceChild(n[0], t);
@@ -10266,7 +10586,12 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
         h('small', null, h('span', { class: 'mono' }, (i + 1) + '／' + PAGES.length), '　', storageOk ? h('span', { class: 'ok' }, '已儲存', ic('check', 'sm')) : '暫存未啟用')),
       sndBtn(),
       UI.suppEdit ? null : h('div', { class: 'ring', role: 'progressbar', 'aria-label': '整體完成度', 'aria-valuemin': '0', 'aria-valuemax': '100', 'aria-valuenow': String(pct) }, svg, h('span', { 'aria-hidden': 'true' }, pct + '%')));
-    var rail = h('div', { class: 'rail', 'aria-hidden': 'true' }, PAGES.map(function (p, k) { return h('i', { class: k < i ? 'on' : k === i ? 'cur' : '' }); }));
+    var rail = h('nav', { class: 'rail', 'aria-label': '作業步驟' }, PAGES.map(function (p, k) {
+      var v = ORDER[k], bar = h('i', { class: k < i ? 'on' : k === i ? 'cur' : '' });
+      var can = k !== i && v !== 'done' && v !== 'intro' && UI.visited && UI.visited[v] && !gated(v) && !UI.suppEdit;
+      return can ? h('button', { type: 'button', class: 'rs', 'data-k': 'rail-' + v, 'aria-label': '前往' + p.label, title: p.label, onclick: function () { go(v); } }, bar)
+        : h('span', { class: 'rs', 'aria-current': k === i ? 'step' : null, title: p.label }, bar);
+    }));
     return [top, rail];
   }
   function flow(steps, cur, cap) {
@@ -10284,7 +10609,7 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
     if (UI.suppEdit) return suppEditActions();
     var i = idx(UI.view);
     return h('div', { class: 'actions' }, opt.pre || null,
-      nextView ? h('button', { type: 'button', class: 'btn pri', id: 'next-btn', disabled: !!opt.dis, onclick: function () { go(nextView); } }, nextLabel, ic('arr')) : null,
+      nextView ? h('button', { type: 'button', class: 'btn pri', id: 'next-btn', disabled: !!opt.dis, onclick: function () { if (pageBlocked()) return; go(nextView); } }, nextLabel, ic('arr')) : null,
       i > 1 ? h('button', { type: 'button', class: 'btn txt', onclick: function () { go(ORDER[i - 1]); } }, ic('back'), '返回上一頁') : null);
   }
   function foot() {
@@ -10365,18 +10690,140 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
   /* ================================================================ */
   /* 還有其他想補充（ExtraAsk）：手機底部抽屜、電腦置中                         */
   /* ================================================================ */
+  /* ================================================================ */
+  /* QR Code 產生（內嵌、離線可用；位元組模式，自動選版本與遮罩）       */
+  /* ================================================================ */
+  var QR = (function () {
+    var ECC = { L: [7, 10, 15, 20, 26, 18, 20, 24, 30, 18, 20, 24, 26, 30, 22, 24, 28, 30, 28, 28, 28, 28, 30, 30, 26, 28, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30],
+      M: [10, 16, 26, 18, 24, 16, 18, 22, 22, 26, 30, 22, 22, 24, 24, 28, 28, 26, 26, 26, 26, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28] };
+    var BLK = { L: [1, 1, 1, 1, 1, 2, 2, 2, 2, 4, 4, 4, 4, 4, 6, 6, 6, 6, 7, 8, 8, 9, 9, 10, 12, 12, 12, 13, 14, 15, 16, 17, 18, 19, 19, 20, 21, 22, 24, 25],
+      M: [1, 1, 1, 2, 2, 4, 4, 4, 5, 5, 5, 8, 9, 9, 10, 10, 11, 13, 14, 16, 17, 17, 18, 20, 21, 23, 25, 26, 28, 29, 31, 33, 35, 37, 38, 40, 43, 45, 47, 49] };
+    var FMT = { L: 1, M: 0 };
+    var MASK = [function (x, y) { return (x + y) % 2 === 0; }, function (x, y) { return y % 2 === 0; }, function (x) { return x % 3 === 0; }, function (x, y) { return (x + y) % 3 === 0; },
+      function (x, y) { return (Math.floor(x / 3) + Math.floor(y / 2)) % 2 === 0; }, function (x, y) { return x * y % 2 + x * y % 3 === 0; },
+      function (x, y) { return (x * y % 2 + x * y % 3) % 2 === 0; }, function (x, y) { return ((x + y) % 2 + x * y % 3) % 2 === 0; }];
+    function rawMods(v) { var r = (16 * v + 128) * v + 64; if (v >= 2) { var n = Math.floor(v / 7) + 2; r -= (25 * n - 10) * n - 55; if (v >= 7) r -= 36; } return r; }
+    function dataCw(v, e) { return Math.floor(rawMods(v) / 8) - ECC[e][v - 1] * BLK[e][v - 1]; }
+    function utf8(s) {
+      if (window.TextEncoder) return Array.prototype.slice.call(new TextEncoder().encode(s));
+      var u = unescape(encodeURIComponent(s)), o = []; for (var i = 0; i < u.length; i++) o.push(u.charCodeAt(i)); return o;
+    }
+    function mul(x, y) { var z = 0; for (var i = 7; i >= 0; i--) { z = (z << 1) ^ ((z >>> 7) * 0x11D); z ^= ((y >>> i) & 1) * x; } return z & 0xFF; }
+    function divisor(deg) {
+      var r = [], root = 1, i, j; for (i = 0; i < deg - 1; i++) r.push(0); r.push(1);
+      for (i = 0; i < deg; i++) { for (j = 0; j < r.length; j++) { r[j] = mul(r[j], root); if (j + 1 < r.length) r[j] ^= r[j + 1]; } root = mul(root, 2); }
+      return r;
+    }
+    function remainder(data, div) {
+      var r = div.map(function () { return 0; });
+      data.forEach(function (b) { var f = b ^ r.shift(); r.push(0); div.forEach(function (c, i) { r[i] ^= mul(c, f); }); });
+      return r;
+    }
+    function encode(text) {
+      var bytes = utf8(text), ver, ecl = 'L', i, j, k;
+      var need = function (v) { return 4 + (v <= 9 ? 8 : 16) + bytes.length * 8; };
+      for (ver = 1; ver <= 40; ver++) if (need(ver) <= dataCw(ver, 'L') * 8) break;
+      if (ver > 40) return null;
+      if (need(ver) <= dataCw(ver, 'M') * 8) ecl = 'M';
+      var bb = [], put = function (val, len) { for (var q = len - 1; q >= 0; q--) bb.push((val >>> q) & 1); };
+      put(4, 4); put(bytes.length, ver <= 9 ? 8 : 16); bytes.forEach(function (b) { put(b, 8); });
+      var cap = dataCw(ver, ecl) * 8;
+      put(0, Math.min(4, cap - bb.length)); put(0, (8 - bb.length % 8) % 8);
+      for (var pad = 0xEC; bb.length < cap; pad ^= 0xEC ^ 0x11) put(pad, 8);
+      var data = []; for (i = 0; i < bb.length; i += 8) { var v8 = 0; for (j = 0; j < 8; j++) v8 = (v8 << 1) | bb[i + j]; data.push(v8); }
+      var nb = BLK[ecl][ver - 1], el = ECC[ecl][ver - 1], raw = Math.floor(rawMods(ver) / 8), nShort = nb - raw % nb, sLen = Math.floor(raw / nb);
+      var blocks = [], div = divisor(el); k = 0;
+      for (i = 0; i < nb; i++) { var dat = data.slice(k, k + sLen - el + (i < nShort ? 0 : 1)); k += dat.length; var ec = remainder(dat, div); if (i < nShort) dat.push(0); blocks.push(dat.concat(ec)); }
+      var cw = []; for (i = 0; i < blocks[0].length; i++) for (j = 0; j < nb; j++) if (i !== sLen - el || j >= nShort) cw.push(blocks[j][i]);
+      var size = ver * 4 + 17, m = [], fn = [];
+      for (i = 0; i < size; i++) { m.push([]); fn.push([]); for (j = 0; j < size; j++) { m[i].push(false); fn[i].push(false); } }
+      var set = function (x, y, d) { m[y][x] = d; fn[y][x] = true; };
+      for (i = 0; i < size; i++) { set(6, i, i % 2 === 0); set(i, 6, i % 2 === 0); }
+      var finder = function (cx, cy) { for (var dy = -4; dy <= 4; dy++) for (var dx = -4; dx <= 4; dx++) { var d = Math.max(Math.abs(dx), Math.abs(dy)), x = cx + dx, y = cy + dy; if (x >= 0 && x < size && y >= 0 && y < size) set(x, y, d !== 2 && d !== 4); } };
+      finder(3, 3); finder(size - 4, 3); finder(3, size - 4);
+      var al = [];
+      if (ver > 1) { var na = Math.floor(ver / 7) + 2, step = ver === 32 ? 26 : Math.ceil((ver * 4 + 4) / (na * 2 - 2)) * 2; al = [6]; for (var pos = size - 7; al.length < na; pos -= step) al.splice(1, 0, pos); }
+      al.forEach(function (a, ai) { al.forEach(function (b, bi) {
+        if ((ai === 0 && bi === 0) || (ai === 0 && bi === al.length - 1) || (ai === al.length - 1 && bi === 0)) return;
+        for (var dy = -2; dy <= 2; dy++) for (var dx = -2; dx <= 2; dx++) set(a + dx, b + dy, Math.max(Math.abs(dx), Math.abs(dy)) !== 1);
+      }); });
+      var fmt = function (mask) {
+        var d = FMT[ecl] << 3 | mask, r = d, q; for (q = 0; q < 10; q++) r = (r << 1) ^ ((r >>> 9) * 0x537);
+        var b = (d << 10 | r) ^ 0x5412, g = function (n) { return ((b >>> n) & 1) !== 0; };
+        for (q = 0; q <= 5; q++) set(8, q, g(q)); set(8, 7, g(6)); set(8, 8, g(7)); set(7, 8, g(8)); for (q = 9; q < 15; q++) set(14 - q, 8, g(q));
+        for (q = 0; q < 8; q++) set(size - 1 - q, 8, g(q)); for (q = 8; q < 15; q++) set(8, size - 15 + q, g(q)); set(8, size - 8, true);
+      };
+      fmt(0);
+      if (ver >= 7) { var rv = ver; for (i = 0; i < 12; i++) rv = (rv << 1) ^ ((rv >>> 11) * 0x1F25); var vb = ver << 12 | rv; for (i = 0; i < 18; i++) { var bit = ((vb >>> i) & 1) !== 0, xa = size - 11 + i % 3, xb = Math.floor(i / 3); set(xa, xb, bit); set(xb, xa, bit); } }
+      var bi = 0;
+      for (var right = size - 1; right >= 1; right -= 2) {
+        if (right === 6) right = 5;
+        for (var vert = 0; vert < size; vert++) for (j = 0; j < 2; j++) {
+          var x = right - j, up = ((right + 1) & 2) === 0, y = up ? size - 1 - vert : vert;
+          if (!fn[y][x] && bi < cw.length * 8) { m[y][x] = ((cw[bi >>> 3] >>> (7 - (bi & 7))) & 1) !== 0; bi++; }
+        }
+      }
+      var apply = function (n) { for (var yy = 0; yy < size; yy++) for (var xx = 0; xx < size; xx++) if (!fn[yy][xx] && MASK[n](xx, yy)) m[yy][xx] = !m[yy][xx]; };
+      var penalty = function () {
+        var p = 0, dark = 0, t, ln, q, yy, xx;
+        for (t = 0; t < 2; t++) {
+          var g = t ? function (a, l) { return m[a][l]; } : function (a, l) { return m[l][a]; };
+          for (ln = 0; ln < size; ln++) {
+            var run = 1;
+            for (q = 1; q < size; q++) { if (g(q, ln) === g(q - 1, ln)) { run++; if (run === 5) p += 3; else if (run > 5) p++; } else run = 1; }
+            for (q = 0; q + 6 < size; q++) if (g(q, ln) && !g(q + 1, ln) && g(q + 2, ln) && g(q + 3, ln) && g(q + 4, ln) && !g(q + 5, ln) && g(q + 6, ln)) {
+              var before = true, after = true; for (var z = 1; z <= 4; z++) { if (q - z >= 0 && g(q - z, ln)) before = false; if (q + 6 + z < size && g(q + 6 + z, ln)) after = false; }
+              if (before || after) p += 40;
+            }
+          }
+        }
+        for (yy = 0; yy < size - 1; yy++) for (xx = 0; xx < size - 1; xx++) { var c = m[yy][xx]; if (c === m[yy][xx + 1] && c === m[yy + 1][xx] && c === m[yy + 1][xx + 1]) p += 3; }
+        for (yy = 0; yy < size; yy++) for (xx = 0; xx < size; xx++) if (m[yy][xx]) dark++;
+        var tot = size * size; p += Math.floor(Math.abs(dark * 20 - tot * 10) / tot) * 10;
+        return p;
+      };
+      var best = 0, bestP = Infinity;
+      for (k = 0; k < 8; k++) { apply(k); fmt(k); var pp = penalty(); if (pp < bestP) { bestP = pp; best = k; } apply(k); }
+      apply(best); fmt(best);
+      return { size: size, ver: ver, ecl: ecl, mask: best, get: function (xx, yy) { return m[yy][xx]; } };
+    }
+    /** SVG（白底黑點、四格靜區）；超出容量回傳 null */
+    function svg(text) {
+      var q = encode(text); if (!q) return null;
+      var n = q.size + 8, d = '';
+      for (var y = 0; y < q.size; y++) for (var x = 0; x < q.size; x++) if (q.get(x, y)) d += 'M' + (x + 4) + ' ' + (y + 4) + 'h1v1h-1z';
+      var NS = 'http://www.w3.org/2000/svg', s = document.createElementNS(NS, 'svg');
+      s.setAttribute('viewBox', '0 0 ' + n + ' ' + n); s.setAttribute('shape-rendering', 'crispEdges'); s.setAttribute('role', 'img');
+      s.innerHTML = '<rect width="' + n + '" height="' + n + '" fill="#fff"/><path fill="#000" d="' + d + '"/>';
+      return { el: s, modules: n, ver: q.ver, ecl: q.ecl };
+    }
+    return { encode: encode, svg: svg };
+  })();
+
   var XA = (function () {
     var KIND = {
       multi: { title: '想新增的選項', verb: '還想新增', desc: '清單中沒有的項目，請學姊直接告訴官方，官方會協助加入。', ph: '例如：直播帶貨流程' },
       upload: { title: '想上傳的資料', verb: '還想上傳', desc: '分類中沒有涵蓋的資料，請學姊直接告訴官方，官方會協助安排放入位置。', ph: '例如：客戶理賠案例整理' },
       'case': { title: '想補充的狀況', verb: '還想補充', desc: '步驟或規則中沒有涵蓋的狀況，請學姊直接告訴官方。', ph: '例如：客人臨時改期時的處理方式' }
     };
-    var MAX = 200, st = { name: '', path: '', kind: 'multi', from: null }, root, panel, inp, bub, cnt, send, titleEl, pathEl, descEl;
+    var MAX = 200, st = { name: '', path: '', kind: 'multi', from: null, msg: '' }, root, panel, inp, bub, cnt, send, titleEl, pathEl, descEl, form, desk, note;
     function message(name, path, kind, text) { return '親愛的官方，我是' + name + '。我在《諮詢前置作業》的〔' + path + '〕' + KIND[kind].verb + '：' + text; }
-    function url(msg) { return 'https://line.me/R/oaMessage/' + OA + '/?' + encodeURIComponent(msg); }
+    /** 手機：LINE App 開啟官方帳號對話並帶入訊息 */
+    function url(msg) { return 'https://line.me/R/oaMessage/' + encodeURIComponent(CONFIG.lineOaId) + '/?' + encodeURIComponent(msg); }
+    /** 電腦：LINE 電腦版 */
+    function desktopUrl(msg) { return 'line://oaMessage/' + CONFIG.lineOaId + '/?' + encodeURIComponent(msg); }
     function button(path, kind, row) {
       var b = h('button', { type: 'button', class: 'xa-btn', 'aria-haspopup': 'dialog', 'data-xa-path': path, 'data-xa-kind': kind || 'multi', 'data-k': 'xa-' + path, onclick: function () { open({ path: path, kind: kind, from: b }); } }, lineIcon(), '還有其他想補充');
       return row ? h('div', { class: 'xa-row' + (row === 'div' ? ' div' : '') }, b) : b;
+    }
+    function copyText(t) {
+      function legacy() {
+        var ta = h('textarea', { 'aria-hidden': 'true', style: 'position:fixed;top:-1000px;opacity:0' }); ta.value = t; document.body.appendChild(ta); ta.select();
+        var ok = false; try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+        ta.remove(); if (!ok) throw new Error('copy'); return true;
+      }
+      if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(t).then(function () { return true; }, function () { return legacy(); });
+      return new Promise(function (res) { res(legacy()); });
     }
     function build() {
       inp = h('textarea', { id: 'xa-inp', class: 'xa-inp', rows: '3', maxlength: String(MAX), oninput: paint });
@@ -10384,32 +10831,79 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
       cnt = h('span', { class: 'xa-cnt' }, '0');
       send = h('button', { type: 'button', class: 'btn pri xa-send', id: 'xa-send', disabled: true, onclick: function () {
         var t = trim(inp.value); if (!t) return;
-        var u = url(message(st.name, st.path, st.kind, t));
+        st.msg = message(st.name, st.path, st.kind, t);
+        if (!isMobileDevice()) { showDesk(); return; }
+        var u = url(st.msg);
         window.__lastLineUrl = u;
         window.open(u, '_blank', 'noopener');
         close();
         toast('已開啟 LINE，請學姊在 LINE 中按下送出', { cls: 'ok' });
       } }, lineIcon(), '傳給官方 LINE');
       titleEl = h('h2', { id: 'xa-title' }); pathEl = h('span', { class: 'xa-path', id: 'xa-path' }); descEl = h('p', { class: 'xa-desc', id: 'xa-desc' });
-      panel = h('div', { class: 'xa-panel', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'xa-title', 'aria-describedby': 'xa-desc' },
-        h('div', { class: 'xa-grab', 'aria-hidden': 'true' }),
-        h('div', { class: 'xa-hd' }, h('div', { class: 'xa-t' }, titleEl, pathEl), h('button', { type: 'button', class: 'xa-x', 'aria-label': '關閉', onclick: close }, ic('x'))),
-        descEl,
+      note = h('p', { class: 'xa-note', id: 'xa-note' });
+      form = h('div', { id: 'xa-form' },
         h('label', { class: 'xa-lbl', for: 'xa-inp' }, h('span', null, '補充內容'), h('span', { class: 'mono' }, cnt, '／' + MAX)),
         inp,
         h('div', { class: 'xa-pv', 'aria-live': 'polite' }, h('div', { class: 'xa-pv-l' }, '傳出訊息預覽'), bub, h('div', { class: 'xa-to' }, lineIcon(), '傳送至 G.R.A.C.E 官方 LINE')),
-        h('div', { class: 'xa-act' }, send, h('button', { type: 'button', class: 'btn sec', onclick: close }, '取消'), h('p', { class: 'xa-note' }, '將開啟 LINE 並帶入訊息，請學姊在 LINE 中按下送出。')));
+        h('div', { class: 'xa-act' }, send, h('button', { type: 'button', class: 'btn sec', onclick: close }, '取消'), note));
+      desk = h('div', { id: 'xa-desk', class: 'xa-desk', hidden: true });
+      panel = h('div', { class: 'xa-panel', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'xa-title', 'aria-describedby': 'xa-desc' },
+        h('div', { class: 'xa-grab', 'aria-hidden': 'true' }),
+        h('div', { class: 'xa-hd' }, h('div', { class: 'xa-t' }, titleEl, pathEl), h('button', { type: 'button', class: 'xa-x', 'aria-label': '關閉', onclick: close }, ic('x'))),
+        descEl, form, desk);
       root = h('div', { class: 'xa-scrim', id: 'xa', hidden: true, onclick: function (e) { if (e.target === root) close(); } }, panel);
       document.body.appendChild(root);
       document.addEventListener('keydown', function (e) {
         if (root.hidden) return;
         if (e.key === 'Escape') { e.preventDefault(); close(); }
         if (e.key === 'Tab') {   // 焦點留在小視窗內
-          var f = panel.querySelectorAll('button:not([disabled]),textarea'), first = f[0], last = f[f.length - 1];
+          var f = Array.prototype.filter.call(panel.querySelectorAll('button:not([disabled]),textarea,a[href]'), function (n) { return n.offsetParent !== null; }), first = f[0], last = f[f.length - 1];
           if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
           else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
         }
       });
+    }
+    /** 電腦：QR Code（手機掃描開啟 LINE）＋複製訊息＋開啟 LINE 電腦版 */
+    function showDesk() {
+      var mUrl = url(st.msg), dUrl = desktopUrl(st.msg);
+      window.__lastLineUrl = mUrl;
+      desk.innerHTML = '';
+      var q = QR.svg(mUrl), qBox;
+      if (q) {
+        q.el.setAttribute('aria-label', 'LINE 訊息 QR Code'); q.el.id = 'xa-qr-svg';
+        var px = Math.max(184, Math.min(300, q.modules * 3));
+        q.el.style.width = px + 'px';
+        qBox = h('div', { class: 'xa-qr', id: 'xa-qr', 'data-url': mUrl, 'data-ver': String(q.ver) }, h('div', { class: 'qbox' }, q.el), h('small', null, '官方帳號 ' + CONFIG.lineOaId));
+      } else {
+        qBox = h('div', { class: 'note warn', id: 'xa-qr' }, ic('info'), h('div', null, '訊息較長，請學姊使用下方「複製訊息」，貼到官方帳號對話傳送。'));
+      }
+      var hint = h('div', { class: 'note warn xa-hint', id: 'xa-desk-hint', role: 'status', hidden: true }, ic('info'), h('div', null, '若 LINE 電腦版沒有開啟，請學姊改用手機掃描，或複製訊息後貼到官方帳號 ' + CONFIG.lineOaId + ' 的對話。'));
+      var copyBtn = h('button', { type: 'button', class: 'btn sec', id: 'xa-copy', onclick: function () {
+        copyText(st.msg).then(function () {
+          copyBtn.classList.add('done'); copyBtn.lastChild.textContent = '已複製';
+          toast('已複製訊息，請學姊貼到官方帳號 ' + CONFIG.lineOaId + ' 的對話', { cls: 'ok' });
+          setTimeout(function () { copyBtn.classList.remove('done'); copyBtn.lastChild.textContent = '複製訊息'; }, 2400);
+        }, function () { toast('無法自動複製，請學姊選取預覽訊息後手動複製', { cls: 'err' }); });
+      } }, ic('copy', 'sm'), h('span', null, '複製訊息'));
+      var deskBtn = h('a', { class: 'btn sec', id: 'xa-open-desk', href: dUrl, onclick: function () {
+        window.__lastLineDesktopUrl = dUrl;
+        var left = false, mark = function () { left = true; };
+        window.addEventListener('blur', mark, { once: true });
+        document.addEventListener('visibilitychange', mark, { once: true });
+        setTimeout(function () { window.removeEventListener('blur', mark); document.removeEventListener('visibilitychange', mark); if (!left && !root.hidden) hint.hidden = false; }, 1500);
+      } }, lineIcon(), h('span', null, '開啟 LINE 電腦版'));
+      add(desk, [qBox,
+        h('div', { class: 'xa-bub sm', id: 'xa-msg2' }, st.msg),
+        h('div', { class: 'xa-dk' }, copyBtn, deskBtn), hint,
+        h('div', { class: 'xa-act2' }, h('button', { type: 'button', class: 'btn txt', id: 'xa-back', onclick: function () { showForm(); inp.focus(); } }, ic('back', 'sm'), '返回修改'),
+          h('button', { type: 'button', class: 'btn pri', id: 'xa-done', onclick: close }, '完成'))]);
+      descEl.textContent = '請學姊用手機相機或 LINE 掃描 QR Code，會開啟官方帳號對話並帶入訊息，按下送出即可。';
+      form.hidden = true; desk.hidden = false; root.setAttribute('data-step', 'desk');
+      setTimeout(function () { copyBtn.focus(); }, 30);
+    }
+    function showForm() {
+      form.hidden = false; desk.hidden = true; desk.innerHTML = ''; root.setAttribute('data-step', 'form');
+      descEl.textContent = KIND[st.kind].desc;
     }
     function paint() {
       var t = trim(inp.value), k = KIND[st.kind];
@@ -10421,9 +10915,12 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
     function open(o) {
       if (!root) build();
       st.path = o.path; st.kind = KIND[o.kind] ? o.kind : 'multi'; st.from = o.from || null;
-      var k = KIND[st.kind];
-      titleEl.textContent = k.title; pathEl.textContent = '〔' + st.path + '〕'; descEl.textContent = k.desc;
+      var k = KIND[st.kind], mob = isMobileDevice();
+      titleEl.textContent = k.title; pathEl.textContent = '〔' + st.path + '〕';
       inp.placeholder = k.ph; inp.value = '';
+      showForm();
+      note.textContent = mob ? '將開啟 LINE 並帶入訊息，請學姊在 LINE 中按下送出。' : '下一步顯示 QR Code，請學姊用手機掃描後在 LINE 中按下送出。';
+      root.setAttribute('data-device', mob ? 'mobile' : 'desktop');
       paint(); root.hidden = false; root.setAttribute('data-kind', st.kind);
       document.documentElement.style.overflow = 'hidden';
       if (st.from) st.from.classList.add('pressed');
@@ -10432,9 +10929,10 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
     function close() {
       if (!root || root.hidden) return;
       root.hidden = true; document.documentElement.style.overflow = '';
+      if (desk) { desk.innerHTML = ''; desk.hidden = true; form.hidden = false; }
       if (st.from) { st.from.classList.remove('pressed'); if (document.contains(st.from)) st.from.focus(); }
     }
-    return { button: button, open: open, close: close, message: message, url: url, setName: function (n) { st.name = n || ''; } };
+    return { button: button, open: open, close: close, message: message, url: url, desktopUrl: desktopUrl, setName: function (n) { st.name = n || ''; } };
   })();
 
   /* ================================================================ */
@@ -10556,7 +11054,7 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
       fail ? h('div', { class: 'note err', style: 'margin-top:16px' }, ic('alert'), h('div', null, h('b', null, '無法進入下一步'), '學員帳號核對成功後，才能繼續填寫。')) : null,
       UI.idOk && SUP.avail ? suppAvailCard() : null,
       nav('前往經營項目', 'business', { dis: !UI.idOk }),
-      fail ? h('a', { class: 'btn sec', href: 'https://line.me/R/ti/p/' + OA, target: '_blank', rel: 'noopener', style: 'margin-top:4px;text-decoration:none' }, ic('chat'), '聯繫助教') : null);
+      fail ? h('a', { class: 'btn sec', href: 'https://line.me/R/ti/p/' + encodeURIComponent(CONFIG.lineOaId), target: '_blank', rel: 'noopener', style: 'margin-top:4px;text-decoration:none' }, ic('chat'), '聯繫助教') : null);
   }
 
   /* ================================================================ */
@@ -10647,8 +11145,9 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
         return h('button', { type: 'button', role: 'radio', 'aria-checked': String(on), class: 'chip' + (on ? ' star' : ''), 'data-k': 'main-' + id, onclick: function () { b.mainIncome = id; changed(); } },
           on ? ic('star', 'sm') : h('span', { class: 'bulb' }), id === 'other' && b.incomeOther ? '其他：' + b.incomeOther : x.label);
       })), null, 's-main') : null,
-      sec('其他身分或工作', OPT(), '', textInput({ id: 'f-otherRoles', get: function () { return b.otherRoles; }, set: function (v) { b.otherRoles = v; }, max: 60, ph: '例如：運動選手、公司職員、自由接案', icon: 'user' })),
-      nav('前往職務內容', 'duties', { pre: by.length ? h('p', { class: 'hint', style: 'text-align:center;margin:0' }, '尚有 ' + by.length + ' 項待填：' + by.map(function (m) { return m.label; }).join('、')) : null }));
+      sec('其他身分或工作', REQ(), '', [b.otherRolesNone ? null : textInput({ id: 'f-otherRoles', get: function () { return b.otherRoles; }, set: function (v) { b.otherRoles = v; if (trim(v)) b.otherRolesNone = false; }, max: 60, ph: '例如：運動選手、公司職員、自由接案', icon: 'user' }),
+        h('div', { class: 'chips', style: 'margin-top:10px' }, chip('目前沒有', !!b.otherRolesNone, function () { b.otherRolesNone = !b.otherRolesNone; if (b.otherRolesNone) b.otherRoles = ''; changed(); }, { k: 'none-otherRoles' }))], null, 's-other'),
+      nav('前往職務內容', 'duties'));
   }
 
   /* ================================================================ */
@@ -10799,7 +11298,7 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
         XA.button('實際步驟 › 接待客人 › 成交管道', 'multi', true));
       body.push(h('div', { class: 'group-lbl' }, '成交週期'), seg(c.cycles, st.cycle, function (id) { st.cycle = st.cycle === id ? '' : id; changed(); }, '成交週期', true));
     } else if (caseId === 'lead') {
-      body.push(field(c.roleLabel, OPT(), textInput({ id: 'f-lead-role', get: function () { return st.role; }, set: function (v) { st.role = v; }, max: 30, ph: '輸入對象職位', icon: 'users' }), c.roleHint, 'f-lead-role'));
+      body.push(field(c.roleLabel, REQ(), textInput({ id: 'f-lead-role', get: function () { return st.role; }, set: function (v) { st.role = v; }, max: 30, ph: '輸入對象職位', icon: 'users' }), c.roleHint, 'f-lead-role'));
     } else {
       body.push(field(c.nameLabel, REQ(), textInput({ id: 'f-task-name', get: function () { return st.name; }, set: function (v) { st.name = v; }, max: 40, ph: '輸入任務名稱', icon: 'flag' }), c.nameHint, 'f-task-name'));
     }
@@ -10816,7 +11315,7 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
     var hid = 'case-' + caseId + '-h';
     return h('section', { class: 'case' + (closed ? ' closed' : ''), id: 'case-' + caseId, 'aria-labelledby': hid },
       h('div', { class: 'case-h' }, h('span', { class: 'cic', 'aria-hidden': 'true' }, ic(iconName)), h('div', { class: 't' }, h('b', { id: hid }, c.label), h('small', null, c.sub)),
-        closed ? badge('已收合') : ready ? h('span', { class: 'badge ok' }, ic('check', 'sm'), '已整理') : badge('尚未整理', 'warn')),
+        closed ? badge('目前沒有') : ready ? h('span', { class: 'badge ok' }, ic('check', 'sm'), '已整理') : badge(st.stages.length ? '尚未整理' : '未作答', 'warn')),
       h('button', { type: 'button', class: 'none-toggle', role: 'switch', 'aria-checked': String(closed), 'data-k': 'none-' + caseId, onclick: function () { st.none = !st.none; UI.toolOpen = ''; changed(); } },
         h('span', null, c.noneLabel), h('span', { class: 'sp' }), h('span', { class: 'sw' + (closed ? ' on' : ''), 'aria-hidden': 'true' })),
       closed ? null : h('div', { class: 'case-b' }, body),
@@ -10900,13 +11399,18 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
   function resData() {
     var r = A.resources, d = r.data;
     var groups = RV.data.map(function (g) {
-      return h('div', null, h('div', { class: 'group-lbl' }, g.label), g.items.map(function (it) {
-        var e = d[it.id], on = !!(e && e.has);
-        var t = function () { if (on) delete d[it.id]; else d[it.id] = { has: true, source: 'self' }; changed(); };
-        return h('div', { class: 'row' + (on ? ' lit wrap' : '') },
+      var todo = g.items.filter(function (it) { var e = d[it.id]; return !e || (e.has !== true && e.has !== false); });
+      return h('div', { id: 'dg-' + g.id, class: 'dgrp' }, h('div', { class: 'group-lbl' }, g.label,
+          todo.length ? h('button', { type: 'button', class: 'rest-none', 'data-k': 'rest-none-' + g.id, onclick: function () { todo.forEach(function (it) { d[it.id] = { has: false }; }); changed(); } }, '其餘 ' + todo.length + ' 項標為沒有') : null),
+        g.items.map(function (it) {
+        var e = d[it.id], on = !!(e && e.has === true), no = !!(e && e.has === false);
+        var yes = function () { d[it.id] = on ? d[it.id] : { has: true, source: 'self' }; if (on) delete d[it.id]; changed(); };
+        return h('div', { class: 'row' + (on ? ' lit wrap' : '') + (!on && !no ? ' todo' : '') },
           h('span', { class: 'bulb' + (on ? ' on' : ''), 'aria-hidden': 'true' }),
           h('div', { class: 'nm' }, h('b', { id: 'dl-' + it.id }, it.label), it.example ? h('small', null, it.example) : null),
-          sw(on, it.label, t, 'sw-' + it.id),
+          h('div', { class: 'yn', role: 'radiogroup', 'aria-labelledby': 'dl-' + it.id },
+            h('button', { type: 'button', role: 'radio', 'aria-checked': String(on), class: on ? 'on' : '', 'data-k': 'sw-' + it.id, onclick: yes }, '有'),
+            h('button', { type: 'button', role: 'radio', 'aria-checked': String(no), class: no ? 'off' : '', 'data-k': 'no-' + it.id, onclick: function () { if (no) delete d[it.id]; else d[it.id] = { has: false }; changed(); } }, '沒有')),
           on ? h('div', { class: 'src' }, seg(RV.sourceOptions, e.source, function (id) { e.source = id; changed(); }, it.label + '來源')) : null);
       }));
     });
@@ -10946,8 +11450,10 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
         statusBlock(s, k, '網站帳號 ' + (i + 1)));
     });
     return [h('p', { class: 'hint' }, '請學姊每個平台填一列，並點選歸屬、用途與狀態；建置中或規劃中的網站也可以列出。'),
+      r.sites.length ? null : h('div', { id: 's-sites', class: 'chips', style: 'margin-bottom:12px' }, chip('目前沒有網站帳號', !!r.sitesNone, function () { r.sitesNone = !r.sitesNone; changed(); }, { k: 'sites-none' })),
       cards,
       r.sites.length < sc.max ? h('button', { type: 'button', class: 'btn sec', id: 'site-add', onclick: function () {
+        r.sitesNone = false;
         r.sites.push({ platform: '', platformOther: '', url: '', owner: 'self', uses: [], status: 'active', plannedUse: '', progress: '', planOwner: '' }); changed();
         var n = app.querySelectorAll('.site'); if (n.length) { var b = n[n.length - 1].querySelector('button.chip'); if (b) b.focus(); }
       } }, ic('plus'), '新增一列') : null,
@@ -10956,13 +11462,15 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
   function resTools() {
     var r = A.resources, t = r.tools;
     var groups = RV.tools.map(function (g) {
-      return h('div', null, h('div', { class: 'group-lbl' }, g.label), h('div', { class: 'chips', role: 'group', 'aria-label': g.label }, g.items.map(function (name) {
+      var tn = r.toolsNone = r.toolsNone || {}, anyOn = g.items.some(function (x) { return t[x]; });
+      if (anyOn && tn[g.id]) delete tn[g.id];
+      return h('div', { id: 'tg-' + g.id, class: 'dgrp' }, h('div', { class: 'group-lbl' }, g.label), h('div', { class: 'chips', role: 'group', 'aria-label': g.label }, anyOn ? null : chip('目前沒有', !!tn[g.id], function () { if (tn[g.id]) delete tn[g.id]; else tn[g.id] = true; changed(); }, { k: 'tg-none-' + g.id, cls: 'nochip' }), g.items.map(function (name) {
         var on = !!t[name];
         return h('button', { type: 'button', class: 'chip' + (on ? ' on' : ''), 'aria-pressed': String(on), 'data-k': 'tool-' + name, onclick: function () { if (on) delete t[name]; else t[name] = { source: g.id === 'company' ? 'company' : 'self', status: 'active', plannedUse: '', progress: '', planOwner: '' }; changed(); } },
           h('span', { class: 'bulb' + (on ? ' on' : ''), 'aria-hidden': 'true' }), name,
           on && t[name].status && t[name].status !== 'active' ? h('span', { class: 'badge warn', style: 'height:20px;margin-left:2px' }, S3.statusLabel31(t[name].status)) : null);
       })),
-      g.id === 'company' && g.items.some(function (n) { return t[n]; }) ? h('div', { class: 'field', style: 'margin-top:12px' }, h('label', { class: 'l', for: 'f-csys' }, g.systemNameLabel || '系統名稱', OPT()), textInput({ id: 'f-csys', get: function () { return r.companySystemName; }, set: function (v) { r.companySystemName = v; }, max: 40, ph: '例如：業務員行動投保系統', icon: 'tool' })) : null);
+      g.id === 'company' && g.items.some(function (n) { return t[n]; }) ? h('div', { class: 'field', style: 'margin-top:12px' }, h('label', { class: 'l', for: 'f-csys' }, g.systemNameLabel || '系統名稱', REQ()), textInput({ id: 'f-csys', get: function () { return r.companySystemName; }, set: function (v) { r.companySystemName = v; }, max: 40, ph: '例如：業務員行動投保系統', icon: 'tool' })) : null);
     });
     var litList = [];
     RV.tools.forEach(function (g) { g.items.forEach(function (name) { if (t[name]) litList.push({ name: name, e: t[name], group: g.label }); }); });
@@ -11281,6 +11789,28 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
     });
     rerender();
   }
+  /** 欄位中尚未加入的有效網址：離開頁面或送出前自動加入；回傳是否有加入 */
+  function flushLinks() {
+    if (!app) return false;
+    var any = false;
+    Array.prototype.forEach.call(app.querySelectorAll('input[data-item]'), function (inp) {
+      if (!inp.__plan || !trim(inp.value) || !S3.webUrl(inp.value)) return;
+      if (!addLink(inp.__plan, inp.value, inp.__name ? inp.__name.value : '')) { inp.value = ''; any = true; }
+    });
+    return any;
+  }
+  function pendingBadLink() {
+    if (!app) return null;
+    return Array.prototype.filter.call(app.querySelectorAll('input[data-item]'), function (inp) { return trim(inp.value) && !S3.webUrl(inp.value); })[0] || null;
+  }
+  /** 離開欄位時加入：等使用者的點擊完成後再重繪，避免吃掉點擊 */
+  var deferT = null;
+  function deferRerender() {
+    var done = false, run = function () { if (done) return; done = true; clearTimeout(deferT); document.removeEventListener('click', onClk, true); setTimeout(function () { if (UI.view === 'place' || UI.view === 'supplement') rerender(); }, 0); };
+    var onClk = function () { setTimeout(run, 0); };
+    document.addEventListener('click', onClk, true);
+    deferT = setTimeout(run, 700);
+  }
   function isGoogleUrl(u) { return /^https:\/\/(drive|docs)\.google\.com\//i.test(u); }
   function addLink(p, url, name) {
     var u = S3.webUrl(url);
@@ -11304,7 +11834,7 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
     confirmBox({ title: '「' + p.label + '」改為沒有', body: '改為沒有後，這一項不需要放入資料，資源清單中的點亮也會取消；雲端硬碟中已建立的資料夾會保留。', ok: '改為沒有' }).then(function (ok) {
       if (!ok) return;
       var prev = clone({ d: A.resources.data[p.itemId] || null, o: A.resources.dataOther, l: A.place.links[p.itemId] || null });
-      if (A.resources.data[p.itemId]) delete A.resources.data[p.itemId];
+      if (A.resources.data[p.itemId]) A.resources.data[p.itemId] = { has: false };   // 固定項目改為明確「沒有」（不是未作答）
       A.resources.dataOther = A.resources.dataOther.filter(function (x) { return x.id !== p.itemId; });
       delete A.place.links[p.itemId];
       changed();
@@ -11363,7 +11893,7 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
       var target = id === 'steps' && by[id][0] && /^steps\.(\w+)/.exec(by[id][0].path) ? '#case-' + /^steps\.(\w+)/.exec(by[id][0].path)[1] : null;
       return h('div', { class: 'chk' + (bad ? ' bad' : '') }, h('span', { class: 'st ' + (bad ? 'err' : 'ok'), 'aria-hidden': 'true' }, ic(bad ? 'alert' : 'check', 'sm')),
         h('div', { class: 't' }, h('b', null, SEC_LABEL[id]), h('small', null, bad ? by[id][0].message + (bad > 1 ? '（另有 ' + (bad - 1) + ' 項）' : '') : summaryText(id))),
-        h('button', { type: 'button', class: 'go', 'aria-label': '前往修改' + SEC_LABEL[id], onclick: function () { go(id, target); } }, '前往修改', ic('chev', 'sm')));
+        h('button', { type: 'button', class: 'go', 'aria-label': '前往修改' + SEC_LABEL[id], onclick: function () { if (bad) jumpTo(by[id][0]); else go(id, target); } }, '前往修改', ic('chev', 'sm')));
     }), null, 's-summary');
   }
   function driveMock(list, counts) {
@@ -11382,13 +11912,25 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
     var cloudBtn = h('button', { type: 'button', class: 'btn ' + (done ? 'sec' : 'pri'), 'data-k': 'pick-' + id, onclick: function () { pickInto(p, cloudBtn); } }, ic('cloud', 'sm'), '從雲端選擇');
     var upBtn = h('button', { type: 'button', class: 'btn sec', 'data-k': 'up-' + id, onclick: function () { fileIn.click(); } }, ic('upload', 'sm'), '從電腦或手機上傳');
     var linkOpen = UI.linkOpen === id, lerr = h('p', { class: 'err-t', role: 'alert', hidden: true });
-    var lu = h('input', { type: 'url', inputmode: 'url', id: 'lk-' + id, 'data-k': 'lk-' + id, placeholder: 'https://', 'aria-label': p.label + '：網址', onkeydown: function (e) { if (e.key === 'Enter') { e.preventDefault(); doLink(); } } });
-    var ln = h('input', { type: 'text', 'data-k': 'ln-' + id, maxlength: '80', placeholder: '名稱（選填）', 'aria-label': p.label + '：網址名稱（選填）' });
-    function doLink() {
+    var lu = h('input', { type: 'url', inputmode: 'url', id: 'lk-' + id, 'data-k': 'lk-' + id, placeholder: '貼上網址即自動加入', 'aria-label': p.label + '：網址（貼上即自動加入）', 'data-item': id, 'aria-describedby': 'lkh-' + id,
+      onkeydown: function (e) { if (e.key === 'Enter') { e.preventDefault(); doLink(true); } },
+      onpaste: function () { setTimeout(function () { if (S3.webUrl(lu.value)) doLink(true); }, 0); },
+      oninput: function () { if (!lerr.hidden) { lerr.hidden = true; lu.removeAttribute('aria-invalid'); } },
+      onblur: function (e) { if (e.relatedTarget && e.relatedTarget === lu.__name) return; if (trim(lu.value) && lu.isConnected) doLink(false); } });
+    lu.__plan = p;
+    var ln = h('input', { type: 'text', 'data-k': 'ln-' + id, maxlength: '80', placeholder: '名稱（選填）', 'aria-label': p.label + '：網址名稱（選填）',
+      onkeydown: function (e) { if (e.key === 'Enter') { e.preventDefault(); if (trim(lu.value)) doLink(true); } },
+      onblur: function (e) { if (e.relatedTarget === lu) return; if (trim(lu.value) && S3.webUrl(lu.value) && ln.isConnected) doLink(false); } });
+    lu.__name = ln;
+    /** 有效網址立即加入並顯示於下方；live＝焦點仍在欄位（貼上／Enter），否則延到點擊完成後再重繪 */
+    function doLink(live) {
+      if (!trim(lu.value)) return;
       var m = addLink(p, lu.value, ln.value);
-      if (m) { lerr.hidden = false; lerr.textContent = m; lu.focus(); return; }
-      UI.linkOpen = ''; rerender(); toast('網址已加入「' + p.label + '」', { cls: 'ok' });
-      var b = app.querySelector('[data-k="lkb-' + id + '"]'); if (b) b.focus();
+      if (m) { lerr.hidden = false; lerr.textContent = m; lu.setAttribute('aria-invalid', 'true'); if (live) lu.focus(); return; }
+      lu.value = ''; ln.value = '';
+      toast('網址已加入「' + p.label + '」', { cls: 'ok' });
+      if (live) { rerender(); var n2 = document.getElementById('lk-' + id); if (n2) n2.focus(); return; }
+      deferRerender();
     }
     var badgeEl = done ? h('span', { class: 'badge ok' }, ic('check', 'sm'), '已放入 ' + (n + links.length) + ' 個') : badge('尚未放入', first ? 'req' : '');
     var known = files.length;
@@ -11400,15 +11942,15 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
         files.map(function (f) { return h('div', null, ic(f.kind === 'shortcut' ? 'link' : 'check', 'sm'), h('span', { class: 'n' }, f.name)); }),
         n > known ? h('div', { class: 'cloud' }, ic('cloud', 'sm'), h('span', { class: 'n' }, '雲端資料夾中共 ' + n + ' 個項目')) : null,
         links.map(function (l, k) {
-          return h('div', { class: 'lk' }, ic('link', 'sm'), h('span', { class: 'n', title: l.url }, (l.name ? l.name + '　' : '') + l.url),
+          return h('div', { class: 'lk' }, ic('link', 'sm'), h('span', { class: 'n', title: l.url }, (l.name ? l.name + '　' : '') + l.url), h('span', { class: 'lk-ok' }, ic('check', 'sm'), '已加入'),
             h('button', { type: 'button', class: 'rm', 'aria-label': '移除網址 ' + l.url, onclick: function () { var x = links.splice(k, 1)[0]; if (!links.length) delete A.place.links[id]; if (x.fileId && A.drive.mode === 'oauth') G.remove(x.fileId).catch(function () {}); changed(); } }, ic('x', 'sm')));
         }),
         ups.map(function (u, k) { return h('div', { class: 'up' }, ic('upload', 'sm'), h('span', { class: 'n' }, u.name), h('button', { type: 'button', class: 'rm', 'aria-label': '取消上傳 ' + u.name, onclick: function () { if (u.cancel) u.cancel(); } }, ic('x', 'sm')), h('span', { class: 'prog upg' }, h('i', { 'data-up': id + ':' + k, style: 'width:' + u.pct + '%' }))); })) : null,
       h('div', { class: 'drop-btns' }, cloudBtn, upBtn,
         h('button', { type: 'button', class: 'btn sec wide', 'data-k': 'lkb-' + id, 'aria-expanded': String(linkOpen), onclick: function () { UI.linkOpen = linkOpen ? '' : id; rerender(); var n2 = document.getElementById('lk-' + id); if (n2) n2.focus(); } }, ic('link', 'sm'), V.place.linkLabel)),
       linkOpen ? h('div', { class: 'lform' }, h('div', { class: 'inp sm' }, ic('link'), lu), h('div', { class: 'inp sm' }, ic('doc'), ln), lerr,
-        h('p', { class: 'hint-u', style: 'margin:0' }, 'Google 雲端網址會在分類資料夾建立捷徑；其他網址會建立「' + p.label + V.place.linkFileSuffix + '」。'),
-        h('div', { class: 'row2' }, h('button', { type: 'button', class: 'btn pri sm', onclick: doLink }, '加入'), h('button', { type: 'button', class: 'btn sec sm', onclick: function () { UI.linkOpen = ''; rerender(); } }, '取消'))) : null,
+        h('p', { class: 'hint-u', id: 'lkh-' + id, style: 'margin:0' }, '貼上網址即自動加入，可接著貼下一個。Google 雲端網址會在分類資料夾建立捷徑；其他網址會建立「' + p.label + V.place.linkFileSuffix + '」。'),
+        h('div', { class: 'row2' }, h('button', { type: 'button', class: 'btn sec sm', 'data-k': 'lka-' + id, onmousedown: function (e) { e.preventDefault(); }, onclick: function () { doLink(true); } }, '加入'), h('button', { type: 'button', class: 'btn sec sm', onmousedown: function (e) { e.preventDefault(); }, onclick: function () { if (trim(lu.value)) doLink(false); UI.linkOpen = ''; rerender(); } }, '收合'))) : null,
       fileIn,
       h('div', { class: 'drop-f' },
         h('a', { class: 'inline-link', href: folderUrl(A.drive.folders[id]), target: '_blank', rel: 'noopener' }, '開啟此資料夾'),
@@ -11491,8 +12033,13 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
     // 送出列
     var reason = null;
     if (secIssues.length) {
-      var s0 = secIssues[0], m0 = by[s0][0];
-      reason = h('div', { class: 'note err', role: 'status' }, ic('alert'), h('div', null, h('b', null, SEC_LABEL[s0] + '尚未完成'), m0.message + '。', h('button', { type: 'button', class: 'inline-link', id: 'goto-fix', onclick: function () { go(s0, s0 === 'steps' && /^steps\.(\w+)/.exec(m0.path) ? '#case-' + /^steps\.(\w+)/.exec(m0.path)[1] : null); } }, '前往' + SEC_LABEL[s0])));
+      var all = allIssues();
+      reason = h('div', { class: 'note err fixlist', id: 'fix-list', role: 'status' }, ic('alert'), h('div', null,
+        h('b', null, '尚有 ' + all.length + ' 項待補'), h('span', { class: 'sub' }, '請學姊點選項目直接前往補填，完成後按「回到送出」。'),
+        h('ol', { class: 'fix-ol' }, all.map(function (m, n) {
+          return h('li', null, h('button', { type: 'button', class: 'fix-it', id: n === 0 ? 'goto-fix' : null, 'data-k': 'fix-' + n, 'data-path': m.path, onclick: function () { jumpTo(m); } },
+            h('span', { class: 's' }, SEC_LABEL[sectionOfPath(m.path)] || ''), h('span', { class: 'm' }, m.message), ic('chev', 'sm')));
+        }))));
     } else if (pIssues.length) {
       var p0 = pIssues[0];
       reason = h('div', { class: 'goto' }, ic('alert', 'sm'), !A.drive.mode ? '請學姊先建立分類資料夾' : p0.reason === 'noFolder' ? '尚有 ' + pIssues.length + ' 個分類資料夾待建立' : '尚有 ' + pIssues.length + ' 項未放入檔案或網址',
@@ -11518,13 +12065,22 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
   var RESULT = null, busy = false;
   function guard(e) { e.preventDefault(); e.returnValue = ''; return ''; }
   function doSubmit(btn) {
+    if (flushLinks()) rerender();
+    var bad = pendingBadLink();
+    if (bad) { toast('網址格式不完整，請學姊修正或清空欄位後再送出', { cls: 'err' }); flashEl(bad.closest('.drop') || bad, function () { return bad; }); return; }
+    var fl = allIssues();
+    if (fl.length) {
+      toast('尚有 ' + fl.length + ' 項待補，請學姊點選清單項目前往補填', { cls: 'err' });
+      var L = document.getElementById('fix-list'); if (L) flashEl(L, function () { return L.querySelector('button'); });
+      return;
+    }
     var answers = norm();
     var pre = S3.checkSubmission31(answers, [], localStatus());
     if (pre) {
       toast(pre.message, { cls: 'err' });
       var sid = sectionOfPath(pre.path);
       if (pre.code === 'PLACEMENT' || sid === 'place' || sid === 'drive') { var m = /^place\.(\w+)/.exec(pre.path || ''); var el = m && document.getElementById('drop-' + m[1]); if (el) el.scrollIntoView({ block: 'center' }); }
-      else if (SEC_LABEL[sid]) go(sid);
+      else if (SEC_LABEL[sid]) jumpTo(pre);
       return;
     }
     var status = h('p', { 'aria-live': 'polite', id: 'sub-status', style: 'margin:0' }, '送出作業內容…');
@@ -12000,7 +12556,7 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
     var it = UI.suppEdit, ref = it.ref;
     return h('div', { class: 'actions' },
       h('button', { type: 'button', class: 'btn pri', id: 'supp-edit-done', onclick: function () {
-        var bad = S3.validate31(norm()).filter(function (m) { return m.path === ref || String(m.path).indexOf(ref + '.') === 0; });
+        var bad = allRules().filter(function (m) { var p = String(m.path); return p === ref || p.indexOf(ref + '.') === 0; });   // 補件補填：與正式送出相同規則（含「目前沒有」）
         if (bad.length) { toast(bad[0].message, { cls: 'err' }); return; }
         var patch = {}; patch[ref] = clone(A[ref]);
         SUP.pending[it.id] = { kind: 'section', answersPatch: patch };
