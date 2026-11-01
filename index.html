@@ -877,6 +877,11 @@ dialog.dlg .acts{display:grid;gap:8px;margin-top:14px}
 @keyframes dlgin{from{opacity:0;transform:translateY(10px) scale(.98)}}
 .toasts{position:fixed;left:0;right:0;bottom:calc(16px + env(safe-area-inset-bottom));z-index:var(--z-toast);display:grid;justify-items:center;gap:8px;padding:0 16px;pointer-events:none}
 body.has-dl .toasts{bottom:calc(var(--dl-h,64px) + 12px)}
+.auth-retry{position:fixed;left:16px;right:16px;bottom:16px;z-index:300;max-width:520px;margin:0 auto;padding:16px;border-radius:var(--r-lg);background:var(--ink-4);box-shadow:var(--shadow-float);color:var(--text-2);font-size:var(--fs-small);line-height:1.7}
+.auth-retry b{display:block;color:var(--text-1);font-size:16px;margin-bottom:6px}
+.auth-retry ul{margin:8px 0 12px;padding-left:20px}
+.auth-retry .btn{width:100%}
+.auth-retry .x{margin-top:8px;background:none;border:0;color:var(--text-3);font:inherit;text-decoration:underline;padding:6px 0;cursor:pointer}
 .toast{pointer-events:auto;display:flex;align-items:center;gap:10px;max-width:520px;width:100%;padding:10px 12px 10px 14px;border-radius:var(--r-md);background:var(--ink-4);box-shadow:var(--shadow-float);font-size:var(--fs-small);color:var(--text-1)}
 .toast .ic{color:var(--rose-300)}
 .toast.err .ic{color:var(--error-500)}
@@ -1028,7 +1033,7 @@ button.tool.add{min-height:36px;margin-top:2px}
   } catch (e) { /* 儲存不可用時不導向 */ }
 })();
 </script>
-<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.01_1607", "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com", "GOOGLE_API_KEY": "AIzaSyAM11cAROO9pStVWp74jsapBWB_iE8HLQE", "GOOGLE_APP_ID": "423060878330"};</script>
+<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.01_2158", "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com", "GOOGLE_API_KEY": "AIzaSyAM11cAROO9pStVWp74jsapBWB_iE8HLQE", "GOOGLE_APP_ID": "423060878330"};</script>
 <script>
 /*
  * G.R.A.C.E Academy《諮詢前置作業》作業欄位設定檔
@@ -9716,6 +9721,8 @@ button.tool.add{min-height:36px;margin-top:2px}
 
   /** list({ status, q }) → { rows: [...索引列], total } */
   function list(filter) { return authed('list', filter || {}); }
+  /** listMeta() → { total, latest, sig, psig }：輕量變動偵測（不讀作業內容、不呼叫 UrlFetch） */
+  function listMeta() { return authed('list_meta', {}); }
 
   /**
    * get(receiptId) → { index, data, files:[{fileId,name,size,mime,key?,label}], gaps }
@@ -9954,6 +9961,7 @@ button.tool.add{min-height:36px;margin-top:2px}
     saveBlob: saveBlob,
     isIOS: isIOS,
     submit: submit,
+    listMeta: listMeta,
     clientKey: clientKey,
     rosterLookup: rosterLookup,
     bindCode: bindCode,
@@ -11561,22 +11569,49 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
       });
       return scripts[src];
     }
-    function preload() { if (GCFG.ready) { load(GIS).catch(function () {}); load(GAPI).catch(function () {}); } }
-    function request() {
-      return new Promise(function (res, rej) {
-        var c = window.google.accounts.oauth2.initTokenClient({
+    /* 預先載入 GIS 並建立 token client；點擊時只需同步呼叫 requestAccessToken（iOS Safari／LINE 才不會擋彈窗） */
+    var client = null, pending = null;
+    function settle(ok, v) { var p = pending; pending = null; if (p) { if (ok) p.res(v); else p.rej(v); } }   // 同時多個請求共用同一次授權
+    function initClient() {
+      if (client || !GCFG.ready || !(window.google && window.google.accounts && window.google.accounts.oauth2)) return client;
+      try {
+        client = window.google.accounts.oauth2.initTokenClient({
           client_id: GCFG.clientId, scope: GCFG.scope,
-          callback: function (r) { if (!r || r.error || !r.access_token) { rej(gErr('Google 授權未完成', 'AUTH')); return; } tok = r.access_token; exp = Date.now() + (Number(r.expires_in) || 3600) * 1000; res(tok); },
-          error_callback: function (e) { var t = e && e.type; rej(gErr(t === 'popup_failed_to_open' ? '瀏覽器阻擋了 Google 授權視窗；請學姊允許此網站開啟彈出視窗後再試一次' : t === 'popup_closed' ? 'Google 授權視窗已關閉，授權未完成' : 'Google 授權未完成', 'AUTH')); }
+          callback: function (r) {
+            if (!r || r.error || !r.access_token) { settle(false, gErr('Google 授權未完成', 'AUTH')); return; }
+            tok = r.access_token; exp = Date.now() + (Number(r.expires_in) || 3600) * 1000; settle(true, tok);
+          },
+          error_callback: function (e) {
+            var t = e && e.type;
+            settle(false, t === 'popup_failed_to_open' || t === 'popup_closed'
+              ? gErr('Google 授權視窗未能開啟或已關閉，請學姊按下方「再按一次開啟 Google 授權」', 'AUTH_BLOCK')
+              : gErr('Google 授權未完成', 'AUTH'));
+          }
         });
-        c.requestAccessToken({ prompt: '' });
+      } catch (err) { client = null; }
+      return client;
+    }
+    function preload() {
+      if (!GCFG.ready) return;
+      load(GIS).then(initClient, function () {});
+      load(GAPI).catch(function () {});
+    }
+    function request() {
+      /* 必須在使用者點擊的同步流程內呼叫：不得在此之前 await 任何東西 */
+      if (pending && Date.now() - pending.at < 1500) return pending.p;   // 同一次操作內多個請求共用
+      if (pending) settle(false, gErr('Google 授權未完成', 'AUTH'));
+      var pr = new Promise(function (res, rej) {
+        if (!initClient()) { preload(); rej(gErr('Google 元件仍在載入，請學姊稍候幾秒後再按一次', 'AUTH_BLOCK')); return; }
+        pending = { res: res, rej: rej, at: Date.now() };
+        try { client.requestAccessToken({ prompt: '' }); } catch (err) { settle(false, gErr('Google 授權視窗未能開啟，請學姊按下方「再按一次開啟 Google 授權」', 'AUTH_BLOCK')); }
       });
+      if (pending) pending.p = pr;
+      return pr;
     }
     function token() {
       if (!GCFG.ready) return Promise.reject(gErr('尚未設定 Google 登入', 'CONFIG'));
       if (tok && Date.now() < exp - 60000) return Promise.resolve(tok);
-      if (window.google && window.google.accounts && window.google.accounts.oauth2) return request();
-      return load(GIS).then(request);
+      return request();
     }
     function call(method, path, body, retried) {
       return token().then(function (t) {
@@ -11671,6 +11706,22 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
     if (e.code === 'ERR_RATE_LIMIT') return '操作次數較多，請學姊稍候一分鐘再試';
     return e.message || '雲端硬碟操作未完成';
   }
+  /** 授權視窗被擋：顯示大按鈕，第二次點擊在同一個手勢內同步重新開啟 Google 授權 */
+  function authBlocked(e) { return !!(e && e.code === 'AUTH_BLOCK'); }
+  function hideAuthBlock() { var o = document.getElementById('auth-retry'); if (o && o.parentNode) o.parentNode.removeChild(o); }
+  function showAuthBlock(retry) {
+    hideAuthBlock();
+    var btn = h('button', { type: 'button', class: 'btn pri lg', id: 'auth-retry-btn', onclick: function () { hideAuthBlock(); retry(btn); } }, '再按一次開啟 Google 授權');
+    var box = h('div', { class: 'auth-retry', id: 'auth-retry', role: 'alert' },
+      h('b', null, 'Google 授權視窗沒有開啟'),
+      h('div', null, '請學姊按下方按鈕再試一次；若仍沒有跳出視窗，請依下列方式處理：'),
+      h('ul', null,
+        h('li', null, '若在 LINE 內開啟：請點右上角「⋯」，選「以預設瀏覽器開啟」後再操作'),
+        h('li', null, 'iPhone：到「設定」→「Safari」，關閉「阻擋彈出式視窗」後回到本頁')),
+      btn,
+      h('button', { type: 'button', class: 'x', onclick: hideAuthBlock }, '稍後再試'));
+    document.body.appendChild(box);
+  }
   function apiFail(e) { if (e && e.code === 'ERR_IDENTITY') { identityFail(e.message); return true; } return false; }
   function syncMock(id) {
     if (!MOCK_DRIVE || !window.CONSULT_MOCK_API || !window.CONSULT_MOCK_API._driveSimulatePut) return;
@@ -11733,6 +11784,7 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
     }).catch(function (e) {
       UI.creating = null;
       if (apiFail(e)) return;
+      if (authBlocked(e)) { rerender(); showAuthBlock(function (b) { createAll(b); }); return; }
       UI.createErr = driveErrText(e); rerender();
     });
   }
@@ -11772,7 +11824,7 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
         rerender();
         toast('已放入 ' + ok + ' 個項目到「' + p.label + '」' + (shareFail ? '；有 ' + shareFail + ' 個原檔共用未完成，請學姊確認原檔權限' : ''), { cls: shareFail ? '' : 'ok' });
       });
-    }).catch(function (e) { busyBtn(btn, false); toast(driveErrText(e), { cls: 'err' }); });
+    }).catch(function (e) { busyBtn(btn, false); if (authBlocked(e)) { showAuthBlock(function (b) { pickInto(p, b); }); return; } toast(driveErrText(e), { cls: 'err' }); });
   }
   function uploadInto(p, files) {
     var folder = A.drive.folders[p.itemId]; if (!folder || !files || !files.length) return;
@@ -11785,7 +11837,7 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
       u.promise.then(function () {
         remove(list, job); addLocal(p.itemId, file.name, 'file'); rerender();
         toast('「' + file.name + '」已上傳', { cls: 'ok' });
-      }, function (e) { remove(list, job); rerender(); if (e && e.code !== 'CANCEL') toast(driveErrText(e), { cls: 'err' }); });
+      }, function (e) { remove(list, job); rerender(); if (authBlocked(e)) { showAuthBlock(function () { uploadInto(p, files); }); return; } if (e && e.code !== 'CANCEL') toast(driveErrText(e), { cls: 'err' }); });
     });
     rerender();
   }
@@ -12389,6 +12441,7 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
     toasts = h('div', { class: 'toasts', 'aria-live': 'polite' });
     document.body.appendChild(toasts);
     document.body.appendChild(h('div', { id: 'live', class: 'sr', 'aria-live': 'assertive' }));
+    try { G.preload(); } catch (e) { /* 預先載入失敗時，進入放入資料頁會再試 */ }
     var saved = loadDraft();
     UI.lastView = saved;
     try { var dr = localStorage.getItem('consult_v31_done'); if (dr) RESULT = JSON.parse(dr); } catch (e) { /* ignore */ }
@@ -12518,7 +12571,7 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
       return G.createFolder(suppFolderName(it), root, key, trim(A.student.account));
     }).then(function (id) { A.drive.folders[key] = id; return registerDrive(); }).then(function () {
       rerender(); toast('補件資料夾已建立，請學姊放入資料', { cls: 'ok' });
-    }).catch(function (e) { busyBtn(btn, false); if (apiFail(e)) return; toast(driveErrText(e), { cls: 'err' }); });
+    }).catch(function (e) { busyBtn(btn, false); if (apiFail(e)) return; if (authBlocked(e)) { showAuthBlock(function (b) { ensureSuppFolder(it, b); }); return; } toast(driveErrText(e), { cls: 'err' }); });
   }
   function suppContent(it) {
     if (it.type === 'section') return SUP.pending[it.id] || null;
