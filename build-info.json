@@ -5,5 +5,5 @@
   "schema": "3.0.0",
   "googleClientId": true,
   "bookmarkletBytes": 23004,
-  "lineMapBookmarkletBytes": 15053
+  "lineMapBookmarkletBytes": 15053,"deployRetry": 1
 }
