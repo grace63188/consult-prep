@@ -967,7 +967,7 @@ button.tool.add{min-height:36px;margin-top:2px}
   } catch (e) { /* 儲存不可用時不導向 */ }
 })();
 </script>
-<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.01_1336", "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com", "GOOGLE_API_KEY": "AIzaSyAM11cAROO9pStVWp74jsapBWB_iE8HLQE", "GOOGLE_APP_ID": "423060878330"};</script>
+<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.01_1410", "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com", "GOOGLE_API_KEY": "AIzaSyAM11cAROO9pStVWp74jsapBWB_iE8HLQE", "GOOGLE_APP_ID": "423060878330"};</script>
 <script>
 /*
  * G.R.A.C.E Academy《諮詢前置作業》作業欄位設定檔
@@ -9736,6 +9736,10 @@ button.tool.add{min-height:36px;margin-top:2px}
   function automationSave(o) { return authed('automation_save', o || {}, { retries: 0 }); }
   function automationRecipientAdd(o) { return authed('automation_recipient_add', o || {}, { retries: 0 }); }
   function automationRecipientRemove(userId) { return authed('automation_recipient_remove', { userId: userId }, { retries: 0 }); }
+  /** lineRecentSenders() → { rows:[{ userId, userIdTail, displayName|null, reachable, text, at, kind, boundKey, boundName, isRecipient }], bot }（Webhook 記錄的最近傳訊者；userId 為 Messaging API 真正可推播的 ID） */
+  function lineRecentSenders() { return authed('line_recent_senders', {}); }
+  /** lineBindVerify() → { checked, reachable, notFound:[{ key, name, by }], failed }（唯讀，不發訊息） */
+  function lineBindVerify() { return authed('line_bind_verify', {}, { timeoutMs: 120000 }); }
   function automationRun(o) { o = o || {}; return authed('automation_run', { dry: !!o.dry, forceDigest: !!o.forceDigest }, { retries: 0, timeoutMs: 120000 }); }
   /** undoDelete(undoToken) → { restored, kind, label, detail }（10 分鐘內；涵蓋作業、追蹤名單、發送紀錄、範本、通知圖卡、管理收件人） */
   function undoDelete(undoToken) { return authed('undo_delete', { undoToken: undoToken }, { retries: 0 }); }
@@ -9817,6 +9821,8 @@ button.tool.add{min-height:36px;margin-top:2px}
     automationRecipientAdd: automationRecipientAdd,
     automationRecipientRemove: automationRecipientRemove,
     automationRun: automationRun,
+    lineRecentSenders: lineRecentSenders,
+    lineBindVerify: lineBindVerify,
     undoDelete: undoDelete,
     notifyLogDelete: notifyLogDelete,
     fire: fire,
