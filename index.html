@@ -1147,7 +1147,7 @@ button.tool.add{min-height:36px;margin-top:2px}
   } catch (e) { /* 儲存不可用時不導向 */ }
 })();
 </script>
-<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.02_1335", "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com", "GOOGLE_API_KEY": "AIzaSyAM11cAROO9pStVWp74jsapBWB_iE8HLQE", "GOOGLE_APP_ID": "423060878330"};</script>
+<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.02_1425", "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com", "GOOGLE_API_KEY": "AIzaSyAM11cAROO9pStVWp74jsapBWB_iE8HLQE", "GOOGLE_APP_ID": "423060878330"};</script>
 <script>
 /*
  * G.R.A.C.E Academy《諮詢教材·專屬訂製》作業欄位設定檔
@@ -3746,6 +3746,7 @@ button.tool.add{min-height:36px;margin-top:2px}
       var id = uid.toLowerCase() + '|' + ms, s = slots[id] || (slots[id] = { uid: uid, ms: ms, items: [], status: st });
       its.forEach(function (t) { t = cleanStr(t).slice(0, COUNSEL.maxItemLength); if (t && s.items.indexOf(t) < 0 && s.items.length < COUNSEL.maxItems) s.items.push(t); });
       if (st === 'combined') s.status = 'combined';
+      ['url', 'mode', 'place', 'note'].forEach(function (f) { var v = cleanStr(r[f]); if (f === 'url' && !/^https:\/\/[^\s"'<>]+$/.test(v)) v = ''; if (v && !s[f]) s[f] = v.slice(0, f === 'url' ? 500 : f === 'note' ? 200 : 60); });   // 3.2.6 諮詢方式、地點、連結、預約備註
       kept++;
     });
     var byUid = {};
@@ -3754,7 +3755,7 @@ button.tool.add{min-height:36px;margin-top:2px}
       if (!byUid[u] || byUid[u].ms > s.ms) byUid[u] = s;
     });
     var out = {};
-    Object.keys(byUid).forEach(function (u) { var s = byUid[u]; out[s.uid] = { at: deadlineIso(s.ms), items: s.items, status: s.items.length > 1 ? 'combined' : s.status }; });
+    Object.keys(byUid).forEach(function (u) { var s = byUid[u], o = { at: deadlineIso(s.ms), items: s.items, status: s.items.length > 1 ? 'combined' : s.status }; ['url', 'mode', 'place', 'note'].forEach(function (f) { if (s[f]) o[f] = s[f]; }); out[s.uid] = o; });
     return { byUid: out, kept: kept, skipped: skipped };
   }
 
@@ -9811,7 +9812,8 @@ button.tool.add{min-height:36px;margin-top:2px}
       var courses = arrOf(z.courses).slice(0, STUDENT.maxCourses).map(function (c) {
         if (!c || typeof c !== 'object') return null;
         var t = cleanStr(c.title, 80); if (!t) return null;
-        return { title: t, onShelf: c.onShelf !== false, count: stInt(c.count), lastAt: stDate(c.lastAt) };
+        var co = { title: t, onShelf: c.onShelf !== false, count: stInt(c.count), lastAt: stDate(c.lastAt) }, cid = stId(c.id); if (cid) co.id = cid;   // 3.2.6 官網 pro_id
+        return co;
       }).filter(Boolean);
       var total = courses.length ? courses.length : stInt(z.total), bought = courses.length ? courses.filter(function (c) { return c.count > 0; }).length : Math.min(stInt(z.bought), total || stInt(z.bought));
       var last = courses.reduce(function (m, c) { return c.lastAt > m ? c.lastAt : m; }, stDate(z.lastAt));
@@ -9821,8 +9823,8 @@ button.tool.add{min-height:36px;margin-top:2px}
     out.pointsSpent = stNum(x.pointsSpent, 0, 1e10);
     var sp = x.studyPlan && typeof x.studyPlan === 'object' ? x.studyPlan : {}, cur = sp.current && typeof sp.current === 'object' ? sp.current : null;
     out.studyPlan = {
-      current: cur ? { startAt: stDate(cur.startAt), state: cleanStr(cur.state, 20), tasks: arrOf(cur.tasks).slice(0, STUDENT.maxPlanTasks).map(function (t) { if (!t || typeof t !== 'object') return null; var ti = cleanStr(t.title, 80); if (!ti) return null; return { title: ti, zone: cleanStr(t.zone, 30), dueAt: stDate(t.dueAt), state: cleanStr(t.state, 20), done: t.done === true }; }).filter(Boolean) } : null,
-      history: arrOf(sp.history).slice(0, STUDENT.maxPlanHistory).map(function (h) { if (!h || typeof h !== 'object') return null; return { startAt: stDate(h.startAt), state: cleanStr(h.state, 20) }; }).filter(Boolean)
+      current: cur ? stPlan(cur, true) : null,
+      history: arrOf(sp.history).slice(0, STUDENT.maxPlanHistory).map(function (h) { return h && typeof h === 'object' ? stPlan(h, false) : null; }).filter(Boolean)
     };
     if (out.studyPlan.current) { var ts = out.studyPlan.current.tasks; out.studyPlan.current.done = ts.filter(function (t) { return t.done; }).length; out.studyPlan.current.total = ts.length; }
     var st = x.study && typeof x.study === 'object' ? x.study : {};
@@ -9830,7 +9832,7 @@ button.tool.add{min-height:36px;margin-top:2px}
     out.study.recentHours = Math.round(out.study.weeks.reduce(function (n, w) { return n + w.hours; }, 0) * 10) / 10;
     var cs = x.counsels && typeof x.counsels === 'object' ? x.counsels : {}, nx = cs.next && typeof cs.next === 'object' ? cs.next : null, cc = cs.counts && typeof cs.counts === 'object' ? cs.counts : {};
     out.counsels = {
-      next: nx && stTime(nx.at) ? { at: stTime(nx.at), title: cleanStr(nx.title, 80), status: cleanStr(nx.status, 20) } : null,
+      next: nx && stTime(nx.at) ? stCounselNext(nx) : null,
       past: arrOf(cs.past).slice(0, STUDENT.maxPast).map(function (p) { if (!p || typeof p !== 'object' || !stTime(p.at)) return null; return { at: stTime(p.at), title: cleanStr(p.title, 80), minutes: stInt(p.minutes) }; }).filter(Boolean),
       counts: { confirmed: stInt(cc.confirmed), pending: stInt(cc.pending), total: stInt(cc.total) }
     };
@@ -9841,7 +9843,62 @@ button.tool.add{min-height:36px;margin-top:2px}
     // 單格上限：課程清單過長時先截短
     var sz = JSON.stringify(out).length;
     if (sz > STUDENT.maxSnapshotChars) { out.zones.forEach(function (z) { z.courses = z.courses.slice(0, 60); z.coursesTruncated = true; }); }
+    if (JSON.stringify(out).length > STUDENT.maxSnapshotChars) out.studyPlan.history.forEach(function (h) { if (h.tasks) { h.taskCount = h.tasks.length; h.tasksDone = h.tasks.filter(function (t) { return t.done; }).length; delete h.tasks; } });   // 3.2.6 仍過大：歷次課表只留堂數
     return out;
+  }
+  /* 3.2.6 快照輔助：官網 ID、課表（本期與歷次共用格式）、下次諮詢（方式、地點、連結、備註） */
+  function stId(v) { var x = cleanStr(v, 20); return /^[\w-]{1,20}$/.test(x) ? x : ''; }
+  function stPlanTask(t) {
+    if (!t || typeof t !== 'object') return null;
+    var ti = cleanStr(t.title, 80); if (!ti) return null;
+    var o = { title: ti, zone: cleanStr(t.zone, 30), dueAt: stDate(t.dueAt), state: cleanStr(t.state, 20), done: t.done === true }, id = stId(t.id), ba = stDate(t.boughtAt);
+    if (id) o.id = id; if (ba) o.boughtAt = ba;
+    return o;
+  }
+  function stPlan(p, isCur) {
+    var o = { startAt: stDate(p.startAt), state: cleanStr(p.state, 20) };
+    var id = stId(p.id), ap = stDate(p.appliedAt), ca = stDate(p.completedAt), du = stDate(p.dueAt), ss = cleanStr(p.siteState, 20).toLowerCase();
+    if (id) o.id = id; if (ap) o.appliedAt = ap; if (ca) o.completedAt = ca; if (du) o.dueAt = du; if (ss) o.siteState = ss;
+    if (isCur || Array.isArray(p.tasks)) o.tasks = arrOf(p.tasks).slice(0, STUDENT.maxPlanTasks).map(stPlanTask).filter(Boolean);
+    if (isCur) { o.done = o.tasks.filter(function (t) { return t.done; }).length; o.total = o.tasks.length; }
+    return o;
+  }
+  function stCounselNext(nx) {
+    var o = { at: stTime(nx.at), title: cleanStr(nx.title, 80), status: cleanStr(nx.status, 20) }, url = cleanStr(nx.url, 500);
+    if (/^https:\/\/[^\s"'<>]+$/.test(url)) o.url = url;
+    var md = cleanStr(nx.mode, 20), pl = cleanStr(nx.place, 60), nt = cleanStr(nx.note, 200);
+    if (md) o.mode = md; if (pl) o.place = pl; if (nt) o.note = nt;
+    return o;
+  }
+  /**
+   * 3.2.6 學員詳情理想結構（docs/STUDENT-DETAIL-DATA.md；student_detail 回應頂層欄位）：
+   *   { profile, zones:[{ name, total, bought, truncated?, courses:[{ id, name, status, bought, lastBoughtAt, count }] }], purchases, pointsSpent,
+   *     plans:[{ id, appliedAt, startAt, endAt, dueAt, completedAt, siteState, items:[{ id, name, zone, bought, boughtAt, dueAt }] }], watch:{ totalHours, weeks }, counsels }
+   *   專區只列四區；正課區子分類已由書籤歸併；已下架又沒買過的課程不列入。
+   */
+  function studentIdeal(snap) {
+    if (!snap) return null;
+    var zones = STUDENT.summaryZones.map(function (n) {
+      var z = (snap.zones || []).filter(function (x) { return x.name === n; })[0];
+      if (!z) return { name: n, total: 0, bought: 0, courses: [] };
+      var cs = (z.courses || []).filter(function (c) { return c.onShelf || c.count > 0; }).map(function (c, i) { return { id: c.id || (n + '#' + i), name: c.title, status: c.onShelf ? 'listed' : 'delisted', bought: c.count > 0, lastBoughtAt: c.lastAt || '', count: c.count }; });
+      var o = { name: n, total: z.total, bought: z.bought, courses: cs }; if (z.coursesTruncated) o.truncated = true;
+      return o;
+    });
+    var sp = snap.studyPlan || {}, plans = [];
+    var toPlan = function (p, idx) {
+      var items = (p.tasks || []).map(function (t, i) { return { id: t.id || ('p' + idx + 'i' + i), name: t.title, zone: t.zone || '', bought: !!t.done, boughtAt: t.boughtAt || '', dueAt: t.dueAt || '' }; });
+      var due = p.dueAt || items.reduce(function (m, t) { return t.dueAt > m ? t.dueAt : m; }, '');
+      var o = { id: p.id || ('p' + idx), appliedAt: p.appliedAt || p.startAt || '', startAt: p.startAt || p.appliedAt || '', endAt: due, dueAt: due, completedAt: p.completedAt || '', siteState: p.siteState || p.state || '', items: items };
+      if (!p.tasks && p.taskCount != null) { o.taskCount = p.taskCount; o.tasksDone = p.tasksDone || 0; }
+      return o;
+    };
+    if (sp.current) plans.push(toPlan(sp.current, 0));
+    (sp.history || []).forEach(function (h, i) { plans.push(toPlan(h, i + 1)); });
+    plans.sort(function (a, b) { return a.appliedAt < b.appliedAt ? 1 : a.appliedAt > b.appliedAt ? -1 : 0; });
+    var st = snap.study || {};
+    return { profile: snap.profile, zones: zones, purchases: snap.purchases || [], pointsSpent: snap.pointsSpent || 0, plans: plans,
+      watch: { totalHours: st.totalHours || 0, weeks: (st.weeks || []).slice() }, counsels: snap.counsels || { next: null, past: [], counts: { confirmed: 0, pending: 0, total: 0 } } };
   }
   /** 剩餘天數（yyyy.mm.dd，台北日界）；無日期回 null */
   function studentDaysLeft(dateStr, nowMs) {
@@ -10099,6 +10156,7 @@ button.tool.add{min-height:36px;margin-top:2px}
     // 3.2 學員詳情快照
     STUDENT: STUDENT,
     normalizeStudentSnapshot: normalizeStudentSnapshot,
+    studentIdeal: studentIdeal,
     studentSummary: studentSummary,
     studentDetailView: studentDetailView,
     studentDaysLeft: studentDaysLeft
