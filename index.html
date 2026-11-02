@@ -44,6 +44,10 @@
   --rose-600: #E8247E;  /* pressed　桃紅底深字 4.6:1 */
   --rose-300: #FF77B2;  /* 桃紅文字、連結、選取標籤　對 ink-2 7.4:1 */
   --rose-ink: #1A0911;  /* 桃紅底上的文字　對 rose-500 5.5:1（白字僅 3.5:1，不採用） */
+  /* ── 金色（3.2.7 官方新增的選項：「新增」標籤與外框） ── */
+  --gold: #D9B877;
+  --gold-tint: rgba(217,184,119,.14);
+  --gold-line: rgba(217,184,119,.42);
   --rose-tint-1: rgba(255, 46, 139, 0.08);  /* 選取卡片底 */
   --rose-tint-2: rgba(255, 46, 139, 0.14);  /* 選取 hover、部分完成底 */
   --rose-tint-3: rgba(255, 46, 139, 0.22);  /* 強調徽章底 */
@@ -542,6 +546,15 @@ h1.h{font-size:var(--fs-h1);margin:4px 0 10px}
 .inc .nm{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.4}
 .inc .nm b{font-size:14px;font-weight:500;color:var(--text-2)}.inc .nm small{font-size:11.5px;color:var(--text-3);margin-top:2px}
 .inc.on{background:var(--rose-tint-2);box-shadow:inset 0 0 0 1.5px var(--rose-line-2)}.inc.on .nm b{color:var(--text-1);font-weight:600}
+
+/* ── 3.2.7 官方新增的選項（補充請求同意後）：金色外框＋「新增」標籤，不自動勾選 ── */
+.xnew{display:inline-flex;align-items:center;flex:none;height:18px;padding:0 6px;border-radius:5px;background:var(--gold-tint);color:var(--gold);font-size:11px;font-weight:700;letter-spacing:.04em;line-height:1}
+.chip.fresh:not(.on){box-shadow:inset 0 0 0 1.5px var(--gold-line);color:var(--text-1)}
+.inc.fresh:not(.on){box-shadow:inset 0 0 0 1.5px var(--gold-line)}
+.row.fresh:not(.lit){box-shadow:inset 0 0 0 1.5px var(--gold-line)}
+.fnote{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;margin-bottom:12px;border-radius:var(--r-md);background:var(--gold-tint);box-shadow:inset 0 0 0 1px var(--gold-line);font-size:var(--fs-small);color:var(--text-1);line-height:1.6}
+.fnote .ic{color:var(--gold);margin-top:2px;flex:none}
+.fnote small{display:block;color:var(--text-2);font-size:13px}
 
 /* ── 確認稿 extra-component.html（還有其他想補充） ── */
 
@@ -1147,7 +1160,7 @@ button.tool.add{min-height:36px;margin-top:2px}
   } catch (e) { /* 儲存不可用時不導向 */ }
 })();
 </script>
-<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.02_1425", "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com", "GOOGLE_API_KEY": "AIzaSyAM11cAROO9pStVWp74jsapBWB_iE8HLQE", "GOOGLE_APP_ID": "423060878330"};</script>
+<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.02_1644", "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com", "GOOGLE_API_KEY": "AIzaSyAM11cAROO9pStVWp74jsapBWB_iE8HLQE", "GOOGLE_APP_ID": "423060878330"};</script>
 <script>
 /*
  * G.R.A.C.E Academy《諮詢教材·專屬訂製》作業欄位設定檔
@@ -3875,6 +3888,133 @@ button.tool.add{min-height:36px;margin-top:2px}
     return DRIVE_EXPORT[mime] || { mimeType: 'application/pdf', ext: 'pdf' };
   }
 
+  /* ================================================================ */
+  /* 3.2.7 補充請求：前台「還有其他想補充」→ 官方 LINE → 後台「補充請求」 */
+  /*   訊息格式：親愛的官方，我是{本名}。我在《{作業名稱}》的〔{路徑}〕{還想新增|還想上傳|還想補充}：{內容} */
+  /*   附加選項：Script Properties SUPP_OPT_ALL（全體）、SUPP_OPT_<名冊鍵>（只給該學姊）；前台合併顯示、標「新增」、不自動勾選 */
+  /* ================================================================ */
+  var SUPP = {
+    tab: '補充請求',
+    headers: ['收到時間', '名冊鍵', '本名', '作業名稱', '路徑', '類型', '內容', '原始訊息', 'LINE userId', '狀態', '項目名稱', '範圍', '處理時間', '回覆文字', '回覆結果'],
+    products: ['諮詢教材·專屬訂製', '諮詢前置作業'],
+    kinds: { multi: { label: '新增', verb: '還想新增' }, upload: { label: '上傳', verb: '還想上傳' }, 'case': { label: '補充', verb: '還想補充' } },
+    status: { open: '待處理', add: '已新增', no: '不需要' },
+    scopeLabel: { one: '只加給學姊', all: '全體' },
+    unmatched: '未對應',
+    optAllKey: 'SUPP_OPT_ALL', optPrefix: 'SUPP_OPT_', pendingKey: 'SUPP_PENDING_N', textKey: 'SUPP_TEXT',
+    maxAll: 80, maxOne: 40, maxLabel: 40, maxContent: 300, maxText: 300,
+    /** 12 個「還有其他想補充」路徑 → 前台加入位置（pick：資料／工具類由校長選分類） */
+    targets: [
+      { id: 'income', max: 20, re: /^經營項目 › 收入來源$/, label: '收入來源選項' },
+      { id: 'duty', max: 30, re: /^職務內容 › 工作項目$/, label: '工作項目選項' },
+      { id: 'source', max: 30, re: /^實際步驟 › 接待客人 › 客人來源$/, label: '客人來源選項' },
+      { id: 'channel', max: 30, re: /^實際步驟 › 接待客人 › 成交管道$/, label: '成交管道選項' },
+      { id: 'step', max: 40, re: /^實際步驟 › (接待客人|帶領團隊|執行任務)$/, label: '步驟選項', sub: { '接待客人': 'receive', '帶領團隊': 'lead', '執行任務': 'task' } },
+      { id: 'auth', max: 30, re: /^權限規則$/, label: '權限事項' },
+      { id: 'ask', max: 20, re: /^權限規則 › 請示對象$/, label: '請示對象選項' },
+      { id: 'data', max: 40, re: /^資源清單 › 資料$/, label: '資料項目', pick: 'data' },
+      { id: 'site', max: 20, re: /^資源清單 › 網站帳號$/, label: '平台選項' },
+      { id: 'tool', max: 30, re: /^資源清單 › 工具系統$/, label: '工具選項', pick: 'tool' },
+      { id: 'upload', max: 40, re: /^放入資料 › (.+)$/, label: '放入資料項目', pick: 'data', ref: true },
+      { id: 'suppUpload', max: 40, re: /^補件需求 › (.+)$/, label: '補件資料項目', pick: 'data', ref: true }
+    ],
+    texts: {
+      add: '已在〔{路徑}〕加入「{項目}」，重新整理作業頁面就會看到，請學姊點選後繼續填寫♡',
+      no: '謝謝學姊的補充♡ 這一項可以直接在〔{路徑}〕自行新增，或在諮詢時和校長說明就可以了。'
+    },
+    vars: [['稱呼', '學姊稱呼'], ['路徑', '前台位置'], ['項目', '項目名稱']]
+  };
+  var SUPP_KIND_BY_VERB = { '還想新增': 'multi', '還想上傳': 'upload', '還想補充': 'case' };
+  var SUPP_RE = /^親愛的官方\s*[，,]\s*我是\s*([^。\n]{1,40}?)\s*[。.]\s*我在\s*《\s*(諮詢教材\s*[·・•‧.]\s*專屬訂製|諮詢前置作業)\s*》\s*的\s*〔\s*([^〕\n]{1,120}?)\s*〕\s*(還想新增|還想上傳|還想補充)\s*[：:]\s*([\s\S]+)$/;
+  /** 補充訊息解析 → { name, product, path, kind:'multi'|'upload'|'case', content } ｜ null（不符格式） */
+  function suppParse(text) {
+    var t = String(text == null ? '' : text).replace(/\r\n?/g, '\n').replace(/[​-‍⁠﻿]/g, '').trim();
+    if (t.length > 2000) return null;
+    var m = SUPP_RE.exec(t);
+    if (!m) return null;
+    var content = m[5].replace(/\s+$/, '').replace(/^\s+/, '');
+    if (!content) return null;
+    var path = m[3].split(/\s*[›>＞]\s*/).map(function (x) { return x.trim(); }).filter(Boolean).join(' › ');
+    if (!path) return null;
+    return { name: m[1].trim(), product: /前置/.test(m[2]) ? SUPP.products[1] : SUPP.products[0], path: path, kind: SUPP_KIND_BY_VERB[m[4]], content: content.slice(0, SUPP.maxContent) };
+  }
+  /** 路徑 → { id, label, sub, pick, ref } ｜ null（不在 12 個位置內） */
+  function suppTarget(path) {
+    var p = String(path == null ? '' : path).trim();
+    for (var i = 0; i < SUPP.targets.length; i++) {
+      var t = SUPP.targets[i], m = t.re.exec(p);
+      if (!m) continue;
+      return { id: t.id, label: t.label, sub: t.sub ? (t.sub[m[1]] || '') : '', pick: t.pick || '', ref: t.ref ? m[1] : '', max: t.max || SUPP.maxLabel };
+    }
+    return null;
+  }
+  /** 選項 id（x_＋8 碼）：位置＋案例＋名稱衍生，同一選項全體與個人共用同一 id */
+  function suppOptId(t, sub, label) {
+    var sv = String(t || '') + '|' + String(sub || '') + '|' + String(label || '').trim(), h = 5381;
+    for (var i = 0; i < sv.length; i++) h = ((h * 33) ^ sv.charCodeAt(i)) >>> 0;
+    return 'x_' + ('00000000' + h.toString(16)).slice(-8);
+  }
+  /** 項目名稱預設：內容第一行去尾端標點，≤ 40 字 */
+  function suppDefaultLabel(content) {
+    var l = String(content == null ? '' : content).replace(/\r\n?/g, '\n').split('\n').map(function (x) { return x.trim(); }).filter(Boolean)[0] || '';
+    return l.replace(/[。．.!！?？~～♡❤]+$/, '').trim().slice(0, SUPP.maxLabel);
+  }
+  var SUPP_TARGET_IDS = SUPP.targets.map(function (t) { return t.id; });
+  /** 選項正規化：{ id, t, s, l, g, at, p } ｜ null */
+  function suppOptNorm(o) {
+    if (!o || typeof o !== 'object') return null;
+    var t = String(o.t || ''), l = String(o.l == null ? '' : o.l).replace(/[\u0000-\u001f\u007f]/g, '').trim().slice(0, SUPP.maxLabel);
+    if (SUPP_TARGET_IDS.indexOf(t) < 0 || !l) return null;
+    var tdef = SUPP.targets.filter(function (x) { return x.id === t; })[0]; if (tdef && tdef.max) l = l.slice(0, tdef.max).trim();   // 各位置的名稱上限（與前台欄位一致）
+    var s = t === 'step' && /^(receive|lead|task)$/.test(String(o.s || '')) ? String(o.s) : '';
+    if (t === 'step' && !s) return null;
+    var out = { id: suppOptId(t, s, l), t: t, s: s, l: l };
+    var g = String(o.g || '').slice(0, 30); if (g && /^[A-Za-z][A-Za-z0-9_]*$/.test(g)) out.g = g;
+    if (o.at) out.at = String(o.at).slice(0, 20);
+    if (o.p === 1 || o.p === true) out.p = 1;
+    if (/^[0-9a-f]{16}$/.test(String(o.k || ''))) out.k = String(o.k);   // 全體選項的提出者（名冊鍵；只存資料中心，前台只收到 mine）
+    return out;
+  }
+  function suppOptList(raw) {
+    var arr = raw; if (typeof raw === 'string') { try { arr = JSON.parse(raw || '[]'); } catch (e) { arr = []; } }
+    var out = [], seen = {};
+    (Array.isArray(arr) ? arr : []).forEach(function (o) { var n = suppOptNorm(o); if (n && !seen[n.id]) { seen[n.id] = 1; out.push(n); } });
+    return out;
+  }
+  /** 加入選項（同 id 不重複；超過上限丟出 ERR_LIMIT 由呼叫端處理）→ { list, added } */
+  function suppOptAdd(list, opt, max) {
+    var cur = suppOptList(list), n = suppOptNorm(opt);
+    if (!n) return { list: cur, added: false, invalid: true };
+    if (cur.some(function (x) { return x.id === n.id; })) return { list: cur, added: false };
+    if (cur.length >= (max || SUPP.maxAll)) return { list: cur, added: false, full: true };
+    cur.push(n);   // 一律排在清單最後（不改既有選項與資料夾編號）
+    return { list: cur, added: true };
+  }
+  /**
+   * 前台附加選項：全體在前、個人在後；同 id 只留一筆（範圍以全體為準）→ [{ ...opt, scope:'all'|'one', mine?:1 }]
+   * h（該學姊名冊鍵）：個人選項與她提出的全體選項標 mine（前台顯示「官方已依學姊的補充」）；輸出不含提出者鍵
+   */
+  function suppMerge(allList, ownList, h) {
+    var out = [], seen = {};
+    suppOptList(allList).forEach(function (o) { seen[o.id] = 1; o.scope = 'all'; if (h && o.k === h) o.mine = 1; delete o.k; out.push(o); });
+    suppOptList(ownList).forEach(function (o) { if (seen[o.id]) { if (h) out.forEach(function (x) { if (x.id === o.id) x.mine = 1; }); return; } seen[o.id] = 1; o.scope = 'one'; o.mine = 1; delete o.k; out.push(o); });
+    return out;
+  }
+  /** 依位置分組：{ income:[opt…], step:{ receive:[…] }, … } */
+  function suppByTarget(opts) {
+    var out = {};
+    (opts || []).forEach(function (o) {
+      if (!o || !o.t) return;
+      if (o.t === 'step') { out.step = out.step || {}; (out.step[o.s] = out.step[o.s] || []).push(o); return; }
+      (out[o.t] = out[o.t] || []).push(o);
+    });
+    return out;
+  }
+  /** 未處理數 */
+  function suppPendingCount(rows) { return (rows || []).filter(function (r) { return r && r.status === SUPP.status.open; }).length; }
+  /** 回覆文字變數 */
+  function suppVars(o) { o = o || {}; return { '稱呼': String(o.callName || ''), '路徑': String(o.path || ''), '項目': String(o.item || '') }; }
+
   function iconKeys() {
     var set = { plus: 1 };
     SECTIONS.forEach(function (s) { set[s.icon] = 1; if (s.stages) s.stages.forEach(function (st) { set[st.icon] = 1; }); });
@@ -3976,6 +4116,8 @@ button.tool.add{min-height:36px;margin-top:2px}
     amountText: amountText,
     materialVars: materialVars,
     isMaterialKeyword: isMaterialKeyword,
+    SUPP: SUPP, suppParse: suppParse, suppTarget: suppTarget, suppOptId: suppOptId, suppDefaultLabel: suppDefaultLabel, suppOptNorm: suppOptNorm, suppOptList: suppOptList,
+    suppOptAdd: suppOptAdd, suppMerge: suppMerge, suppByTarget: suppByTarget, suppPendingCount: suppPendingCount, suppVars: suppVars,
     materialMatch: materialMatch,
     MAT_PRODUCTS: MAT_PRODUCTS,
     normalizeMatProducts: normalizeMatProducts,
@@ -9160,7 +9302,7 @@ button.tool.add{min-height:36px;margin-top:2px}
   function incomes31() { return V31().incomes.slice(); }
   function income31Label(id, answers) {
     var inc = byId(V31().incomes, id);
-    if (!inc) return '';
+    if (!inc) { var ex = arrOf(answers && answers.business && answers.business.incomesExtra).filter(function (x) { return x && x.id === id; })[0]; return ex ? cleanStr(ex.label, 40) : ''; }   // 3.2.7 官方新增的收入來源
     if (inc.custom && answers && answers.business && answers.business.incomeOther) return inc.label + '：' + answers.business.incomeOther;
     return inc.label;
   }
@@ -9183,7 +9325,9 @@ button.tool.add{min-height:36px;margin-top:2px}
       if (!o || typeof o !== 'object') return;
       var label = cleanStr(o.label, 40);
       if (!label) return;
-      out.push({ id: o.id && /^c_[a-f0-9]{8}$/.test(String(o.id)) ? String(o.id) : customId('c', label), label: label, example: '', def: '', groupId: 'custom', groupLabel: '其他資料', custom: true });
+      var it = { id: o.id && /^c_[a-f0-9]{8}$/.test(String(o.id)) ? String(o.id) : customId('c', label), label: label, example: '', def: '', groupId: 'custom', groupLabel: '其他資料', custom: true };
+      if (o.supp === true) { it.supp = true; var cg = o.cat ? byId(V31().resources.data, o.cat) : null; if (cg) it.groupLabel = cg.label; }   // 3.2.7 官方新增（補充請求）：顯示於校長選的分類
+      out.push(it);
     });
     return out;
   }
@@ -9207,10 +9351,14 @@ button.tool.add{min-height:36px;margin-top:2px}
    * 回傳 [{ itemId, name, label, parent:'', create:true, status:'yes', source }]
    */
   function folderPlan31(answers) {
-    var data = litDataItems(answers).map(function (it, i) { return { itemId: it.id, name: pad2(i + 1) + '_' + folderSafe(it.label), label: it.label, parent: '', create: true, status: 'yes', source: it.source }; });
+    var lit = litDataItems(answers), base = lit.filter(function (it) { return !it.supp; }), extra = lit.filter(function (it) { return it.supp; });
+    var data = base.map(function (it, i) { return { itemId: it.id, name: pad2(i + 1) + '_' + folderSafe(it.label), label: it.label, parent: '', create: true, status: 'yes', source: it.source }; });
     // 3.2：工具系統「行銷與體驗」點亮工具（含該分組自訂）各一個分類資料夾，編號接在資料項目之後
     var n = data.length;
-    return data.concat(uploadToolItems31(answers).map(function (it, i) { return { itemId: it.id, name: pad2(n + i + 1) + '_' + folderSafe(it.label), label: it.label, parent: '', create: true, status: 'yes', source: it.source, kind: 'tool', groupId: it.groupId, groupLabel: it.groupLabel, custom: it.custom }; }));
+    var tools = uploadToolItems31(answers).map(function (it, i) { return { itemId: it.id, name: pad2(n + i + 1) + '_' + folderSafe(it.label), label: it.label, parent: '', create: true, status: 'yes', source: it.source, kind: 'tool', groupId: it.groupId, groupLabel: it.groupLabel, custom: it.custom }; });
+    // 3.2.7 官方新增的資料項目（補充請求）一律排在最後，不改既有資料夾編號
+    var m = n + tools.length;
+    return data.concat(tools, extra.map(function (it, i) { return { itemId: it.id, name: pad2(m + i + 1) + '_' + folderSafe(it.label), label: it.label, parent: '', create: true, status: 'yes', source: it.source, supp: true }; }));
   }
   /** 3.2 需放入資料的工具分組（其他工具分組與網站帳號不需放入） */
   var UPLOAD_TOOL_GROUPS31 = V31().resources.tools.filter(function (g) { return g.upload === true; }).map(function (g) { return g.id; });   // model3：resources.tools[i].upload（目前為 experience）
@@ -9306,14 +9454,17 @@ button.tool.add{min-height:36px;margin-top:2px}
     var sub = cleanStr(b.industrySub, 40);
     if (ind && sub && ind.subs.indexOf(sub) < 0) sub = '';   // 小類須在該大類內；不在者視為未選小類
     var incIds = v.incomes.map(function (x) { return x.id; });
-    var incomes = listOf(b.incomes).map(String).filter(function (id, i, arr) { return incIds.indexOf(id) >= 0 && arr.indexOf(id) === i; });
+    // 3.2.7 官方新增的收入來源（補充請求）：id＝x_＋8 碼，名稱存於 business.incomesExtra（只新增欄位）
+    var incEx = {}; arrOf(b.incomesExtra).forEach(function (x) { if (x && /^x_[0-9a-f]{8}$/.test(String(x.id || '')) && cleanStr(x.label, 40) && incIds.indexOf(String(x.id)) < 0) incEx[String(x.id)] = cleanStr(x.label, 40); });
+    var incomes = listOf(b.incomes).map(String).filter(function (id, i, arr) { return (incIds.indexOf(id) >= 0 || incEx[id]) && arr.indexOf(id) === i; });
     var main = cleanStr(b.mainIncome, 20);
     var mainOk = incomes.indexOf(main) >= 0 && !(byId(v.incomes, main) || {}).notMain;
     var pickable = incomes.filter(function (id) { return !(byId(v.incomes, id) || {}).notMain; });
     if (!mainOk) main = pickable.length === 1 ? pickable[0] : '';
     out.business = { name: cleanStr(b.name, 40), industryCode: code, industrySub: sub, industryOther: code === 'X' ? cleanStr(b.industryOther, 40) : '', stage: byId(v.stages, b.stage) ? b.stage : '',
       incomes: incomes, incomeOther: incomes.indexOf('other') >= 0 ? cleanStr(b.incomeOther, 20) : '', mainIncome: main, otherRoles: cleanStr(b.otherRoles, 60) };
-    out.business.otherRolesNone = !out.business.otherRoles && b.otherRolesNone === true;   // 明確「目前沒有」（與未作答區分）
+    out.business.otherRolesNone = !out.business.otherRoles && b.otherRolesNone === true;
+    var incExOut = incomes.filter(function (id) { return incEx[id]; }).map(function (id) { return { id: id, label: incEx[id] }; }); if (incExOut.length) out.business.incomesExtra = incExOut;   // 明確「目前沒有」（與未作答區分）
     var nb325 = normalizeBrand31(a); if (nb325.brandOwn) out.business.brandOwn = nb325.brandOwn; if (nb325.brandName) out.business.brandName = nb325.brandName;   // 3.2.5 自有品牌（只新增欄位）
     var d = a.duties || {};
     var dutyIds = v.duties.map(function (x) { return x.id; });
@@ -9353,7 +9504,7 @@ button.tool.add{min-height:36px;margin-top:2px}
     var fixedIds = {}; v.resources.data.forEach(function (g) { g.items.forEach(function (it) { fixedIds[it.id] = 1; }); });
     Object.keys(dataIn).forEach(function (id) { if (!fixedIds[id]) return; var e = dataIn[id]; if (e && e.has === true) data[id] = { has: true, source: srcIds.indexOf(e.source) >= 0 ? e.source : 'self' }; else if (e && e.has === false) data[id] = id === BRAND_LOGO_ID31 && e.logoPending === true ? { has: false, logoPending: true } : { has: false }; });
     var dataOther = [];
-    arrOf(r.dataOther).forEach(function (o, i) { if (!o || typeof o !== 'object') return; var label = cleanStr(o.label, 40); if (!label) return; var id = o.id && /^c_[a-f0-9]{8}$/.test(String(o.id)) ? String(o.id) : customId('c', label); if (dataOther.some(function (x) { return x.id === id; })) return; dataOther.push({ id: id, label: label, source: srcIds.indexOf(o.source) >= 0 ? o.source : 'self' }); });
+    arrOf(r.dataOther).forEach(function (o, i) { if (!o || typeof o !== 'object') return; var label = cleanStr(o.label, 40); if (!label) return; var id = o.id && /^c_[a-f0-9]{8}$/.test(String(o.id)) ? String(o.id) : customId('c', label); if (dataOther.some(function (x) { return x.id === id; })) return; var dO = { id: id, label: label, source: srcIds.indexOf(o.source) >= 0 ? o.source : 'self' }; if (o.supp === true) { dO.supp = true; if (byId(v.resources.data, o.cat)) dO.cat = String(o.cat); } dataOther.push(dO); });   // 3.2.7 supp／cat：官方新增（只新增欄位）
     var sites = [];
     arrOf(r.sites).forEach(function (st) {
       if (!st || typeof st !== 'object') return;
@@ -9364,7 +9515,7 @@ button.tool.add{min-height:36px;margin-top:2px}
     });
     var tools = {}, toolsIn = r.tools && typeof r.tools === 'object' ? r.tools : {}, toolNames = {};
     v.resources.tools.forEach(function (g) { g.items.forEach(function (t) { toolNames[t] = 1; }); });
-    var toolEntry = function (e, label) { var ss = normStatus31(e, true); var o = { source: e.source === 'company' ? 'company' : 'self', status: ss.status, plannedUse: ss.plannedUse, progress: ss.progress, planOwner: ss.owner }; if (label != null) { o.label = label; if (UPLOAD_TOOL_GROUPS31.indexOf(e.group) >= 0) o.group = e.group; } return o; };   // 3.2：自訂工具可歸屬需放入資料的分組（group）
+    var toolEntry = function (e, label) { var ss = normStatus31(e, true); var o = { source: e.source === 'company' ? 'company' : 'self', status: ss.status, plannedUse: ss.plannedUse, progress: ss.progress, planOwner: ss.owner }; if (label != null) { o.label = label; if (UPLOAD_TOOL_GROUPS31.indexOf(e.group) >= 0) o.group = e.group; if (e.supp === true) { o.supp = true; if (byId(v.resources.tools, e.cat)) o.cat = String(e.cat); } } return o; };   // 3.2.7 supp／cat：官方新增工具（顯示於校長選的分組）   // 3.2：自訂工具可歸屬需放入資料的分組（group）
     Object.keys(toolsIn).forEach(function (name) { if (!toolNames[name]) return; var e = toolsIn[name]; if (e && (e.has === true || e.source || e.status)) tools[name] = toolEntry(e); });
     var toolsOther = [];
     arrOf(r.toolsOther).forEach(function (o) { if (!o || typeof o !== 'object') return; var label = cleanStr(o.label, 30); if (!label || toolsOther.some(function (x) { return x.label === label; })) return; toolsOther.push(toolEntry(o, label)); });
@@ -9373,6 +9524,7 @@ button.tool.add{min-height:36px;margin-top:2px}
     v.resources.tools.forEach(function (g) { if (tnIn[g.id] === true && !toolGroupLit31({ tools: tools, toolsOther: toolsOther }, g)) toolsNone[g.id] = true; });
     sites = sites.slice(0, v.resources.sites.max);
     out.resources = { data: data, dataOther: dataOther.slice(0, v.resources.maxCustomData), sites: sites, sitesNone: !sites.length && r.sitesNone === true, tools: tools, toolsNone: toolsNone, toolsOther: toolsOther.slice(0, v.resources.maxCustomTools), companySystemName: cleanStr(r.companySystemName, 40) };
+    var sApp = strList(r.suppApplied, 60, 12).filter(function (x) { return /^x_[0-9a-f]{8}$/.test(x); }); if (sApp.length) out.resources.suppApplied = sApp;   // 3.2.7 已套用的「校長同意」上傳項目（只新增欄位）
     var planIds = {}; folderPlan31(out).forEach(function (p) { planIds[p.itemId] = 1; });
     var links = {}, linksIn = a.place && a.place.links && typeof a.place.links === 'object' ? a.place.links : {};
     Object.keys(linksIn).forEach(function (itemId) {
@@ -9573,7 +9725,7 @@ button.tool.add{min-height:36px;margin-top:2px}
     };
     (a.resources.sites || []).forEach(function (s) { push('site', '網站帳號', s.platform === '其他' && s.platformOther ? s.platformOther : s.platform, '', s, s.url); });
     v.resources.tools.forEach(function (g) { g.items.forEach(function (t) { if (a.resources.tools[t]) push('tool', '工具系統', t, g.label, a.resources.tools[t], ''); }); });
-    (a.resources.toolsOther || []).forEach(function (t) { var gg = t.group ? byId(v.resources.tools, t.group) : null; push('tool', '工具系統', t.label, gg ? gg.label : '其他工具', t, ''); });
+    (a.resources.toolsOther || []).forEach(function (t) { var gg = (t.group || t.cat) ? byId(v.resources.tools, t.group || t.cat) : null; push('tool', '工具系統', t.label, gg ? gg.label : '其他工具', t, ''); });
     return out;
   }
   function dataCompleteness31(answers, driveStatus) {
@@ -9676,12 +9828,12 @@ button.tool.add{min-height:36px;margin-top:2px}
     v.resources.tools.forEach(function (g) {
       var withStatus = function (o, e) { o.status = e.status || 'active'; o.statusLabel = statusLabel31(o.status); o.plannedUse = e.plannedUse || ''; o.progress = e.progress || ''; o.planOwner = e.planOwner || ''; o.planOwnerLabel = plannedOwnerLabel31(e.planOwner); return o; };
       var items = g.items.filter(function (t) { return a.resources.tools[t]; }).map(function (t) { return withStatus({ label: t, source: a.resources.tools[t].source, sourceLabel: a.resources.tools[t].source === 'company' ? '公司提供' : '自行使用' }, a.resources.tools[t]); });
-      a.resources.toolsOther.forEach(function (t) { if (t.group === g.id) items.push(withStatus({ label: t.label, source: t.source, sourceLabel: t.source === 'company' ? '公司提供' : '自行使用', custom: true }, t)); });   // 3.2 歸屬分組的自訂工具
+      a.resources.toolsOther.forEach(function (t) { if ((t.group || t.cat) === g.id) items.push(withStatus({ label: t.label, source: t.source, sourceLabel: t.source === 'company' ? '公司提供' : '自行使用', custom: true }, t)); });   // 3.2 歸屬分組的自訂工具
       if (g.id === 'company' && a.resources.companySystemName) items.push({ label: a.resources.companySystemName, source: 'company', sourceLabel: '公司提供', systemName: true, status: 'active', statusLabel: statusLabel31('active'), plannedUse: '', progress: '', planOwner: '', planOwnerLabel: '' });
       if (items.length) toolGroups.push({ id: g.id, label: g.label, items: items });
     });
     var withStatusO = function (o, e) { o.status = e.status || 'active'; o.statusLabel = statusLabel31(o.status); o.plannedUse = e.plannedUse || ''; o.progress = e.progress || ''; o.planOwner = e.planOwner || ''; o.planOwnerLabel = plannedOwnerLabel31(e.planOwner); return o; };
-    var otherTools = a.resources.toolsOther.filter(function (t) { return !t.group; });
+    var otherTools = a.resources.toolsOther.filter(function (t) { return !t.group && !t.cat; });   // 3.2.7 cat：官方新增工具顯示於校長選的分組
     if (otherTools.length) toolGroups.push({ id: 'custom', label: '其他工具', items: otherTools.map(function (t) { return withStatusO({ label: t.label, source: t.source, sourceLabel: t.source === 'company' ? '公司提供' : '自行使用', custom: true }, t); }) });
     var building = buildingList31(a);
     sections.push({ id: 'resources', label: '資源清單', kind: 'resources', icon: 'folder', desc: byId(SECTIONS31, 'resources').desc,
@@ -10994,6 +11146,19 @@ button.tool.add{min-height:36px;margin-top:2px}
   function studentHistory(o) { return authed('student_history', { rosterKey: (o && (o.rosterKey || o.key)) || '' }); }
   function remindTextGet() { return authed('remind_text_get', {}); }
   function remindTextSave(o) { var p = { text: (o && o.text) || '' }; if (o && o.kind === 'late') p.kind = 'late'; return authed('remind_text_save', p, { retries: 0 }); }
+  /**
+   * 3.2.7 補充請求：suppList() → { pending, history, counts, texts }；
+   *   suppResolve({ row, at, decision:'add'|'no', label?, all?, group?, text, dryRun? })；suppTextGet()／suppTextSave({ kind:'add'|'no', text })
+   */
+  function suppList() { return authed('supp_list', {}); }
+  function suppResolve(o) {
+    o = o || {};
+    var p = { row: Number(o.row), at: String(o.at || ''), decision: o.decision === 'add' ? 'add' : 'no', text: String(o.text == null ? '' : o.text) };
+    if (o.label != null) p.label = String(o.label); if (o.all === true) p.all = true; if (o.group) p.group = String(o.group); if (o.dryRun) p.dryRun = true;
+    return authed('supp_resolve', p, { retries: 0 });
+  }
+  function suppTextGet() { return authed('supp_text_get', {}); }
+  function suppTextSave(o) { return authed('supp_text_save', { kind: o && o.kind === 'no' ? 'no' : 'add', text: (o && o.text) || '' }, { retries: 0 }); }
   /** automationRecipientUpdate({ id, name?, role?, adminUserId?, enabled? }) → 設定 */
   function automationRecipientUpdate(o) { return authed('automation_recipient_update', o || {}, { retries: 0 }); }
   /** automationTest({ kind:'digest'|'principal', userId|id }) → { kind, to, text, ok, code, error, channel } */
@@ -11211,6 +11376,7 @@ button.tool.add{min-height:36px;margin-top:2px}
     remindTextGet: remindTextGet,
     studentHistory: studentHistory,
     remindTextSave: remindTextSave,
+    suppList: suppList, suppResolve: suppResolve, suppTextGet: suppTextGet, suppTextSave: suppTextSave,
     automationTest: automationTest,
     reportPreview: reportPreview,
     counselSync: counselSync,
@@ -12184,6 +12350,46 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
     return { encode: encode, svg: svg };
   })();
 
+  /* ================================================================ */
+  /* 3.2.7 官方新增的選項（補充請求同意後）                                */
+  /*   roster_lookup 帶回 suppOpts（全體＋只給學姊）→ UI.roster.supp；各頁合併顯示、標「新增」、不自動勾選      */
+  /*   上傳類只給學姊（p:1）：直接設為「有」（校長同意），每項只套用一次（resources.suppApplied）               */
+  /* ================================================================ */
+  var SUPX = (function () {
+    var DATA_T = ['data', 'upload', 'suppUpload'];
+    function opts() { return UI.roster && Array.isArray(UI.roster.supp) ? UI.roster.supp : []; }
+    function list(t, sub) { return opts().filter(function (o) { return o.t === t && (t !== 'step' || o.s === sub); }); }
+    function labels(t, sub) { return list(t, sub).map(function (o) { return o.l; }); }
+    function tag() { return h('span', { class: 'xnew' }, '新增'); }
+    function dataOpts() { return opts().filter(function (o) { return DATA_T.indexOf(o.t) >= 0; }); }
+    function set(arr) {
+      if (!UI.roster) return false;
+      UI.roster.supp = Array.isArray(arr) ? arr : [];
+      return applyPreset();
+    }
+    /** 上傳類只給學姊（校長同意）：加入資料清單並設為「有」；已確認的資料清單一併更新（不需重新確認） */
+    function applyPreset() {
+      var r = A.resources, ch = false, wasLocked = isLocked();
+      r.suppApplied = Array.isArray(r.suppApplied) ? r.suppApplied : [];
+      dataOpts().forEach(function (o) {
+        if (!o.p || r.suppApplied.indexOf(o.id) >= 0) return;
+        r.suppApplied.push(o.id); ch = true;
+        if (r.dataOther.some(function (x) { return x.label === o.l; }) || r.dataOther.length >= V.resources.maxCustomData) return;
+        r.dataOther = S3.normalizeAnswers31({ resources: { dataOther: r.dataOther.concat([{ label: o.l, source: 'self', supp: true, cat: o.g }]) } }).resources.dataOther;
+      });
+      if (ch && wasLocked) setLock(true);
+      return ch;
+    }
+    /** 頁首說明：官方依學姊的補充新增的選項（mine） */
+    function note(ts) {
+      var mine = opts().filter(function (o) { return o.mine && ts.indexOf(o.t) >= 0; }).map(function (o) { return o.l; });
+      if (!mine.length) return null;
+      return h('div', { class: 'fnote', role: 'status', 'data-k': 'supx-note' }, ic('star'), h('div', null, '官方已依學姊的補充，新增了「' + mine.slice(0, 3).join('」「') + '」' + (mine.length > 3 ? '等 ' + mine.length + ' 項' : ''),
+        h('small', null, '標示「新增」的選項，請學姊確認後點選。')));
+    }
+    return { opts: opts, list: list, labels: labels, tag: tag, dataOpts: dataOpts, set: set, applyPreset: applyPreset, note: note, DATA_T: DATA_T };
+  })();
+
   var XA = (function () {
     var KIND = {
       multi: { title: '想新增的選項', verb: '還想新增', desc: '清單中沒有的項目，請學姊直接告訴官方，官方會協助加入。', ph: '例如：直播帶貨流程' },
@@ -12370,6 +12576,7 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
       if (r && r.found) {
         A.student.name = r.name; UI.idOk = true; UI.rosterEmpty = false;
         UI.roster = { key: r.key, name: r.name, batch: r.batch || null, lookupToken: r.lookupToken || '', acct: S.rosterKey(acc) };
+        SUPX.set(r.suppOpts);   // 3.2.7 官方新增的選項
         if (hasSuppLink()) SUP.checking = true;   // 讀取補件需求中：身分資料頁顯示讀取文字
         save(); rerender();
         // 核對通過後的請求同時送出（不互相等待）：開始填寫紀錄、補件需求、雲端資料夾狀態
@@ -12533,14 +12740,18 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
   }
   function viewBusiness() {
     var b = A.business, by = issuesBy().business;
-    var lit = b.incomes.filter(function (id) { var x = byId(V.incomes, id); return x && !x.notMain; });
+    // 3.2.7 官方新增的收入來源：排在「尚未有收入」「其他」之前，標「新增」
+    var incAll = V.incomes.slice(), incEx = SUPX.list('income').map(function (o) { return { id: o.id, label: o.l, desc: '官方新增', fresh: true }; });
+    if (incEx.length) { var cut = incAll.length; for (var ci = 0; ci < incAll.length; ci++) if (incAll[ci].notMain || incAll[ci].custom) { cut = ci; break; } incAll.splice.apply(incAll, [cut, 0].concat(incEx)); }
+    var syncIncEx = function () { var sel = incEx.filter(function (x) { return b.incomes.indexOf(x.id) >= 0; }).map(function (x) { return { id: x.id, label: x.label }; }); if (sel.length) b.incomesExtra = sel; else delete b.incomesExtra; };
+    var lit = b.incomes.filter(function (id) { var x = byId(incAll, id); return x && !x.notMain; });
     if (lit.length === 1 && b.mainIncome !== lit[0]) b.mainIncome = lit[0];
     if (b.mainIncome && lit.indexOf(b.mainIncome) < 0) b.mainIncome = '';
     var cur = !trim(b.name) ? 0 : !b.industryCode || !b.stage ? 1 : !b.incomes.length ? 2 : 3;
-    var incs = h('div', { class: 'incs', role: 'group', 'aria-label': '收入來源' }, V.incomes.map(function (x) {
+    var incs = h('div', { class: 'incs', role: 'group', 'aria-label': '收入來源' }, incAll.map(function (x) {
       var on = b.incomes.indexOf(x.id) >= 0;
-      return h('button', { type: 'button', class: 'inc' + (on ? ' on' : ''), 'aria-pressed': String(on), 'data-k': 'inc-' + x.id, onclick: function () { toggleIn(b.incomes, x.id); if (x.id === 'other' && !on) UI.focusAfter = 'f-incomeOther'; changed(); if (UI.focusAfter) { var n = document.getElementById(UI.focusAfter); UI.focusAfter = ''; if (n) n.focus(); } } },
-        h('span', { class: 'bulb' + (on ? ' on' : '') }), h('span', { class: 'nm' }, h('b', null, x.label), h('small', null, x.desc)));
+      return h('button', { type: 'button', class: 'inc' + (on ? ' on' : '') + (x.fresh ? ' fresh' : ''), 'aria-pressed': String(on), 'data-k': 'inc-' + x.id, onclick: function () { toggleIn(b.incomes, x.id); if (x.fresh) syncIncEx(); if (x.id === 'other' && !on) UI.focusAfter = 'f-incomeOther'; changed(); if (UI.focusAfter) { var n = document.getElementById(UI.focusAfter); UI.focusAfter = ''; if (n) n.focus(); } } },
+        h('span', { class: 'bulb' + (on ? ' on' : '') }), h('span', { class: 'nm' }, h('b', null, x.label, x.fresh ? [' ', SUPX.tag()] : null), h('small', null, x.desc)));
     }));
     return h('main', { class: 'page' },
       flow([['brief', '項目名稱'], ['flag', '行業與階段'], ['list', '收入來源'], ['star', '主要收入']], cur),
@@ -12549,11 +12760,11 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
       brandSec(b),
       sec('行業', REQ(), '請學姊輸入關鍵字搜尋，或展開大類選擇所屬行業；找不到時請學姊選「其他」自行填寫。', industryBody(), null, 's-industry'),
       sec('經營階段', REQ(), '', seg(V.stages, b.stage, function (id) { b.stage = id; changed(); }, '經營階段', true), null, 's-stage'),
-      sec('收入來源', MULTI(), '請學姊點亮目前的收入來源。', [incs,
+      sec('收入來源', MULTI(), '請學姊點亮目前的收入來源。', [SUPX.note(['income']), incs,
         b.incomes.indexOf('other') >= 0 ? h('div', { class: 'field', style: 'margin:10px 0 0' }, h('label', { class: 'l', for: 'f-incomeOther' }, '其他收入來源', REQ()), textInput({ id: 'f-incomeOther', get: function () { return b.incomeOther; }, set: function (v) { b.incomeOther = v; }, max: 20, ph: '20 字內' })) : null,
         XA.button('經營項目 › 收入來源', 'multi', 'div')], null, 's-incomes'),
       lit.length ? sec('主要收入', REQ(), '請學姊從已點亮的收入來源中選一項。', h('div', { class: 'chips', role: 'radiogroup', 'aria-label': '主要收入' }, lit.map(function (id) {
-        var on = b.mainIncome === id, x = byId(V.incomes, id);
+        var on = b.mainIncome === id, x = byId(incAll, id);
         return h('button', { type: 'button', role: 'radio', 'aria-checked': String(on), class: 'chip' + (on ? ' star' : ''), 'data-k': 'main-' + id, onclick: function () { b.mainIncome = id; changed(); } },
           on ? ic('star', 'sm') : h('span', { class: 'bulb' }), id === 'other' && b.incomeOther ? '其他：' + b.incomeOther : x.label);
       })), null, 's-main') : null,
@@ -12576,9 +12787,10 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
       flow([['tap', '點選工作項目'], ['star', '標出優先移交', '最多 3 項']], selected.length ? 1 : 0),
       head('DUTIES', '職務內容', '請學姊點選經營項目中，一週內實際負責的工作項目。'),
       trim(A.business.name) ? h('div', { class: 'card', style: 'margin-bottom:12px;padding:12px 14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap' }, h('span', { class: 'eyebrow', style: 'color:var(--text-3)' }, '經營項目'), h('b', { style: 'font-weight:500' }, A.business.name), indLabel ? h('span', { class: 'badge', style: 'margin-left:auto' }, indLabel.split('｜')[0]) : null) : null,
-      sec('工作項目', MULTI(), '', [h('div', { class: 'chips', role: 'group', 'aria-label': '工作項目' },
+      sec('工作項目', MULTI(), '', [SUPX.note(['duty']), h('div', { class: 'chips', role: 'group', 'aria-label': '工作項目' },
         V.duties.map(function (x) { var on = d.items.indexOf(x.id) >= 0; return chip(x.label, on, function () { toggleIn(d.items, x.id); changed(); }, { k: 'duty-' + x.id }); }),
-        d.other.map(function (x) { return chip(x, true, function () { remove(d.other, x); remove(d.handover, 'other:' + x); changed(); }, { k: 'dutyo-' + x, aria: x + '（自填，點選移除）', post: h('span', { class: 'rm', 'aria-hidden': 'true' }, ic('x', 'sm')) }); }),
+        SUPX.labels('duty').map(function (x) { var on = d.other.indexOf(x) >= 0; return chip(x, on, function () { if (on) { remove(d.other, x); remove(d.handover, 'other:' + x); } else if (d.other.length < 10) uniqPush(d.other, x.slice(0, 30)); else { toast('自填與新增的工作項目最多 10 項'); return; } changed(); }, { k: 'dutyx-' + x, cls: 'fresh', post: SUPX.tag() }); }),
+        d.other.filter(function (x) { return SUPX.labels('duty').indexOf(x) < 0; }).map(function (x) { return chip(x, true, function () { remove(d.other, x); remove(d.handover, 'other:' + x); changed(); }, { k: 'dutyo-' + x, aria: x + '（自填，點選移除）', post: h('span', { class: 'rm', 'aria-hidden': 'true' }, ic('x', 'sm')) }); }),
         addOther('duty', '新增其他', function (v) { if (d.other.length < 10) uniqPush(d.other, v.slice(0, 30)); changed(); }, { ph: '請學姊輸入工作項目', max: 30 })),
         XA.button('職務內容 › 工作項目', 'multi', 'div')], null, 's-duties'),
       selected.length ? sec('優先移交項目', badge(d.handover.length + '／' + max, full ? 'warn mono' : 'mono'), '請學姊從已點選的項目中，標出最希望交給他人處理的項目，最多 3 項。',
@@ -12677,7 +12889,8 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
     });
   }
   function live(msg) { var l = document.getElementById('live'); if (l) { l.textContent = ''; setTimeout(function () { l.textContent = msg; }, 30); } }
-  function pickPool(caseId, st, pool) {
+  function pickPool(caseId, st, pool, fresh) {
+    fresh = fresh || [];
     var used = st.stages.map(function (s) { return s.name; });
     var lim = V.stepLimits;
     function addStage(name) {
@@ -12687,9 +12900,10 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
     return [h('div', { class: 'group-lbl' }, '點選加入步驟'), h('div', { class: 'chips sm' },
       pool.map(function (t) {
         var on = used.indexOf(t) >= 0;
-        return h('button', { type: 'button', class: 'chip' + (on ? ' dim' : ''), 'aria-pressed': String(on), 'data-k': 'pool-' + caseId + t, onclick: function () {
+        var fr = fresh.indexOf(t) >= 0;
+        return h('button', { type: 'button', class: 'chip' + (on ? ' dim' : '') + (fr ? ' fresh' : ''), 'aria-pressed': String(on), 'data-k': 'pool-' + caseId + t, onclick: function () {
           if (on) { var k = used.indexOf(t); st.stages.splice(k, 1); changed(); } else addStage(t);
-        } }, ic(on ? 'check' : 'plus', 'sm'), t);
+        } }, ic(on ? 'check' : 'plus', 'sm'), t, fr ? SUPX.tag() : null);
       }),
       addOther('stage-' + caseId, '新增其他步驟', addStage, { ph: '請學姊輸入步驟名稱', max: lim.maxNameLength }))];
   }
@@ -12700,12 +12914,14 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
     if (caseId === 'receive') {
       body.push(h('div', { class: 'group-lbl' }, '客人來源'), h('div', { class: 'chips sm', role: 'group', 'aria-label': '客人來源' },
         c.sources.map(function (x) { return chip(x, st.sources.indexOf(x) >= 0, function () { toggleIn(st.sources, x); changed(); }, { k: 'src-' + x }); }),
-        st.sourcesOther.map(function (x) { return chip(x, true, function () { remove(st.sourcesOther, x); changed(); }, { k: 'srco-' + x, post: h('span', { class: 'rm', 'aria-hidden': 'true' }, ic('x', 'sm')), aria: x + '（自填，點選移除）' }); }),
+        SUPX.labels('source').filter(function (x) { return c.sources.indexOf(x) < 0; }).map(function (x) { var on = st.sourcesOther.indexOf(x) >= 0; return chip(x, on, function () { if (on) remove(st.sourcesOther, x); else uniqPush(st.sourcesOther, x); changed(); }, { k: 'srcx-' + x, cls: 'fresh', post: SUPX.tag() }); }),
+        st.sourcesOther.filter(function (x) { return SUPX.labels('source').indexOf(x) < 0; }).map(function (x) { return chip(x, true, function () { remove(st.sourcesOther, x); changed(); }, { k: 'srco-' + x, post: h('span', { class: 'rm', 'aria-hidden': 'true' }, ic('x', 'sm')), aria: x + '（自填，點選移除）' }); }),
         addOther('src', '新增其他', function (v) { uniqPush(st.sourcesOther, v); changed(); }, { ph: '請學姊輸入客人來源' })),
         XA.button('實際步驟 › 接待客人 › 客人來源', 'multi', true));
       body.push(h('div', { class: 'group-lbl' }, '成交管道'), h('div', { class: 'chips sm', role: 'group', 'aria-label': '成交管道' },
         c.channels.map(function (x) { return chip(x, st.channels.indexOf(x) >= 0, function () { toggleIn(st.channels, x); changed(); }, { k: 'ch-' + x }); }),
-        st.channelsOther.map(function (x) { return chip(x, true, function () { remove(st.channelsOther, x); changed(); }, { k: 'cho-' + x, post: h('span', { class: 'rm', 'aria-hidden': 'true' }, ic('x', 'sm')), aria: x + '（自填，點選移除）' }); }),
+        SUPX.labels('channel').filter(function (x) { return c.channels.indexOf(x) < 0; }).map(function (x) { var on = st.channelsOther.indexOf(x) >= 0; return chip(x, on, function () { if (on) remove(st.channelsOther, x); else uniqPush(st.channelsOther, x); changed(); }, { k: 'chx-' + x, cls: 'fresh', post: SUPX.tag() }); }),
+        st.channelsOther.filter(function (x) { return SUPX.labels('channel').indexOf(x) < 0; }).map(function (x) { return chip(x, true, function () { remove(st.channelsOther, x); changed(); }, { k: 'cho-' + x, post: h('span', { class: 'rm', 'aria-hidden': 'true' }, ic('x', 'sm')), aria: x + '（自填，點選移除）' }); }),
         addOther('ch', '新增其他', function (v) { uniqPush(st.channelsOther, v); changed(); }, { ph: '請學姊輸入成交管道' })),
         XA.button('實際步驟 › 接待客人 › 成交管道', 'multi', true));
       body.push(h('div', { class: 'group-lbl' }, '成交週期'), seg(c.cycles, st.cycle, function (id) { st.cycle = st.cycle === id ? '' : id; changed(); }, '成交週期', true));
@@ -12717,7 +12933,8 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
     body.push(h('div', { class: 'group-lbl' }, '實際步驟　', h('span', { class: 'mono', style: 'color:var(--rose-300)' }, String(st.stages.length))));
     if (st.stages.length) body.push(stageLine(caseId, st));
     else body.push(h('p', { class: 'hint', style: 'margin:0 0 6px' }, '尚無步驟，請學姊從下方點選或新增。'));
-    if (c.pool && c.pool.length) body = body.concat(pickPool(caseId, st, c.pool));
+    var poolX = SUPX.labels('step', caseId).filter(function (x) { return (c.pool || []).indexOf(x) < 0; });   // 3.2.7 官方新增的步驟選項
+    if ((c.pool && c.pool.length) || poolX.length) body = body.concat(pickPool(caseId, st, (c.pool || []).concat(poolX), poolX));
     else {
       var lim = V.stepLimits;
       var tin = h('input', { type: 'text', 'data-k': 'tin-' + caseId, maxlength: String(lim.maxNameLength), placeholder: '請學姊輸入下一個步驟', 'aria-label': '輸入下一個步驟', onkeydown: function (e) { if (e.key === 'Enter') { e.preventDefault(); addT(); } } });
@@ -12743,6 +12960,7 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
       head('STEPS', '實際步驟', '請學姊以最近一次實際發生的經過，依順序點選步驟；已在資料中提供流程文件者，可直接略過。'),
       h('div', { class: 'note info', style: 'margin-bottom:14px' }, ic('grip'), h('div', { id: 'drag-tip' }, h('b', null, '步驟排序'), '學姊點選的步驟會依序排成步驟線，請學姊按住右側把手拖曳調整順序；使用鍵盤時，聚焦把手後按上下鍵即可移動。')),
       allNone ? h('div', { class: 'note err', role: 'alert', style: 'margin-bottom:14px' }, ic('alert'), h('div', null, h('b', null, '至少整理一個案例的實際步驟'), '三個案例目前都選擇「目前沒有」。')) : null,
+      SUPX.note(['step', 'source', 'channel']),
       h('div', { class: 'cols3' }, caseBox('receive', 'chat'), caseBox('lead', 'users'), caseBox('task', 'flag')),
       nav('前往權限規則', 'authority'));
   }
@@ -12768,10 +12986,15 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
         }));
     });
     var hasAsk = counts.ask > 0;
+    // 3.2.7 官方新增：事項（點選後加入表格再標示決定方式）、請示對象（排在「其他」之前）
+    var authX = SUPX.labels('auth').filter(function (x) { return !au.items.some(function (it) { return it.label === x; }); });
+    var askAll = V.authority.askTargets.slice(), askX = SUPX.labels('ask').filter(function (x) { return askAll.indexOf(x) < 0; });
+    if (askX.length) { var ak = askAll.indexOf('其他'); askAll.splice.apply(askAll, [ak < 0 ? askAll.length : ak, 0].concat(askX)); }
     return h('main', { class: 'page' },
       flow([['tap', '點選事項'], ['refresh', '切換決定方式'], ['users', '請示對象', '選填']], answered === au.items.length && au.items.length ? (hasAsk ? 2 : 3) : answered ? 1 : 0),
       head('AUTHORITY', '權限規則', '請學姊點選每個事項，標示目前的決定方式。'),
       h('div', { class: 'note info', style: 'margin-bottom:12px' }, ic('tap'), h('div', null, h('b', null, '點選事項，依序切換決定方式'), '自行決定 → 需要請示 → 不經手；也可直接點選右側圓點。')),
+      SUPX.note(['auth', 'ask']),
       h('section', { class: 'sec', 'aria-labelledby': 'perm-h', style: 'margin-bottom:0' },
         h('div', { class: 'sec-h' }, h('h2', { id: 'perm-h' }, '決定方式'), badge(answered + '／' + au.items.length, answered === au.items.length ? 'ok mono' : 'mono'), XA.button('權限規則', 'case')),
         h('div', { class: 'perm' },
@@ -12783,10 +13006,17 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
             au.items.push({ id: '', label: lbl, mode: '', custom: true });
             var n = S3.normalizeAnswers31({ authority: au }).authority.items; au.items = n; changed();
           }, { ph: '請學姊輸入事項名稱', max: 30 }) : null)),
+        authX.length ? h('div', { class: 'chips', style: 'margin-top:12px', role: 'group', 'aria-label': '官方新增的事項' }, authX.map(function (x) {
+          return h('button', { type: 'button', class: 'chip fresh', 'data-k': 'authx-' + x, onclick: function () {
+            if (au.items.length >= V.authority.maxItems) { toast('事項最多 ' + V.authority.maxItems + ' 項'); return; }
+            au.items.push({ id: '', label: x.slice(0, 30), mode: '', custom: true }); au.items = S3.normalizeAnswers31({ authority: au }).authority.items; changed();
+          } }, ic('plus', 'sm'), h('span', { class: 'tx' }, x), SUPX.tag());
+        })) : null,
         h('div', { class: 'legend' }, h('span', null, h('i', { style: 'background:var(--rose-500)' }), '自行決定 ' + counts.self), h('span', null, h('i', { style: 'background:var(--warning-500)' }), '需要請示 ' + counts.ask), h('span', null, h('i', { style: 'background:var(--ink-5);box-shadow:inset 0 0 0 1.5px var(--text-3)' }), '不經手 ' + counts.none))),
       h('div', { style: 'height:22px' }),
-      sec('請示對象', hasAsk ? REQ() : OPT(), '請學姊點選需要請示時的對象。', [h('div', { class: 'chips', role: 'group', 'aria-label': '請示對象' }, V.authority.askTargets.map(function (t) {
-        return chip(t, au.askTargets.indexOf(t) >= 0, function () { toggleIn(au.askTargets, t); if (t === '其他' && au.askTargets.indexOf(t) < 0) au.askOther = ''; changed(); }, { k: 'ask-' + t });
+      sec('請示對象', hasAsk ? REQ() : OPT(), '請學姊點選需要請示時的對象。', [h('div', { class: 'chips', role: 'group', 'aria-label': '請示對象' }, askAll.map(function (t) {
+        var fr = askX.indexOf(t) >= 0;
+        return chip(t, au.askTargets.indexOf(t) >= 0, function () { toggleIn(au.askTargets, t); if (t === '其他' && au.askTargets.indexOf(t) < 0) au.askOther = ''; changed(); }, { k: 'ask-' + t, cls: fr ? 'fresh' : '', post: fr ? SUPX.tag() : null });
       })), au.askTargets.indexOf('其他') >= 0 ? h('div', { class: 'field', style: 'margin:10px 0 0' }, h('label', { class: 'l', for: 'f-askOther' }, '其他請示對象'), textInput({ id: 'f-askOther', get: function () { return au.askOther; }, set: function (v) { au.askOther = v; }, max: 20, ph: '20 字內' })) : null,
         XA.button('權限規則 › 請示對象', 'multi', 'div')], null, 's-ask'),
       nav('前往資源清單', 'resources'));
@@ -12842,6 +13072,26 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
   }
   function resData() {
     var r = A.resources, d = r.data, locked = isLocked();
+    // 3.2.7 官方新增的資料項目：顯示在校長選的分類；點「有」加入資料清單（自訂資料，資料夾編號排在最後）
+    var shownGroups = RV.data.filter(function (g) { return !g.when; }).map(function (g) { return g.id; });
+    var xAll = SUPX.dataOpts(), xLabels = xAll.map(function (o) { return o.l; }), xBy = {}, xOrphan = [];
+    xAll.forEach(function (o) { if (shownGroups.indexOf(o.g) >= 0) (xBy[o.g] = xBy[o.g] || []).push(o); else xOrphan.push(o); });
+    var xRow = function (o) {
+      var e = r.dataOther.filter(function (x) { return x.label === o.l; })[0], on = !!e, rid = 'x' + o.id.slice(2);
+      var tog = function () {
+        if (on) { retireItem(e.id, { label: o.l, apply: function () { r.dataOther = r.dataOther.filter(function (x) { return x !== e; }); changed(); } }); return; }
+        if (r.dataOther.length >= RV.maxCustomData) { toast('其他資料最多 ' + RV.maxCustomData + ' 項'); return; }
+        r.dataOther = S3.normalizeAnswers31({ resources: { dataOther: r.dataOther.concat([{ label: o.l, source: 'self', supp: true, cat: o.g }]) } }).resources.dataOther; changed();
+      };
+      return h('div', { class: 'row fresh' + (on ? ' lit wrap' : ''), id: 'dr-' + rid, 'data-k': 'dx-' + o.l },
+        h('span', { class: 'bulb' + (on ? ' on' : ''), 'aria-hidden': 'true' }),
+        h('div', { class: 'nm' }, h('b', { id: 'dl-' + rid }, o.l, ' ', SUPX.tag()), h('small', null, o.p ? '校長已同意，會上傳' : '官方新增')),
+        locked ? lockIc() : null,
+        h('div', { class: 'yn', role: 'group', 'aria-labelledby': 'dl-' + rid },
+          h('button', { type: 'button', 'aria-pressed': String(on), class: on ? 'on' : '', 'data-k': 'sw-' + rid, disabled: locked, onclick: tog }, '有')),
+        on ? litHint() : null,
+        on ? h('div', { class: 'src' }, seg(RV.sourceOptions, e.source || 'self', function (id) { e.source = id; changed(); }, o.l + '來源')) : null);
+    };
     var groups = RV.data.filter(function (g) { return !g.when; }).map(function (g) {
       var todo = g.items.filter(function (it) { var e = d[it.id]; return !e || (e.has !== true && e.has !== false); });
       return h('div', { id: 'dg-' + g.id, class: 'dgrp' }, h('div', { class: 'group-lbl' }, g.label,
@@ -12858,16 +13108,18 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
             h('button', { type: 'button', role: 'radio', 'aria-checked': String(no), class: no ? 'off' : '', 'data-k': 'no-' + it.id, disabled: locked, onclick: function () { if (no) { delete d[it.id]; changed(); return; } if (on) { retireItem(it.id, { label: it.label, apply: function () { d[it.id] = { has: false }; changed(); } }); return; } d[it.id] = { has: false }; changed(); } }, '沒有')),
           on ? litHint() : null,
           on ? h('div', { class: 'src' }, seg(RV.sourceOptions, e.source, function (id) { e.source = id; changed(); }, it.label + '來源')) : null);
-      }));
+      }), (xBy[g.id] || []).map(xRow));
     });
     return [
+      SUPX.note(SUPX.DATA_T.concat(['site', 'tool'])),
       locked ? h('div', { class: 'note ok', id: 'list-locked', style: 'margin-bottom:12px' }, ic('lock'), h('div', null, h('b', null, '上傳項目已確認'),
         '需上傳的項目已鎖定，請學姊到放入資料逐項上傳。', h('div', { style: 'margin-top:8px' }, editListBtn()))) : null,
       brandCard(d, locked),
       h('div', { class: 'card lit-sum' }, h('span', { class: 'bulb on', 'aria-hidden': 'true' }), h('span', { class: 't' }, '已點亮 ', h('b', { class: 'mono' }, String(litCount())), ' 項資料，點亮後請學姊選擇來源'), ansMeter()),
       h('div', { class: 'cols2' }, groups),
       h('div', { class: 'group-lbl' }, '其他資料'),
-      r.dataOther.map(function (o, i) {
+      xOrphan.map(xRow),
+      r.dataOther.filter(function (o) { return xLabels.indexOf(o.label) < 0; }).map(function (o, i) {
         return h('div', { class: 'row lit wrap' }, h('span', { class: 'bulb on', 'aria-hidden': 'true' }), h('div', { class: 'nm' }, h('b', null, o.label), h('small', null, '自行新增')),
           locked ? lockIc() : h('button', { type: 'button', class: 'btn txt sm quiet inl', 'aria-label': '移除「' + o.label + '」', onclick: function () { retireItem(o.id, { label: o.label, apply: function () { r.dataOther = r.dataOther.filter(function (x) { return x.id !== o.id; }); changed(); } }); } }, ic('x', 'sm'), '移除'),
           litHint(),
@@ -12883,14 +13135,17 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
   }
   function resSites() {
     var r = A.resources, sc = RV.sites;
+    // 3.2.7 官方新增的平台（排在「其他」之前）
+    var platX = SUPX.labels('site').filter(function (x) { return sc.platforms.indexOf(x) < 0; }), plats = sc.platforms.slice();
+    if (platX.length) { var pk = plats.indexOf('其他'); plats.splice.apply(plats, [pk < 0 ? plats.length : pk, 0].concat(platX)); }
     var cards = r.sites.map(function (s, i) {
       var k = 'site' + i;
       return h('div', { class: 'card site', role: 'group', 'aria-label': '網站帳號 ' + (i + 1) },
         h('div', { class: 'site-h' }, h('b', null, '網站帳號 ' + (i + 1)), h('button', { type: 'button', class: 'rm', 'aria-label': '移除網站帳號 ' + (i + 1), onclick: function () { var x = r.sites.splice(i, 1)[0]; changed(); toast('已移除網站帳號', { action: { label: '復原', fn: function () { r.sites.splice(i, 0, x); changed(); } } }); } }, ic('x'))),
         h('div', { class: 'hint', style: 'margin-bottom:6px' }, '平台'),
-        h('div', { class: 'chips sm', role: 'radiogroup', 'aria-label': '平台' }, sc.platforms.map(function (p) {
-          var on = s.platform === p;
-          return h('button', { type: 'button', role: 'radio', 'aria-checked': String(on), class: 'chip' + (on ? ' on' : ''), 'data-k': k + '-p-' + p, onclick: function () { s.platform = p; changed(); } }, on ? ic('globe', 'sm') : null, p);
+        h('div', { class: 'chips sm', role: 'radiogroup', 'aria-label': '平台' }, plats.map(function (p) {
+          var on = s.platform === p, fr = platX.indexOf(p) >= 0;
+          return h('button', { type: 'button', role: 'radio', 'aria-checked': String(on), class: 'chip' + (on ? ' on' : '') + (fr ? ' fresh' : ''), 'data-k': k + '-p-' + p, onclick: function () { s.platform = p; changed(); } }, on ? ic('globe', 'sm') : null, p, fr ? SUPX.tag() : null);
         })),
         s.platform === '其他' ? h('div', { class: 'field', style: 'margin:10px 0 0' }, h('label', { class: 'l', for: k + '-po' }, '平台名稱'), textInput({ id: k + '-po', get: function () { return s.platformOther; }, set: function (v) { s.platformOther = v; }, max: 20, ph: '20 字內', cls: 'sm' })) : null,
         h('div', { class: 'field', style: 'margin:10px 0 0' }, h('label', { class: 'l', for: k + '-url' }, '網址', s.platform ? REQ() : null),
@@ -12911,8 +13166,12 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
   }
   function resTools() {
     var r = A.resources, t = r.tools, locked = isLocked();
+    // 3.2.7 官方新增的工具：顯示在校長選的分組；點亮後存為自訂工具（cat＝分組，行銷與體驗另需放入資料）
+    var toolX = SUPX.list('tool').filter(function (o) { return RV.tools.some(function (g) { return g.id === o.g; }); });
+    var toolXOf = function (gid) { return toolX.filter(function (o) { return o.g === gid && RV.tools.filter(function (g) { return g.id === gid; })[0].items.indexOf(o.l) < 0; }); };
+    var toolXOn = function (lb) { return r.toolsOther.filter(function (o) { return o.label === lb; })[0]; };
     var groups = RV.tools.map(function (g) {
-      var tn = r.toolsNone = r.toolsNone || {}, anyOn = g.items.some(function (x) { return t[x]; });
+      var tn = r.toolsNone = r.toolsNone || {}, anyOn = g.items.some(function (x) { return t[x]; }) || toolXOf(g.id).some(function (o) { return toolXOn(o.l); });
       if (anyOn && tn[g.id]) delete tn[g.id];
       return h('div', { id: 'tg-' + g.id, class: 'dgrp' }, h('div', { class: 'group-lbl' }, g.label, UPLOAD_TOOL_GROUPS.indexOf(g.id) >= 0 && locked ? lockIc() : null),
         UPLOAD_TOOL_GROUPS.indexOf(g.id) >= 0 && anyOn ? h('p', { class: 'lit-hint', style: 'padding-left:0;margin:0 0 8px' }, ic('upload', 'sm'), LIT_HINT) : null, h('div', { class: 'chips', role: 'group', 'aria-label': g.label }, anyOn ? null : chip('目前沒有', !!tn[g.id], function () { if (tn[g.id]) delete tn[g.id]; else tn[g.id] = true; changed(); }, { k: 'tg-none-' + g.id, cls: 'nochip' }), g.items.map(function (name) {
@@ -12921,12 +13180,20 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
           if (on && UPLOAD_TOOL_GROUPS.indexOf(g.id) >= 0) { var ti = uploadTools().filter(function (x) { return x.label === name; })[0]; if (ti && A.drive.folders[ti.id]) { retireItem(ti.id, { label: name, apply: function () { delete t[name]; changed(); } }); return; } } if (on) delete t[name]; else t[name] = { source: g.id === 'company' ? 'company' : 'self', status: 'active', plannedUse: '', progress: '', planOwner: '' }; changed(); } },
           h('span', { class: 'bulb' + (on ? ' on' : ''), 'aria-hidden': 'true' }), name,
           on && t[name].status && t[name].status !== 'active' ? h('span', { class: 'badge warn', style: 'height:20px;margin-left:2px' }, S3.statusLabel31(t[name].status)) : null);
+      }), toolXOf(g.id).map(function (o) {
+        var e = toolXOn(o.l), on = !!e, up = UPLOAD_TOOL_GROUPS.indexOf(g.id) >= 0;
+        return h('button', { type: 'button', class: 'chip fresh' + (on ? ' on' : ''), 'aria-pressed': String(on), 'data-k': 'toolx-' + o.l, disabled: locked && up, onclick: function () {
+          if (on) { var ti = up ? uploadTools().filter(function (x) { return x.label === o.l; })[0] : null, rm = function () { r.toolsOther = r.toolsOther.filter(function (x) { return x !== e; }); changed(); }; if (ti && A.drive.folders[ti.id]) retireItem(ti.id, { label: o.l, apply: rm }); else rm(); return; }
+          if (r.toolsOther.length >= RV.maxCustomTools) { toast('其他工具最多 ' + RV.maxCustomTools + ' 項'); return; }
+          var ne = { label: o.l.slice(0, 30), source: g.id === 'company' ? 'company' : 'self', status: 'active', plannedUse: '', progress: '', planOwner: '', supp: true, cat: g.id }; if (up) ne.group = g.id;
+          r.toolsOther.push(ne); delete tn[g.id]; changed();
+        } }, h('span', { class: 'bulb' + (on ? ' on' : ''), 'aria-hidden': 'true' }), o.l, SUPX.tag());
       })),
       g.id === 'company' && g.items.some(function (n) { return t[n]; }) ? h('div', { class: 'field', style: 'margin-top:12px' }, h('label', { class: 'l', for: 'f-csys' }, g.systemNameLabel || '系統名稱', REQ()), textInput({ id: 'f-csys', get: function () { return r.companySystemName; }, set: function (v) { r.companySystemName = v; }, max: 40, ph: '例如：業務員行動投保系統', icon: 'tool' })) : null);
     });
     var litList = [];
     RV.tools.forEach(function (g) { g.items.forEach(function (name) { if (t[name]) litList.push({ name: name, e: t[name], group: g.label }); }); });
-    r.toolsOther.forEach(function (o, i) { litList.push({ name: o.label, e: o, group: o.group === 'experience' ? '行銷與體驗' : '其他工具', idx: i }); });
+    r.toolsOther.forEach(function (o, i) { var cg = o.cat ? RV.tools.filter(function (g) { return g.id === o.cat; })[0] : null; litList.push({ name: o.label, e: o, group: o.group === 'experience' ? '行銷與體驗' : cg ? cg.label : '其他工具', idx: i }); });
     /** 自訂工具的分組資料夾（行銷與體驗才需上傳）：取消歸屬或移除時依規則整理資料夾 */
     var toolFolder = function (name) { var ti = uploadTools().filter(function (x) { return x.label === name; })[0]; return ti && A.drive.folders[ti.id] ? ti.id : ''; };
     var details = litList.map(function (x, n) {
@@ -14411,7 +14678,8 @@ window.ic = function(n, cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0
       API.rosterLookup(trim(A.student.account)).then(function (r) {
         if (r && r.found) {
           if (r.name !== trim(A.student.name)) { identityFail('本名與名冊不符。'); return; }
-          UI.roster = { key: r.key, name: r.name, batch: r.batch || null, lookupToken: r.lookupToken || '', acct: S.rosterKey(A.student.account) }; save(); DL.paint();
+          UI.roster = { key: r.key, name: r.name, batch: r.batch || null, lookupToken: r.lookupToken || '', acct: S.rosterKey(A.student.account) }; SUPX.set(r.suppOpts); save(); DL.paint();
+          if (r.suppOpts && r.suppOpts.length && UI.view !== 'identity' && UI.view !== 'intro' && UI.view !== 'done') rerender();   // 3.2.7 官方新增的選項
           afterIdentity(early ? early.then(function (o) {
             if (o.e || !UI.idOk) return supplementQuery();
             var rows = ((o.r && o.r.rows) || []).filter(function (x) { return x.request && x.request.status !== 'done'; });
