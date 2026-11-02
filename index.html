@@ -1135,7 +1135,7 @@ button.tool.add{min-height:36px;margin-top:2px}
   } catch (e) { /* 儲存不可用時不導向 */ }
 })();
 </script>
-<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.02_0925", "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com", "GOOGLE_API_KEY": "AIzaSyAM11cAROO9pStVWp74jsapBWB_iE8HLQE", "GOOGLE_APP_ID": "423060878330"};</script>
+<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.02_1206", "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com", "GOOGLE_API_KEY": "AIzaSyAM11cAROO9pStVWp74jsapBWB_iE8HLQE", "GOOGLE_APP_ID": "423060878330"};</script>
 <script>
 /*
  * G.R.A.C.E Academy《諮詢前置作業》作業欄位設定檔
@@ -3454,13 +3454,39 @@ button.tool.add{min-height:36px;margin-top:2px}
   function reportMode(v) { return v === 'admin' ? 'admin' : 'line'; }
   /** 收件人角色正規化 */
   function recipientRole(v) { return v === 'assistant' ? 'assistant' : 'principal'; }
+  /** 3.2.4 管理收件人是否接收（enabled 欄位；舊資料未設定＝接收） */
+  function recipientEnabled(r) { return !!r && r.enabled !== false; }
+  /**
+   * 3.2.4 管理通知路由：天使助教可用（已設定且連線）→ 只發有 adminUserId 的收件人（'admin'），只有主帳號者待命（'standby'）；
+   *   天使助教未設定／未連線 → 主帳號 userId 備援（'main'）；都沒有 → 'none'。不看 enabled（由呼叫端略過關閉者）。
+   */
+  function recipientRoute(r, adminUp, mainUp) {
+    if (!r) return 'none';
+    if (adminUp) return r.adminUserId ? 'admin' : 'standby';
+    return r.userId && mainUp ? 'main' : 'none';
+  }
 
-  /** 時間 → 'mm.dd HH:mm'（台北） */
+  /**
+   * 3.2.4 提醒截止（後台手動提醒；不改截止時間、不重建通知）：範本存 Script Property REMIND_TEXT（未設定＝預設文字）
+   *   變數：{稱呼}／{名字}、{截止時間}（yyyy.mm.dd（週X）HH:mm）、{完成度}（作業填寫進度百分比，未開始＝0）、{作業連結}／{作業網址}
+   */
+  var REMIND_MANUAL = { maxLength: 1000, kind: 'remind', title: '提醒截止',
+    defaultText: '{稱呼}學姊，提醒諮詢前置作業只到 {截止時間}\n學姊目前完成度：{完成度}%\n請學姊一定記得準時繳交，逾時會影響到諮詢的資格跟權益喔🥹🤍',
+    vars: [['稱呼', '學姊稱呼'], ['截止時間', '目前截止時間'], ['完成度', '作業填寫進度（%）'], ['作業連結', '前台作業網址']] };
+  function remindManualVars(o) {
+    o = o || {};
+    var cn = String(o.callName || ''), pct = Math.max(0, Math.min(100, Math.round(Number(o.percent) || 0)));
+    return { '稱呼': cn, '名字': cn, '截止時間': o.deadline ? formatDeadline(o.deadline) : '', '完成度': String(pct), '作業連結': NOTIFY.workUrl, '作業網址': NOTIFY.workUrl };
+  }
+  /** 範本正規化：空白＝預設；超長截斷 */
+  function remindManualText(t) { t = String(t == null ? '' : t).replace(/\r\n?/g, '\n'); return t.trim() ? t.slice(0, REMIND_MANUAL.maxLength) : REMIND_MANUAL.defaultText; }
+
+  /** 時間 → 'yyyy.mm.dd HH:mm'（台北；3.2.4 起含年份） */
   function shortTime(v) {
     var ms = typeof v === 'number' ? v : (timeToMs(v) != null ? timeToMs(v) : parseDeadline(v));
     if (ms == null) return '';
     var t = new Date(ms + 8 * 3600000), p = function (n) { return (n < 10 ? '0' : '') + n; };
-    return p(t.getUTCMonth() + 1) + '.' + p(t.getUTCDate()) + ' ' + p(t.getUTCHours()) + ':' + p(t.getUTCMinutes());
+    return t.getUTCFullYear() + '.' + p(t.getUTCMonth() + 1) + '.' + p(t.getUTCDate()) + ' ' + p(t.getUTCHours()) + ':' + p(t.getUTCMinutes());   // 3.2.4：含年份
   }
   /** 毫秒 → 'yyyy.mm.dd HH:mm:ss'（台北） */
   function stampOf(ms) {
@@ -3505,13 +3531,78 @@ button.tool.add{min-height:36px;margin-top:2px}
    *   o = { rows:[{ key, name, nextCounsel:{ at, items, status }|null, hw:{ state }, dataConfirmed, toolDone, … }], nowMs, leadHours, from?, to? }
    *   → { rows（補 dueAt、dueText、dueLeftMin、urgency、status）, today:[key], calendar:{ from, to, events }, stats }
    */
-  var PREP = { leadHoursDefault: 48, leadHoursMin: 1, leadHoursMax: 168, soonMs: 24 * 3600000 };
+  var PREP = { leadHoursDefault: 48, leadHoursMin: 1, leadHoursMax: 168, soonMs: 24 * 3600000, notifyKinds: ['notify', 'resend', 'batch', 'supplement', 'thanks', 'remind48', 'remind24', 'noAck'] };
+  /**
+   * 3.2.4 名冊作業階段：idle（未追蹤或未發通知、或上一次流程已結束 → 一般狀態，可發送作業通知）｜progress（已通知未送出：作業進行中）｜tool（已送出、工具與諮詢教材都未完成交付：工具製作中）
+   *   o = { inWatch, notified, state, toolDone, matDelivered }
+   */
+  function workPhase(o) {
+    o = o || {};
+    if (!o.inWatch || !o.notified) return 'idle';
+    if (o.state !== 'submitted') return 'progress';
+    return o.toolDone || o.matDelivered ? 'idle' : 'tool';
+  }
+  /** 3.2.5 啟用：流程結束後再發作業通知＝新流程（保留上一次紀錄）；3.2.4 先關閉 */
+  var CYCLE_RESTART = false;
+  var WORK_PHASE_LABEL = { progress: '作業進行中', tool: '工具製作中' };
+  /**
+   * 3.2.4 歷次紀錄（資料中心與 mock 共用，純函式）：
+   *   receipts：該學姊全部回執（作業索引每列一份：receiptId, submittedAt, onTime, driveUrl, batchId）
+   *   watch：追蹤名單條目（每位一筆；hist＝上一次流程摘要、rs＝本次流程開始、at、d、td、tda、nt）
+   *   counsels：[{ at, title, status }]（官網學員資料的已完成諮詢＋已預約）；materials：[{ material, state, deliveredAt }]
+   * → { rows（新→舊）:[{ notifiedAt, deadline, submittedAt, onTime, receiptId, driveUrl, counsel, toolDoneAt, materialDeliveredAt, material, state, current }], summary:{ count, lastDone, lastCounsel } }
+   */
+  function studentHistory(o) {
+    o = o || {};
+    var now = Number(o.nowMs) || Date.now(), ms = function (v) { var m = timeToMs(v); if (m == null) m = parseDeadline(v); if (m == null && v) { var t = Date.parse(v); m = isNaN(t) ? null : t; } return m; };
+    var rec = (o.receipts || []).filter(function (x) { return x && x.receiptId && ms(x.submittedAt) != null; }).slice().sort(function (a, b) { return ms(a.submittedAt) - ms(b.submittedAt); });
+    var cs = (o.counsels || []).filter(function (c) { return c && ms(c.at) != null; }).slice().sort(function (a, b) { return ms(a.at) - ms(b.at); });
+    var mats = (o.materials || []).filter(function (f) { return f && f.state === 'delivered' && ms(f.deliveredAt) != null; });
+    var e = o.watch || null, cyc = [];
+    if (e) {
+      (e.hist || []).forEach(function (h) { if (h && ms(h.at) != null) cyc.push({ start: ms(h.at), d: h.d || '', tda: h.tda || '', td: h.td === 1, current: false }); });
+      var cs0 = ms(e.rs || e.at); cyc.push({ start: cs0 == null ? now : cs0, d: e.d || '', tda: e.tda || '', td: e.td === 1, current: true, legacy: !e.rs && !(e.hist || []).length });
+      cyc.sort(function (a, b) { return a.start - b.start; });
+    }
+    var nt = (e && e.nt) || [], NK = ['notify', 'resend', 'batch', 'supplement'];
+    var rows = [], used = {};
+    cyc.forEach(function (c, i) {
+      var lo = c.legacy || i === 0 && !cyc[0].start ? -Infinity : c.start, hi = i + 1 < cyc.length ? cyc[i + 1].start : Infinity;
+      if (c.legacy) lo = -Infinity;
+      var inR = rec.filter(function (x) { var m = ms(x.submittedAt); return m >= lo && m < hi && !used[x.receiptId]; });
+      var r = inR.length ? inR[inR.length - 1] : null; if (r) used[r.receiptId] = 1;
+      var n0 = nt.filter(function (n) { var m = ms(n.at); return n && n.ok && NK.indexOf(n.kind) >= 0 && m != null && m >= c.start - 60000 && m < hi; })[0];
+      rows.push({ c: c, r: r, notifiedAt: n0 ? n0.at : stampOf(c.start), hi: hi });
+    });
+    rec.forEach(function (x) { if (!used[x.receiptId]) rows.push({ c: null, r: x, notifiedAt: '', hi: Infinity }); });
+    var out = rows.map(function (z) {
+      var r = z.r, sub = r ? ms(r.submittedAt) : null, c = z.c;
+      var cn = sub == null ? null : cs.filter(function (k) { return ms(k.at) >= sub; })[0] || null;
+      var lo = c ? c.start : (sub == null ? -Infinity : sub);
+      var mf = mats.filter(function (f) { var m = ms(f.deliveredAt); return m >= lo && m < z.hi; }).slice(-1)[0] || null;
+      var dl = c ? c.d : '';
+      return { notifiedAt: z.notifiedAt, deadline: dl, submittedAt: r ? r.submittedAt : '', onTime: r ? (dl ? isOnTime(r.submittedAt, dl) : (r.onTime != null ? r.onTime : null)) : null,
+        receiptId: r ? r.receiptId : '', driveUrl: r && /^https:\/\//.test(String(r.driveUrl || '')) ? r.driveUrl : '',
+        counsel: cn ? { at: cn.at, title: cn.title || '', status: cn.status || '' } : null, toolDoneAt: c && c.tda ? c.tda : '', toolDone: !!(c && c.td),
+        materialDeliveredAt: mf ? mf.deliveredAt : '', material: mf ? mf.material || '' : '',
+        state: !r ? (c && c.current ? 'progress' : 'none') : ((c && c.td) || mf ? 'done' : 'submitted'), current: !!(c && c.current), _k: sub != null ? sub : (c ? c.start : 0) };
+    }).sort(function (a, b) { return b._k - a._k; });
+    out.forEach(function (x) { delete x._k; });
+    var past = cs.filter(function (k) { return ms(k.at) <= now; });
+    return { rows: out, summary: { count: rec.length, lastDone: rec.length ? rec[rec.length - 1].submittedAt : '', lastCounsel: past.length ? past[past.length - 1].at : '' } };
+  }
+  /** 3.2.4：本輪作業通知是否已發出（作業通知、補件、批次；成功者）→ 進行中／可提醒截止 */
+  function watchNotified(nt) { return (Array.isArray(nt) ? nt : []).some(function (n) { return n && n.ok === true && ['notify', 'resend', 'batch', 'supplement'].indexOf(n.kind) >= 0; }); }
+  /** 3.2.4：是否已發送過作業通知（追蹤名單通知紀錄 nt 有一筆成功的作業類通知；教材下單通知不算） */
+  function prepNotified(nt) { return (Array.isArray(nt) ? nt : []).some(function (n) { return n && n.ok === true && PREP.notifyKinds.indexOf(n.kind) >= 0; }); }
   function prepCompute(o) {
     o = o || {};
     var now = Number(o.nowMs) || Date.now(), lead = Number(o.leadHours) || PREP.leadHoursDefault;
     var dayStart = function (ms) { var t = new Date(ms + 8 * 3600000); return Date.UTC(t.getUTCFullYear(), t.getUTCMonth(), t.getUTCDate()) - 8 * 3600000; };
     var today0 = dayStart(now), today1 = today0 + 86400000;
     var tNow = new Date(now + 8 * 3600000), wd = (tNow.getUTCDay() + 6) % 7, week0 = today0 - wd * 86400000, week1 = week0 + 7 * 86400000;
+    // 3.2.4：只納入已發送作業通知的學姊（notified === false 者移到 others，不列入今日待辦、行事曆與計數；諮詢詳情仍可查預約）
+    var others = [];
     var rows = (o.rows || []).map(function (r) {
       var x = {}; Object.keys(r).forEach(function (k) { x[k] = r[k]; });
       var at = x.nextCounsel ? parseDeadline(x.nextCounsel.at) : null;
@@ -3525,6 +3616,8 @@ button.tool.add{min-height:36px;margin-top:2px}
       if (x.nextCounsel) { x.nextCounsel = { at: x.nextCounsel.at, atText: formatDeadline(at), items: (x.nextCounsel.items || []).slice(), status: x.nextCounsel.status || '', merged: (x.nextCounsel.items || []).length > 1 }; }
       return x;
     });
+    others = rows.filter(function (r) { return r.notified === false; });
+    rows = rows.filter(function (r) { return r.notified !== false; });
     var future = rows.filter(function (r) { return r.counselMs != null && r.counselMs > now; });
     var today = future.filter(function (r) { return r.dueMs < today1 && (r.status !== 'done' || (r.dueMs >= today0)); })
       .sort(function (a, b) { return a.dueMs - b.dueMs; }).map(function (r) { return r.key; });
@@ -3545,8 +3638,8 @@ button.tool.add{min-height:36px;margin-top:2px}
       hwNotSent: future.filter(function (r) { return r.status === 'hw'; }).length,
       noBooking: rows.filter(function (r) { return r.counselMs == null; }).length
     };
-    rows.forEach(function (r) { delete r.counselMs; delete r.dueMs; });
-    return { rows: rows, today: today, calendar: { from: formatDeadlinePlain(from).slice(0, 10), to: formatDeadlinePlain(to).slice(0, 10), events: events }, stats: stats, leadHours: lead };
+    rows.concat(others).forEach(function (r) { delete r.counselMs; delete r.dueMs; });
+    return { rows: rows, others: others, today: today, calendar: { from: formatDeadlinePlain(from).slice(0, 10), to: formatDeadlinePlain(to).slice(0, 10), events: events }, stats: stats, leadHours: lead };
   }
 
   /**
@@ -3624,19 +3717,59 @@ button.tool.add{min-height:36px;margin-top:2px}
     maxNameLength: 60,
     maxAmount: 10000000,
     texts: {
-      order: '《諮詢教材｜下單通知》\n\n親愛的{名字}學姊妳好♡\n校長根據學姊的諮詢內容，準備了專屬諮詢教材：\n《{教材}》\n━━━━━━━━━━━━━━━━━━\n【教材下單】\n✦ 下單項目｜《AI指令設計》\n✦ 下單金額｜{金額} 課費\n✦ 下單連結｜{下單連結}\n✦ 下單期限｜{下單期限}\n━━━━━━━━━━━━━━━━━━\n官方確認下單後，會用 LINE 傳送教材檔案♡\n完成下單或確定領取，請回覆「領取諮詢教材」',
+      order: '《諮詢教材｜下單通知》\n\n親愛的{名字}學姊妳好♡\n校長根據學姊的諮詢內容，準備了專屬諮詢教材：\n《{教材}》\n━━━━━━━━━━━━━━━━━━\n【教材下單】\n✦ 下單項目｜《{商品}》\n✦ 下單金額｜{金額} 課費\n✦ 下單連結｜{下單連結}\n✦ 下單期限｜{下單期限}\n━━━━━━━━━━━━━━━━━━\n官方確認下單後，會用 LINE 傳送教材檔案♡\n完成下單或確定領取，請回覆「領取諮詢教材」',
       deliver: '《諮詢教材｜交付通知》\n\n親愛的{名字}學姊妳好♡\n已確認學姊完成下單，上方 ZIP 就是校長為學姊準備的：\n《{教材}》\n━━━━━━━━━━━━━━━━━━\n請用「電腦」下載 ZIP，解壓縮後再開啟（步驟見下方圖卡）；手機無法直接開啟。\n━━━━━━━━━━━━━━━━━━\n【一次性交付】\n本次版本即為正式交付內容，請備份到自己的電腦與雲端；遺失、誤刪或更換裝置，官方不再補發。\n\n完成下單或確定領取，請回覆「領取諮詢教材」',
       replyBefore: '收到學姊的回覆♡\n官方確認下單後，會用 LINE 傳送《{教材}》教材檔案。',
       replyAfter: '收到♡ 學姊已領取《{教材}》。\n請用電腦解壓縮後開啟，並備份到自己的電腦與雲端。'
     }
   };
+  /**
+   * 3.2.4 教材下單商品（Script Property MAT_PRODUCTS）：商品 ID 清單＋商品名稱關鍵字；舊 #805《AI指令設計》保留（idNames 為 ID 的名稱對照，點數紀錄沒有商品 ID 時以名稱比對）
+   *   { ids:[805], keywords:['諮詢教材'], idNames:{ '805':'AI指令設計' }, displayName:'諮詢教材', orderUrl, seen:[{ id, name, at, n }] }
+   */
+  var MAT_PRODUCTS = { maxIds: 20, maxKeywords: 20, maxSeen: 20, maxName: 40, defaults: { ids: [805], keywords: ['諮詢教材'], idNames: { '805': 'AI指令設計' }, displayName: '諮詢教材' } };
+  function normalizeMatProducts(o) {
+    o = o && typeof o === 'object' ? o : {};
+    var D = MAT_PRODUCTS.defaults, ids = [], kws = [], names = {};
+    (Array.isArray(o.ids) ? o.ids : D.ids).forEach(function (x) { var n = Math.floor(Number(String(x).replace(/^#/, ''))); if (n > 0 && n < 1e9 && ids.indexOf(n) < 0 && ids.length < MAT_PRODUCTS.maxIds) ids.push(n); });
+    (Array.isArray(o.keywords) ? o.keywords : D.keywords).forEach(function (x) { var t = cleanStr(x).slice(0, MAT_PRODUCTS.maxName); if (t && kws.indexOf(t) < 0 && kws.length < MAT_PRODUCTS.maxKeywords) kws.push(t); });
+    var src = o.idNames && typeof o.idNames === 'object' ? o.idNames : D.idNames;
+    ids.forEach(function (id) { var t = cleanStr(src[String(id)] || (String(id) === '805' && !o.idNames ? D.idNames['805'] : '')).slice(0, MAT_PRODUCTS.maxName); if (t) names[String(id)] = t; });
+    var url = cleanStr(o.orderUrl);
+    return { ids: ids, keywords: kws, idNames: names, displayName: cleanStr(o.displayName).slice(0, MAT_PRODUCTS.maxName) || kws[0] || D.displayName,
+      orderUrl: /^https:\/\/(www\.)?graceschool\.com\.tw\//.test(url) ? url.slice(0, 200) : MATERIAL.orderUrl,
+      seen: (Array.isArray(o.seen) ? o.seen : []).filter(function (x) { return x && typeof x === 'object' && (x.id || x.name); }).slice(0, MAT_PRODUCTS.maxSeen).map(function (x) { return { id: x.id ? String(x.id).slice(0, 20) : '', name: cleanStr(x.name).slice(0, 80), at: cleanStr(x.at).slice(0, 20), n: Math.max(0, Math.floor(Number(x.n) || 0)) }; }) };
+  }
+  /** 點數紀錄的商品：商品 ID（productId）與名稱（productName，或 reason「購買課程 - 《名稱》」） */
+  function materialProductOf(p) {
+    p = p || {};
+    var id = p.productId != null && p.productId !== '' ? String(p.productId).replace(/^#/, '') : '';
+    var name = cleanStr(p.productName), r = cleanStr(p.reason);
+    if (!name) { var m = /《([^》]+)》/.exec(r) || /購買課程\s*[-－–]\s*(.+)$/.exec(r); name = m ? cleanStr(m[1]) : ''; }
+    return { id: /^\d{1,9}$/.test(id) ? id : '', name: name.slice(0, 80) };
+  }
+  /** 是否為教材下單商品：商品 ID 在清單內、或商品名稱（含 reason）含任一關鍵字或 ID 對照名稱 */
+  function materialProductHit(p, cfg) {
+    var c = cfg && cfg.ids ? cfg : normalizeMatProducts(cfg), pr = materialProductOf(p), text = halfWidth(pr.name + ' ' + cleanStr(p && p.reason));
+    if (pr.id && c.ids.some(function (x) { return String(x) === pr.id; })) return true;
+    var terms = c.keywords.concat(Object.keys(c.idNames).map(function (k) { return c.idNames[k]; }));
+    return terms.some(function (t) { return t && text.indexOf(halfWidth(t)) >= 0; });
+  }
+  /** 書籤讀取官網點數紀錄的搜尋字（search[reason]）：名稱關鍵字＋ID 對照名稱 */
+  function materialPointTerms(cfg) {
+    var c = cfg && cfg.ids ? cfg : normalizeMatProducts(cfg), out = [];
+    c.keywords.concat(Object.keys(c.idNames).map(function (k) { return c.idNames[k]; })).forEach(function (t) { if (t && out.indexOf(t) < 0) out.push(t); });
+    return out;
+  }
+  /** 下單項目顯示：官網 #805、#xxx《顯示名稱》 */
+  function materialProductLabel(cfg) { var c = cfg && cfg.ids ? cfg : normalizeMatProducts(cfg); return '《' + c.displayName + '》'; }
   function materialStateLabel(st) { return MATERIAL.labels[st] || ''; }
   /** 金額顯示：15000 → '15,000' */
   function amountText(n) { n = Math.round(Number(n) || 0); return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
   /** 下單通知文字變數 */
   function materialVars(o) {
     o = o || {};
-    return { '名字': String(o.callName || ''), '稱呼': String(o.callName || ''), '教材': String(o.material || ''), '金額': amountText(o.amount), '下單連結': MATERIAL.orderUrl, '下單期限': o.deadline ? formatDeadline(o.deadline) : '（未填）', '檔名': String(o.fileName || '') };
+    return { '名字': String(o.callName || ''), '稱呼': String(o.callName || ''), '教材': String(o.material || ''), '金額': amountText(o.amount), '下單連結': String(o.orderUrl || MATERIAL.orderUrl), '商品': String(o.product || MAT_PRODUCTS.defaults.displayName), '下單期限': o.deadline ? formatDeadline(o.deadline) : '（未填）', '檔名': String(o.fileName || '') };
   }
   /** 關鍵字判斷（全形半形、空白不拘） */
   function isMaterialKeyword(text) { return halfWidth(String(text || '')).replace(/\s+/g, '').indexOf(MATERIAL.keyword) >= 0; }
@@ -3644,9 +3777,10 @@ button.tool.add{min-height:36px;margin-top:2px}
    * 點數紀錄比對：flows（state notified）× points → [{ flowId, point }]
    *   條件：hashOf(point.uid) === flow.rosterKey、reason 含 reasonMatch、created_at 晚於 notifiedAt；取最早且未被使用（usedIds＋本次已配對）
    */
-  function materialMatch(flows, points, hashOf, usedIds) {
+  function materialMatch(flows, points, hashOf, usedIds, products) {
     var used = {}; (usedIds || []).forEach(function (id) { used[String(id)] = 1; });
-    var cand = (points || []).filter(function (p) { return p && p.id != null && p.uid && String(p.reason || '').indexOf(MATERIAL.reasonMatch) >= 0 && siteTimeMs(p.created_at) != null; })
+    var cfg = normalizeMatProducts(products);   // 3.2.4：商品 ID 在清單內或名稱含關鍵字（未給設定＝預設 #805＋「諮詢教材」）
+    var cand = (points || []).filter(function (p) { return p && p.id != null && p.uid && materialProductHit(p, cfg) && siteTimeMs(p.created_at) != null; })
       .map(function (p) { return { p: p, h: hashOf(String(p.uid)), ms: siteTimeMs(p.created_at) }; })
       .sort(function (a, b) { return a.ms - b.ms; });
     var out = [];
@@ -3657,7 +3791,8 @@ button.tool.add{min-height:36px;margin-top:2px}
         var hit = cand.filter(function (c) { return !used[String(c.p.id)] && c.h === f.rosterKey && nms != null && c.ms > nms; })[0];
         if (!hit) return;
         used[String(hit.p.id)] = 1;
-        out.push({ flowId: f.flowId, point: { pointId: String(hit.p.id), reason: String(hit.p.reason).slice(0, 80), points: Number(hit.p.points) || 0, at: stampOf(hit.ms) } });
+        var pr = materialProductOf(hit.p);
+        out.push({ flowId: f.flowId, point: { pointId: String(hit.p.id), reason: String(hit.p.reason).slice(0, 80), points: Number(hit.p.points) || 0, at: stampOf(hit.ms), productId: pr.id, productName: pr.name } });
       });
     return out;
   }
@@ -3741,12 +3876,17 @@ button.tool.add{min-height:36px;margin-top:2px}
     AUTOMATION: AUTOMATION,
     formatDeadlinePlain: formatDeadlinePlain,
     automationVars: automationVars,
+    REMIND_MANUAL: REMIND_MANUAL,
+    remindManualVars: remindManualVars,
+    remindManualText: remindManualText,
     REMIND_RULES: REMIND_RULES,
     notifyFlags: notifyFlags,
     reminderPlan: reminderPlan,
     REPORT: REPORT,
     reportMode: reportMode,
     recipientRole: recipientRole,
+    recipientEnabled: recipientEnabled,
+    recipientRoute: recipientRoute,
     shortTime: shortTime,
     stampOf: stampOf,
     siteTimeMs: siteTimeMs,
@@ -3754,6 +3894,12 @@ button.tool.add{min-height:36px;margin-top:2px}
     remindListText: remindListText,
     PREP: PREP,
     prepCompute: prepCompute,
+    prepNotified: prepNotified,
+    watchNotified: watchNotified,
+    workPhase: workPhase,
+    WORK_PHASE_LABEL: WORK_PHASE_LABEL,
+    CYCLE_RESTART: CYCLE_RESTART,
+    studentHistory: studentHistory,
     reportPrincipalText: reportPrincipalText,
     COUNSEL: COUNSEL,
     counselGroup: counselGroup,
@@ -3763,6 +3909,12 @@ button.tool.add{min-height:36px;margin-top:2px}
     materialVars: materialVars,
     isMaterialKeyword: isMaterialKeyword,
     materialMatch: materialMatch,
+    MAT_PRODUCTS: MAT_PRODUCTS,
+    normalizeMatProducts: normalizeMatProducts,
+    materialProductOf: materialProductOf,
+    materialProductHit: materialProductHit,
+    materialPointTerms: materialPointTerms,
+    materialProductLabel: materialProductLabel,
     DRIVE_EXPORT: DRIVE_EXPORT,
     driveExportOf: driveExportOf,
     ROLES: ROLES,
@@ -10602,7 +10754,13 @@ button.tool.add{min-height:36px;margin-top:2px}
   function lineAdminSettingsSave(o) { o = o || {}; return authed('line_admin_settings_save', { channelId: o.channelId, channelSecret: o.channelSecret }, { retries: 0 }); }
   /** lineAdminRecentSenders() → { configured, rows:[{ userId, userIdTail, displayName, pictureUrl, reachable, text, at, kind, isRecipient, recipientName }] } */
   function lineAdminRecentSenders() { return authed('line_admin_recent_senders', {}); }
-  /** automationRecipientUpdate({ id, name?, role?, adminUserId? }) → 設定 */
+  /** 3.2.4 提醒截止：deadlineRemind({ rosterKey, text?, preview?, runId? })；提醒文字範本 remindTextGet()／remindTextSave({ text }) */
+  function deadlineRemind(o) { o = o || {}; var p = { rosterKey: o.rosterKey || o.key }; if (o.text != null) p.text = o.text; if (o.preview) p.preview = true; if (o.runId) p.runId = o.runId; return authed('deadline_remind', p, { retries: 0 }); }
+  /** 3.2.4 studentHistory({ rosterKey }) → { rows, summary }（歷次紀錄） */
+  function studentHistory(o) { return authed('student_history', { rosterKey: (o && (o.rosterKey || o.key)) || '' }); }
+  function remindTextGet() { return authed('remind_text_get', {}); }
+  function remindTextSave(o) { return authed('remind_text_save', { text: (o && o.text) || '' }, { retries: 0 }); }
+  /** automationRecipientUpdate({ id, name?, role?, adminUserId?, enabled? }) → 設定 */
   function automationRecipientUpdate(o) { return authed('automation_recipient_update', o || {}, { retries: 0 }); }
   /** automationTest({ kind:'digest'|'principal', userId|id }) → { kind, to, text, ok, code, error, channel } */
   function automationTest(o) { o = o || {}; return authed('automation_test', { kind: o.kind || 'digest', userId: o.userId || o.id || '' }, { retries: 0 }); }
@@ -10651,6 +10809,8 @@ button.tool.add{min-height:36px;margin-top:2px}
   function driveFolderFiles(o) { return authed('drive_folder_files', { rosterKey: typeof o === 'string' ? o : rk(o) }, { timeoutMs: 120000 }); }
   /* ---- 諮詢教材 ---- */
   function materialLibList() { return authed('material_lib_list', {}); }
+  /** 3.2.4 materialProductsSave({ ids, keywords, idNames?, displayName?, orderUrl? }) → { products } */
+  function materialProductsSave(o) { o = o || {}; return authed('material_products_save', { ids: o.ids || [], keywords: o.keywords || [], idNames: o.idNames || {}, displayName: o.displayName || '', orderUrl: o.orderUrl || '' }); }
   function materialLibSave(o) { return authed('material_lib_save', o || {}, { retries: 0 }); }
   function materialLibDelete(id) { return authed('material_lib_delete', { id: typeof id === 'object' && id ? id.id : id }, { retries: 0 }); }
   function materialList(o) { o = o || {}; var p = {}; if (rk(o)) p.rosterKey = rk(o); if (o.state) p.state = o.state; return authed('material_list', p); }
@@ -10809,6 +10969,10 @@ button.tool.add{min-height:36px;margin-top:2px}
     lineAdminSettingsSave: lineAdminSettingsSave,
     lineAdminRecentSenders: lineAdminRecentSenders,
     automationRecipientUpdate: automationRecipientUpdate,
+    deadlineRemind: deadlineRemind,
+    remindTextGet: remindTextGet,
+    studentHistory: studentHistory,
+    remindTextSave: remindTextSave,
     automationTest: automationTest,
     reportPreview: reportPreview,
     counselSync: counselSync,
@@ -10823,6 +10987,7 @@ button.tool.add{min-height:36px;margin-top:2px}
     driveFolderSummary: driveFolderSummary,
     driveFolderFiles: driveFolderFiles,
     materialLibList: materialLibList,
+    materialProductsSave: materialProductsSave,
     materialLibSave: materialLibSave,
     materialLibDelete: materialLibDelete,
     materialList: materialList,
