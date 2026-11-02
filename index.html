@@ -1160,7 +1160,7 @@ button.tool.add{min-height:36px;margin-top:2px}
   } catch (e) { /* 儲存不可用時不導向 */ }
 })();
 </script>
-<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.02_2136", "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com", "GOOGLE_API_KEY": "AIzaSyAM11cAROO9pStVWp74jsapBWB_iE8HLQE", "GOOGLE_APP_ID": "423060878330"};</script>
+<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.02_2244", "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com", "GOOGLE_API_KEY": "AIzaSyAM11cAROO9pStVWp74jsapBWB_iE8HLQE", "GOOGLE_APP_ID": "423060878330"};</script>
 <script>
 /*
  * G.R.A.C.E Academy《諮詢教材·專屬訂製》作業欄位設定檔
@@ -11250,7 +11250,7 @@ button.tool.add{min-height:36px;margin-top:2px}
   var TOOL_SMALL = 8 * 1024 * 1024;
   function toolUpload(o, onProgress) {
     o = o || {};
-    var base = { rosterKey: o.rosterKey, cycle: o.cycle || '', tool: o.tool || '' };
+    var base = { rosterKey: o.rosterKey, cycle: o.cycle || '', tool: o.tool || '', by: 'principal' };   // 3.2.10 上傳＝送助教測試
     if (!o.file) return authed('tooltest_upload_url', Object.assign({ url: o.url || '' }, base), { retries: 0 });
     var file = o.file, total = file.size, name = file.name || 'tool', mime = file.type || mimeForName(name, 'application/octet-stream');
     if (total <= TOOL_SMALL) return blobToBase64(file).then(function (data) { return authed('tooltest_upload_file', Object.assign({ name: name, mime: mime, data: data }, base), { retries: 0, timeoutMs: 120000 }); }).then(function (r) { if (onProgress) onProgress({ sent: total, total: total }); return r; });
@@ -11265,6 +11265,17 @@ button.tool.add{min-height:36px;margin-top:2px}
         }).then(function (r) { offset = r.received != null ? r.received : end; if (onProgress) onProgress({ sent: offset, total: total }); return r.done && offset >= total ? fin() : next(); });
       }
       return next();
+    });
+  }
+  /**
+   * 3.2.10 助教回報問題 toolFeedback({ rosterKey, cycle?, types:[needfix|broken|ux|other], text, files?:[File 圖片 ≤ 3 張、每張 ≤ 5 MB] }) → { row, notified, notifyTo }
+   *   截圖以 base64 隨同一次請求送出（tooltest_feedback），資料中心存「工具／回饋」
+   */
+  function toolFeedback(o) {
+    o = o || {};
+    var files = Array.isArray(o.files) ? o.files.slice(0, 3) : [];
+    return Promise.all(files.map(function (f) { return blobToBase64(f).then(function (data) { return { name: f.name || 'screenshot', mime: f.type || mimeForName(f.name || '', 'image/png'), data: data }; }); })).then(function (shots) {
+      return authed('tooltest_feedback', { rosterKey: o.rosterKey, cycle: o.cycle || '', types: o.types || [], text: o.text || '', shots: shots, by: 'assistant' }, { retries: 0, timeoutMs: 120000 });
     });
   }
   /** materialFileGet({ flowId, offset?, length? }) → { name, mime, size, offset, length, base64, done } */
@@ -11429,6 +11440,7 @@ button.tool.add{min-height:36px;margin-top:2px}
     materialUploadFinish: materialUploadFinish,
     materialUpload: materialUpload,
     toolUpload: toolUpload,
+    toolFeedback: toolFeedback,
     materialFileGet: materialFileGet,
     materialDownload: materialDownload,
     materialMarkDelivered: materialMarkDelivered,
