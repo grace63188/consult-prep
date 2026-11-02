@@ -1135,7 +1135,7 @@ button.tool.add{min-height:36px;margin-top:2px}
   } catch (e) { /* 儲存不可用時不導向 */ }
 })();
 </script>
-<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.02_0733", "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com", "GOOGLE_API_KEY": "AIzaSyAM11cAROO9pStVWp74jsapBWB_iE8HLQE", "GOOGLE_APP_ID": "423060878330"};</script>
+<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.02_0859", "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com", "GOOGLE_API_KEY": "AIzaSyAM11cAROO9pStVWp74jsapBWB_iE8HLQE", "GOOGLE_APP_ID": "423060878330"};</script>
 <script>
 /*
  * G.R.A.C.E Academy《諮詢前置作業》作業欄位設定檔
@@ -10448,8 +10448,8 @@ button.tool.add{min-height:36px;margin-top:2px}
   /* ---- LINE 推播 ---- */
   /** lineSettingsSave({ channelId, channelSecret }) → { configured, channelId, secretTail, updatedAt, oaId, verified, error? }（secret 不回傳） */
   function lineSettingsSave(o) { o = o || {}; return authed('line_settings_save', { channelId: o.channelId, channelSecret: o.channelSecret }); }
-  /** lineSettingsStatus() → { configured, channelId, secretTail, updatedAt, oaId, monthlyQuota, quota:{ limit, used, remaining }|null } */
-  function lineSettingsStatus() { return authed('line_settings_status', {}); }
+  /** lineSettingsStatus({ force? }) → { configured, channelId, secretTail, updatedAt, oaId, monthlyQuota, quota:{ limit, used, remaining }|null, bot, urlFetch, budgetHold? }（3.2.2：額度與官方帳號資訊走資料中心快取；force:true 重新向 LINE 查詢） */
+  function lineSettingsStatus(o) { return authed('line_settings_status', o && o.force ? { force: true } : {}); }
   /**
    * linePush({ batchId, templateId, keys?, dryRun?, runId? })
    *   dryRun → { dryRun:true, quota, toSend, messages:[…], skipped:[{ key, name, masked, reason }] }
@@ -10597,7 +10597,7 @@ button.tool.add{min-height:36px;margin-top:2px}
   /** lineConversation(rosterKey) → { key, name, callName, rows:[{ at, dir, kind, text, imageUrl, ok, error, manual?, summary? }], legacy, inKeep } */
   function lineConversation(o) { return authed('line_conversation', { rosterKey: typeof o === 'string' ? o : rk(o) }); }
   /** lineAdminSettingsGet() → { configured, channelId, secretTail, updatedAt, oaId, defaultChannelId, verified, bot, quota, webhookQuery, fallbackToMain } */
-  function lineAdminSettingsGet() { return authed('line_admin_settings_get', {}); }
+  function lineAdminSettingsGet(o) { return authed('line_admin_settings_get', o && o.force ? { force: true } : {}); }   // 3.2.2：force:true 重新向 LINE 查詢
   /** lineAdminSettingsSave({ channelId, channelSecret }) → 同 get＋verified／error（secret 不回傳） */
   function lineAdminSettingsSave(o) { o = o || {}; return authed('line_admin_settings_save', { channelId: o.channelId, channelSecret: o.channelSecret }, { retries: 0 }); }
   /** lineAdminRecentSenders() → { configured, rows:[{ userId, userIdTail, displayName, pictureUrl, reachable, text, at, kind, isRecipient, recipientName }] } */
