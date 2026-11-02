@@ -1160,7 +1160,7 @@ button.tool.add{min-height:36px;margin-top:2px}
   } catch (e) { /* 儲存不可用時不導向 */ }
 })();
 </script>
-<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.02_1644", "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com", "GOOGLE_API_KEY": "AIzaSyAM11cAROO9pStVWp74jsapBWB_iE8HLQE", "GOOGLE_APP_ID": "423060878330"};</script>
+<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.02_1730", "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com", "GOOGLE_API_KEY": "AIzaSyAM11cAROO9pStVWp74jsapBWB_iE8HLQE", "GOOGLE_APP_ID": "423060878330"};</script>
 <script>
 /*
  * G.R.A.C.E Academy《諮詢教材·專屬訂製》作業欄位設定檔
@@ -11243,6 +11243,30 @@ button.tool.add{min-height:36px;margin-top:2px}
       return next();
     });
   }
+  /**
+   * 3.2.8 上傳工具 toolUpload({ rosterKey, cycle?, tool, url? | file? }, onProgress?) → { row, shared? }
+   *   網址：tooltest_upload_url；檔案 ≤ 8 MB：tooltest_upload_file（單次，資料中心不用 UrlFetch）；較大：begin → chunk ×N（8 MB）→ finish
+   */
+  var TOOL_SMALL = 8 * 1024 * 1024;
+  function toolUpload(o, onProgress) {
+    o = o || {};
+    var base = { rosterKey: o.rosterKey, cycle: o.cycle || '', tool: o.tool || '' };
+    if (!o.file) return authed('tooltest_upload_url', Object.assign({ url: o.url || '' }, base), { retries: 0 });
+    var file = o.file, total = file.size, name = file.name || 'tool', mime = file.type || mimeForName(name, 'application/octet-stream');
+    if (total <= TOOL_SMALL) return blobToBase64(file).then(function (data) { return authed('tooltest_upload_file', Object.assign({ name: name, mime: mime, data: data }, base), { retries: 0, timeoutMs: 120000 }); }).then(function (r) { if (onProgress) onProgress({ sent: total, total: total }); return r; });
+    return authed('tooltest_upload_begin', Object.assign({ name: name, mime: mime, size: total }, base), { retries: 0 }).then(function (b) {
+      var step = b.chunkBytes || TOOL_SMALL, offset = 0;
+      function fin() { return authed('tooltest_upload_finish', { uploadId: b.uploadId }, { retries: 1, timeoutMs: 120000 }); }
+      function next() {
+        if (offset >= total) return fin();
+        var end = Math.min(total, offset + step);
+        return blobToBase64(file.slice(offset, end)).then(function (data) {
+          return authed('tooltest_upload_chunk', { uploadId: b.uploadId, offset: offset, end: end, total: total, data: data }, { retries: 2, timeoutMs: 120000 });
+        }).then(function (r) { offset = r.received != null ? r.received : end; if (onProgress) onProgress({ sent: offset, total: total }); return r.done && offset >= total ? fin() : next(); });
+      }
+      return next();
+    });
+  }
   /** materialFileGet({ flowId, offset?, length? }) → { name, mime, size, offset, length, base64, done } */
   function materialFileGet(o) { return authed('material_file_get', typeof o === 'string' ? { flowId: o } : (o || {}), { timeoutMs: 120000 }); }
   /** materialDownload(flowId, save?) → Blob（分段取回後合併；save=true 觸發下載） */
@@ -11404,6 +11428,7 @@ button.tool.add{min-height:36px;margin-top:2px}
     materialUploadChunk: materialUploadChunk,
     materialUploadFinish: materialUploadFinish,
     materialUpload: materialUpload,
+    toolUpload: toolUpload,
     materialFileGet: materialFileGet,
     materialDownload: materialDownload,
     materialMarkDelivered: materialMarkDelivered,
