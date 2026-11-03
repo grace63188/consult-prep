@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>專屬工具｜G.R.A.C.E Academy</title>
+<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.03_1046"};</script>
+<style>
+:root{color-scheme:dark;--ink:#110E0F;--t1:#F6EFEA;--t3:#A0948F;--rose:#FF2E8B;--gold:#C9A27A}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--ink)}
+body{color:var(--t1);font:16px/1.7 'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif}
+#st{min-height:100vh;display:grid;place-items:center;padding:24px 16px;text-align:center}
+#st main{max-width:380px}
+.sp{width:36px;height:36px;margin:0 auto 18px;border-radius:50%;border:3px solid rgba(255,46,139,.25);border-top-color:var(--rose);animation:r 1s linear infinite}
+@keyframes r{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.sp{animation:none}}
+h1{font-size:20px;margin:0 0 6px;font-family:'Noto Serif TC',serif}
+.code{font-size:40px;letter-spacing:.08em;color:var(--gold);margin-bottom:6px;font-weight:700}
+p{margin:0;color:var(--t3);font-size:14px}
+a.btn{display:inline-block;margin-top:18px;padding:12px 22px;border-radius:12px;background:linear-gradient(180deg,#FF3D93,#E8247E);color:#fff;font-weight:700;text-decoration:none}
+#fr{position:fixed;inset:0;width:100%;height:100%;border:0;background:#fff;display:none}
+</style>
+</head>
+<body>
+<div id="st"><main><div class="sp" id="sp" aria-hidden="true"></div><div class="code" id="code" hidden>404</div><h1 id="ttl">正在開啟工具</h1><p id="msg" role="status">請稍候…</p><a class="btn" id="dl" href="#" hidden>下載工具</a></main></div>
+<iframe id="fr" title="專屬工具" sandbox="allow-scripts allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-downloads"></iframe>
+<script>
+/*
+ * 3.3.0 開啟工具：tool.html#<學姊鍵 16 碼>.<token 40 碼>[.<版本>]
+ *   向資料中心 POST tool_open 取回 HTML（工具內容不放在本網站；token 只在 # 之後，不會送到伺服器記錄）
+ *   以 sandbox iframe 執行（與後台不同來源，工具程式讀不到後台登入資料）；localStorage／sessionStorage 以記憶體版本代替
+ *   舊版（帶版本）只限校長登入後台後，從版本紀錄開啟（帶後台登入 token）
+ */
+(function () {
+  var C = window.CONSULT_CONFIG || {}, m = /^#([0-9a-f]{16})\.([0-9a-f]{40})(?:\.(\d{1,4}))?$/.exec(location.hash || '');
+  var sp = document.getElementById('sp'), msg = document.getElementById('msg'), ttl = document.getElementById('ttl');
+  function fail(t, m2, code) { sp.style.display = 'none'; if (code) document.getElementById('code').hidden = false; ttl.textContent = t; msg.textContent = m2; }
+  if (!m) { fail('找不到這個工具', '連結不完整，請回到後台或 LINE 重新開啟最新的工具連結', true); return; }
+  if (!C.GAS_URL) { fail('預覽模式', '正式網站會在這裡開啟可直接操作的工具', false); return; }
+  var req = { action: 'tool_open', tool: m[1], k: m[2] };
+  if (m[3]) {
+    req.v = Number(m[3]);
+    var tok = '';
+    ['localStorage', 'sessionStorage'].forEach(function (k) { if (tok) return; try { var raw = window[k].getItem('consult_admin_token'); if (!raw) return; var o = raw.charAt(0) === '{' ? JSON.parse(raw) : { token: raw }; if (o && o.token) tok = o.token; } catch (e) { /* ignore */ } });
+    if (tok) req.token = tok;
+  }
+  var SHIM = '<script>(function(){function S(){var d={};return{getItem:function(k){k=String(k);return Object.prototype.hasOwnProperty.call(d,k)?d[k]:null},setItem:function(k,v){d[String(k)]=String(v)},removeItem:function(k){delete d[String(k)]},clear:function(){d={}},key:function(i){return Object.keys(d)[i]||null},get length(){return Object.keys(d).length}}}' +
+    '["localStorage","sessionStorage"].forEach(function(n){var ok=false;try{ok=!!window[n]&&(window[n].setItem("__t","1"),window[n].removeItem("__t"),true)}catch(e){ok=false}if(!ok){try{Object.defineProperty(window,n,{value:S(),configurable:true})}catch(e){}}});})();<\/script>';
+  var slow = setTimeout(function () { msg.textContent = '連線中，請稍候…'; }, 3000);
+  var x = new XMLHttpRequest();
+  x.open('POST', C.GAS_URL, true);
+  x.setRequestHeader('Content-Type', 'text/plain;charset=utf-8');
+  x.timeout = 60000;
+  x.onload = function () {
+    clearTimeout(slow);
+    var j = null; try { j = JSON.parse(x.responseText); } catch (e) { j = null; }
+    if (j && j.ok && j.data && /^https:\/\/[^\s"'<>]+$/.test(j.data.go || '')) {   // 最新版為 ZIP／網址
+      document.title = (j.data.title || '專屬工具') + '｜G.R.A.C.E Academy';
+      if (j.data.kind === 'zip') { sp.style.display = 'none'; ttl.textContent = (j.data.title || '專屬工具') + '（第 ' + j.data.version + ' 版・ZIP）'; msg.textContent = j.data.note || '請下載後解壓縮，開啟 index.html，並使用展示模式測試'; var d = document.getElementById('dl'); d.href = j.data.go; d.hidden = false; }
+      else location.replace(j.data.go);
+      return;
+    }
+    if (!j || !j.ok || !j.data || typeof j.data.html !== 'string') {
+      if (j && j.code === 'ERR_AUTH') fail('舊版工具只限校長開啟', '請登入後台，從該學姊卡片的「版本紀錄」開啟', false);
+      else fail('找不到這個工具', (j && j.error) || '連結已失效，請回到後台重新開啟最新的工具連結', true);
+      return;
+    }
+    var html = j.data.html, i = html.search(/<head[^>]*>/i);
+    html = i >= 0 ? html.replace(/<head[^>]*>/i, function (h) { return h + SHIM; }) : SHIM + html;
+    document.title = (j.data.title || '專屬工具') + (req.v ? '（第 ' + j.data.version + ' 版）' : '') + '｜G.R.A.C.E Academy';
+    var fr = document.getElementById('fr');
+    fr.srcdoc = html; fr.style.display = 'block';
+    document.getElementById('st').style.display = 'none';
+  };
+  x.onerror = x.ontimeout = function () { clearTimeout(slow); fail('無法開啟工具', '網路連線失敗，請稍後再試', false); };
+  x.send(JSON.stringify(req));
+})();
+</script>
+</body>
+</html>
