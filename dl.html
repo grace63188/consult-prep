@@ -9,7 +9,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="no-referrer">
 <title>領取教材｜G.R.A.C.E Academy</title>
-<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.03_1532"};</script>
+<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.03_1555"};</script>
 <style>
 :root{color-scheme:dark;--ink:#110E0F;--t1:#F6EFEA;--t3:#A0948F;--rose:#FF2E8B}
 *{box-sizing:border-box}
@@ -30,18 +30,20 @@ a{display:inline-block;margin-top:18px;padding:12px 22px;border-radius:12px;back
   <h1 id="ttl">正在開啟教材下載</h1>
   <p id="msg" role="status">請稍候…</p>
   <a id="go" href="#" hidden>下載教材</a>
+  <p id="hint" class="hint" hidden>建議用電腦開啟下載</p>
 </main>
 <script>
 /* 3.3.0 交付卡片「領取教材」：先確認下載期限並記錄點擊（order_dl，免登入、簽章驗證）→ 期限內轉到 Drive 下載；過期顯示說明 */
 (function () {
   var C = window.CONSULT_CONFIG || {}, q = /[?&]t=([^&#]+)/.exec(location.search), t = q ? decodeURIComponent(q[1]) : '';
-  var msg = document.getElementById('msg'), sp = document.getElementById('sp'), a = document.getElementById('go'), ttl = document.getElementById('ttl');
+  var msg = document.getElementById('msg'), sp = document.getElementById('sp'), a = document.getElementById('go'), ttl = document.getElementById('ttl'), hint = document.getElementById('hint');
   var DL_OK = /^https:\/\/((drive|docs)\.google\.com\/[^\s"'<>]*|grace63188\.github\.io\/consult-prep\/tool\.html#dl\.mf[0-9A-Za-z-]{4,40}\.[0-9a-f]{12})$/, done = false;   // 3.3.2 與資料中心 schema ORDER.DL_URL_RE 相同（Drive 下載、HTML 工具交付連結）
-  function go(u) { if (done) return; done = true; a.href = u; location.replace(u); setTimeout(function () { a.hidden = false; sp.style.display = 'none'; msg.textContent = '若沒有自動開啟，請點下方按鈕'; }, 1500); }
+  function go(u, name) { if (done) return; done = true; a.href = u; if (name) a.setAttribute('download', name); hint.hidden = false; location.replace(u); setTimeout(function () { a.hidden = false; sp.style.display = 'none'; msg.textContent = '若沒有自動開始下載，請點下方按鈕'; }, 1500); }   /* 3.3.4 領取教材＝下載原始檔；手機（LINE 內建瀏覽器）附提示 */
   function fail(t2, m) { sp.style.display = 'none'; ttl.textContent = t2; msg.textContent = m; }
   function fmt(v) { var m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(String(v || '')); if (!m) return ''; var d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3])), w = '日一二三四五六'.charAt(d.getUTCDay()); return m[1] + '.' + m[2] + '.' + m[3] + '（週' + w + '）' + m[4] + ':' + m[5]; }
   if (t === 'test') { fail('測試卡片：領取教材', '正式卡片會先確認下載期限並記錄點擊時間，期限內直接下載該學姊的教材檔；期限後顯示「下載期限已過」。'); a.href = 'assets/demo/demo-tool.zip'; a.setAttribute('download', 'demo-tool.zip'); a.textContent = '下載示範檔'; a.hidden = false; return; }
   if (!/^mf[0-9A-Za-z-]{4,40}\.[0-9a-f]{12}$/.test(t)) { fail('無法開啟教材', '連結不完整，請回到 LINE 重新點「領取教材」'); return; }
+  if (/\bLine\//i.test(navigator.userAgent) && !/[?&]openExternalBrowser=1/.test(location.search)) { location.replace(location.pathname + '?t=' + encodeURIComponent(t) + '&openExternalBrowser=1'); return; }   /* 3.3.4 LINE 內建瀏覽器會擋下載：改以外部瀏覽器開啟同一連結 */
   if (!C.GAS_URL) { fail('預覽模式', '正式網站會確認下載期限後開始下載'); return; }
   var slow = setTimeout(function () { msg.textContent = '連線中，請稍候…'; }, 3000);
   var x = new XMLHttpRequest();
@@ -52,7 +54,7 @@ a{display:inline-block;margin-top:18px;padding:12px 22px;border-radius:12px;back
     clearTimeout(slow);
     var j = null; try { j = JSON.parse(x.responseText); } catch (e) { j = null; }
     if (j && j.ok && j.data && j.data.expired) { fail('下載期限已過', '《' + (j.data.material || '諮詢教材') + '》的下載期限' + (j.data.deadline ? '（' + fmt(j.data.deadline) + '）' : '') + '已過，下載連結已失效。教材為一次性交付，不會補發；如有特殊狀況請聯繫官方 LINE。'); return; }
-    if (j && j.ok && j.data && DL_OK.test(j.data.url || '')) { if (j.data.deadline) msg.textContent = '下載期限：' + fmt(j.data.deadline) + (j.data.kind === 'html' ? '・即將開啟工具…' : '・即將開啟下載…'); go(j.data.url); return; }
+    if (j && j.ok && j.data && DL_OK.test(j.data.url || '')) { ttl.textContent = '正在下載教材'; msg.textContent = (j.data.fileName ? '檔案：' + j.data.fileName + '・' : '') + (j.data.deadline ? '下載期限：' + fmt(j.data.deadline) + '・' : '') + '即將開始下載…'; go(j.data.url, j.data.fileName || ''); return; }
     fail('無法開啟教材', j && j.error ? j.error + '，請聯繫官方 LINE' : '連結已失效，請聯繫官方 LINE');
   };
   x.onerror = x.ontimeout = function () { clearTimeout(slow); fail('無法開啟教材', '網路連線失敗，請稍後再點一次「領取教材」'); };
