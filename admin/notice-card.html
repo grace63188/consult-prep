@@ -2,6 +2,9 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
+<!-- 3.3.2 安全標頭：CSP 依本頁實際使用的資源列白名單；防被嵌入（meta 無法使用 frame-ancestors，改以腳本判斷） -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' data: blob: https://fonts.googleapis.com https://fonts.gstatic.com; object-src 'none'; base-uri 'self'">
+<script>/* 3.3.2 防被嵌入：非同源頁面嵌入時隱藏並嘗試跳出 */(function(){if(window.top===window.self)return;var s=false;try{s=window.top.location.origin===location.origin}catch(e){}if(!s){document.documentElement.style.display='none';try{window.top.location.replace(location.href)}catch(e){}}})();</script>
 <meta name="viewport" content="width=1920">
 <title>LINE 通知圖卡</title>
 <!-- 字型：線上環境載入 Google Fonts；離線或被擋時改用系統已安裝的 Noto CJK TC -->

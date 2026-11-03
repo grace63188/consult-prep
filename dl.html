@@ -2,11 +2,14 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
+<!-- 3.3.2 安全標頭：CSP 依本頁實際使用的資源列白名單；防被嵌入（meta 無法使用 frame-ancestors，改以腳本判斷） -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src https://script.google.com https://script.googleusercontent.com; img-src 'self' data:; form-action 'none'; base-uri 'none'; object-src 'none'">
+<script>/* 3.3.2 防被嵌入：非同源頁面嵌入時隱藏並嘗試跳出 */(function(){if(window.top===window.self)return;var s=false;try{s=window.top.location.origin===location.origin}catch(e){}if(!s){document.documentElement.style.display='none';try{window.top.location.replace(location.href)}catch(e){}}})();</script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="no-referrer">
 <title>領取教材｜G.R.A.C.E Academy</title>
-<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.03_1205"};</script>
+<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.03_1232"};</script>
 <style>
 :root{color-scheme:dark;--ink:#110E0F;--t1:#F6EFEA;--t3:#A0948F;--rose:#FF2E8B}
 *{box-sizing:border-box}
@@ -33,7 +36,7 @@ a{display:inline-block;margin-top:18px;padding:12px 22px;border-radius:12px;back
 (function () {
   var C = window.CONSULT_CONFIG || {}, q = /[?&]t=([^&#]+)/.exec(location.search), t = q ? decodeURIComponent(q[1]) : '';
   var msg = document.getElementById('msg'), sp = document.getElementById('sp'), a = document.getElementById('go'), ttl = document.getElementById('ttl');
-  var DRIVE = /^https:\/\/(drive|docs)\.google\.com\//, done = false;
+  var DL_OK = /^https:\/\/((drive|docs)\.google\.com\/[^\s"'<>]*|grace63188\.github\.io\/consult-prep\/tool\.html#dl\.mf[0-9A-Za-z-]{4,40}\.[0-9a-f]{12})$/, done = false;   // 3.3.2 與資料中心 schema ORDER.DL_URL_RE 相同（Drive 下載、HTML 工具交付連結）
   function go(u) { if (done) return; done = true; a.href = u; location.replace(u); setTimeout(function () { a.hidden = false; sp.style.display = 'none'; msg.textContent = '若沒有自動開啟，請點下方按鈕'; }, 1500); }
   function fail(t2, m) { sp.style.display = 'none'; ttl.textContent = t2; msg.textContent = m; }
   function fmt(v) { var m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(String(v || '')); if (!m) return ''; var d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3])), w = '日一二三四五六'.charAt(d.getUTCDay()); return m[1] + '.' + m[2] + '.' + m[3] + '（週' + w + '）' + m[4] + ':' + m[5]; }
@@ -49,12 +52,12 @@ a{display:inline-block;margin-top:18px;padding:12px 22px;border-radius:12px;back
     clearTimeout(slow);
     var j = null; try { j = JSON.parse(x.responseText); } catch (e) { j = null; }
     if (j && j.ok && j.data && j.data.expired) { fail('下載期限已過', '《' + (j.data.material || '諮詢教材') + '》的下載期限' + (j.data.deadline ? '（' + fmt(j.data.deadline) + '）' : '') + '已過，下載連結已失效。教材為一次性交付，不會補發；如有特殊狀況請聯繫官方 LINE。'); return; }
-    if (j && j.ok && j.data && DRIVE.test(j.data.url || '')) { if (j.data.deadline) msg.textContent = '下載期限：' + fmt(j.data.deadline) + '・即將開啟下載…'; go(j.data.url); return; }
+    if (j && j.ok && j.data && DL_OK.test(j.data.url || '')) { if (j.data.deadline) msg.textContent = '下載期限：' + fmt(j.data.deadline) + (j.data.kind === 'html' ? '・即將開啟工具…' : '・即將開啟下載…'); go(j.data.url); return; }
     fail('無法開啟教材', j && j.error ? j.error + '，請聯繫官方 LINE' : '連結已失效，請聯繫官方 LINE');
   };
   x.onerror = x.ontimeout = function () { clearTimeout(slow); fail('無法開啟教材', '網路連線失敗，請稍後再點一次「領取教材」'); };
   x.send(JSON.stringify({ action: 'order_dl', t: t }));
-  a.addEventListener('click', function (ev) { if (!DRIVE.test(a.href) && !/demo-tool\.zip$/.test(a.getAttribute('href') || '')) ev.preventDefault(); });
+  a.addEventListener('click', function (ev) { if (!DL_OK.test(a.href) && !/demo-tool\.zip$/.test(a.getAttribute('href') || '')) ev.preventDefault(); });
 })();
 </script>
 </body>

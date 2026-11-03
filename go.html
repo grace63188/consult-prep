@@ -2,11 +2,14 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
+<!-- 3.3.2 安全標頭：CSP 依本頁實際使用的資源列白名單；防被嵌入（meta 無法使用 frame-ancestors，改以腳本判斷） -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src https://script.google.com https://script.googleusercontent.com; img-src 'self' data:; form-action 'none'; base-uri 'none'; object-src 'none'">
+<script>/* 3.3.2 防被嵌入：非同源頁面嵌入時隱藏並嘗試跳出 */(function(){if(window.top===window.self)return;var s=false;try{s=window.top.location.origin===location.origin}catch(e){}if(!s){document.documentElement.style.display='none';try{window.top.location.replace(location.href)}catch(e){}}})();</script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="no-referrer">
 <title>前往下單｜G.R.A.C.E Academy</title>
-<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.03_1205"};</script>
+<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.03_1232"};</script>
 <style>
 :root{color-scheme:dark;--ink:#110E0F;--t1:#F6EFEA;--t3:#A0948F;--rose:#FF2E8B}
 *{box-sizing:border-box}
@@ -32,7 +35,7 @@ a{display:inline-block;margin-top:18px;padding:12px 22px;border-radius:12px;back
 /* 3.3.0 下單通知卡片「前往下單」：先記錄點擊時間（order_click，免登入、簽章驗證）再轉到官網下單網址 */
 (function () {
   var C = window.CONSULT_CONFIG || {}, q = /[?&]t=([^&#]+)/.exec(location.search), t = q ? decodeURIComponent(q[1]) : '';
-  var SITE = /^https:\/\/(www\.)?graceschool\.com\.tw\//, done = false;
+  var SITE = /^https:\/\/(www\.)?graceschool\.com\.tw(\/[^\s"'<>]*)?$/, done = false;   // 3.3.2 與資料中心 schema ORDER.SITE_RE、orderUrlIssue 相同
   var msg = document.getElementById('msg'), sp = document.getElementById('sp'), a = document.getElementById('go');
   function go(u) { if (done) return; done = true; a.href = u; location.replace(u); setTimeout(function () { a.hidden = false; msg.textContent = '若沒有自動開啟，請點下方按鈕'; }, 1500); }
   function fail(m) { sp.style.display = 'none'; document.getElementById('ttl').textContent = '無法開啟下單頁'; msg.textContent = m; }
@@ -54,7 +57,7 @@ a{display:inline-block;margin-top:18px;padding:12px 22px;border-radius:12px;back
   x.onload = function () {
     clearTimeout(slow);
     var j = null; try { j = JSON.parse(x.responseText); } catch (e) { j = null; }
-    if (j && j.ok && j.data && /^https:\/\/[^\s"'<>]+$/.test(j.data.url)) go(j.data.url);
+    if (j && j.ok && j.data && SITE.test(j.data.url || '')) go(j.data.url);
     else fail(j && j.error ? j.error + '，請聯繫官方 LINE' : '連結已失效，請聯繫官方 LINE');
   };
   x.onerror = x.ontimeout = function () { clearTimeout(slow); fail('網路連線失敗，請稍後再點一次「前往下單」'); };
