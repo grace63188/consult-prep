@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="no-referrer">
 <title>專屬工具｜G.R.A.C.E Academy</title>
-<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.03_1136"};</script>
+<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.03_1157"};</script>
 <style>
 :root{color-scheme:dark;--ink:#110E0F;--t1:#F6EFEA;--t3:#A0948F;--rose:#FF2E8B;--gold:#C9A27A}
 *{box-sizing:border-box}
@@ -27,12 +27,14 @@ a.btn{display:inline-block;margin-top:18px;padding:12px 22px;border-radius:12px;
 </head>
 <body>
 <div id="st"><main><div class="sp" id="sp" aria-hidden="true"></div><div class="code" id="code" hidden>404</div><h1 id="ttl">正在開啟工具</h1><p id="msg" role="status">請稍候…</p><a class="btn" id="dl" href="#" hidden>下載工具</a></main></div>
-<iframe id="fr" title="專屬工具" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-downloads"></iframe>
+<iframe id="fr" title="專屬工具" sandbox="allow-scripts allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-downloads"></iframe>
 <script>
 /*
  * 3.3.0 開啟工具：tool.html#<學姊鍵 16 碼>.<token 40 碼>[.<版本>]
  *   向資料中心 POST tool_open 取回 HTML（工具內容不放在本網站；token 只在 # 之後，不會送到伺服器記錄）
- *   以 iframe（blob 網址）執行；需 allow-same-origin，工具的登入、記住此裝置、展示入口等才能使用瀏覽器儲存（工具為校長自製內容）；儲存不可用時以記憶體版本代替
+ *   以 iframe（srcdoc）執行；sandbox 不含 allow-same-origin（3.3.1 安全修正）：工具為獨立來源，讀不到本網站的瀏覽器儲存（後台登入 token）與父頁；
+ *   工具內的 localStorage／sessionStorage 以記憶體版本代替（SHIM），登入、展示入口等在單次開啟期間可用，重新整理後不保留
+ *   工具不需要父頁資料，不提供 postMessage 通道
  *   舊版（帶版本）只限校長登入後台後，從版本紀錄開啟（帶後台登入 token）
  */
 window.addEventListener('hashchange', function () { location.reload(); });   // 換工具連結時重新載入
@@ -40,11 +42,21 @@ window.addEventListener('hashchange', function () { location.reload(); });   // 
   var C = window.CONSULT_CONFIG || {}, m = /^#([0-9a-f]{16})\.([0-9a-f]{40})(?:\.(\d{1,4}))?$/.exec(location.hash || '');
   var sp = document.getElementById('sp'), msg = document.getElementById('msg'), ttl = document.getElementById('ttl');
   function fail(t, m2, code) { sp.style.display = 'none'; if (code) document.getElementById('code').hidden = false; ttl.textContent = t; msg.textContent = m2; }
+  var SHIM = '<script>(function(){function S(){var d={};return{getItem:function(k){k=String(k);return Object.prototype.hasOwnProperty.call(d,k)?d[k]:null},setItem:function(k,v){d[String(k)]=String(v)},removeItem:function(k){delete d[String(k)]},clear:function(){d={}},key:function(i){return Object.keys(d)[i]||null},get length(){return Object.keys(d).length}}}' +
+    '["localStorage","sessionStorage"].forEach(function(n){var ok=false;try{ok=!!window[n]&&(window[n].setItem("__t","1"),window[n].removeItem("__t"),true)}catch(e){ok=false}if(!ok){try{Object.defineProperty(window,n,{value:S(),configurable:true})}catch(e){}}});})();<\/script>';
+  function mount(html) {   // 注入 SHIM 後載入 sandbox iframe
+    var i = html.search(/<head[^>]*>/i);
+    html = i >= 0 ? html.replace(/<head[^>]*>/i, function (h) { return h + SHIM; }) : SHIM + html;
+    var fr = document.getElementById('fr');
+    fr.srcdoc = html;   // srcdoc（不用 blob：opaque 來源下工具內 location.reload() 會被擋）；sandbox 無 allow-same-origin，仍為獨立來源
+    fr.style.display = 'block';
+    document.getElementById('st').style.display = 'none';
+  }
   /* 測試卡片：#demo 示範 HTML 工具（可操作）、#demo-zip 示範 ZIP 下載與說明 */
   if (location.hash === '#demo-zip') { sp.style.display = 'none'; ttl.textContent = '示範工具（ZIP・測試卡片）'; msg.textContent = '請下載後解壓縮，開啟 index.html，並使用展示模式測試。正式卡片會下載該學姊最新版的工具檔。'; var dz = document.getElementById('dl'); dz.href = 'assets/demo/demo-tool.zip'; dz.setAttribute('download', 'demo-tool.zip'); dz.hidden = false; document.title = '示範工具（ZIP）｜G.R.A.C.E Academy'; return; }
   if (location.hash === '#demo') {
     var xd = new XMLHttpRequest(); xd.open('GET', 'assets/demo/demo-index.html', true);
-    xd.onload = function () { if (xd.status !== 200) { fail('示範工具讀取失敗', '請稍後再試', false); return; } var fr0 = document.getElementById('fr'); fr0.src = URL.createObjectURL(new Blob([xd.responseText], { type: 'text/html;charset=utf-8' })); fr0.style.display = 'block'; document.getElementById('st').style.display = 'none'; document.title = '示範工具（測試卡片）｜G.R.A.C.E Academy'; };
+    xd.onload = function () { if (xd.status !== 200) { fail('示範工具讀取失敗', '請稍後再試', false); return; } mount(xd.responseText); document.title = '示範工具（測試卡片）｜G.R.A.C.E Academy'; };
     xd.onerror = function () { fail('示範工具讀取失敗', '網路連線失敗', false); }; xd.send(); return;
   }
   if (!m) { fail('找不到這個工具', '連結不完整，請回到後台或 LINE 重新開啟最新的工具連結', true); return; }
@@ -56,8 +68,6 @@ window.addEventListener('hashchange', function () { location.reload(); });   // 
     ['localStorage', 'sessionStorage'].forEach(function (k) { if (tok) return; try { var raw = window[k].getItem('consult_admin_token'); if (!raw) return; var o = raw.charAt(0) === '{' ? JSON.parse(raw) : { token: raw }; if (o && o.token) tok = o.token; } catch (e) { /* ignore */ } });
     if (tok) req.token = tok;
   }
-  var SHIM = '<script>(function(){function S(){var d={};return{getItem:function(k){k=String(k);return Object.prototype.hasOwnProperty.call(d,k)?d[k]:null},setItem:function(k,v){d[String(k)]=String(v)},removeItem:function(k){delete d[String(k)]},clear:function(){d={}},key:function(i){return Object.keys(d)[i]||null},get length(){return Object.keys(d).length}}}' +
-    '["localStorage","sessionStorage"].forEach(function(n){var ok=false;try{ok=!!window[n]&&(window[n].setItem("__t","1"),window[n].removeItem("__t"),true)}catch(e){ok=false}if(!ok){try{Object.defineProperty(window,n,{value:S(),configurable:true})}catch(e){}}});})();<\/script>';
   var slow = setTimeout(function () { msg.textContent = '連線中，請稍候…'; }, 3000);
   var x = new XMLHttpRequest();
   x.open('POST', C.GAS_URL, true);
@@ -77,13 +87,8 @@ window.addEventListener('hashchange', function () { location.reload(); });   // 
       else fail('找不到這個工具', (j && j.error) || '連結已失效，請回到後台重新開啟最新的工具連結', true);
       return;
     }
-    var html = j.data.html, i = html.search(/<head[^>]*>/i);
-    html = i >= 0 ? html.replace(/<head[^>]*>/i, function (h) { return h + SHIM; }) : SHIM + html;
     document.title = (j.data.title || '專屬工具') + (req.v ? '（第 ' + j.data.version + ' 版）' : '') + '｜G.R.A.C.E Academy';
-    var fr = document.getElementById('fr');
-    try { fr.src = URL.createObjectURL(new Blob([html], { type: 'text/html;charset=utf-8' })); } catch (e) { fr.srcdoc = html; }   // blob 網址（sandbox 仍為獨立來源）
-    fr.style.display = 'block';
-    document.getElementById('st').style.display = 'none';
+    mount(j.data.html);
   };
   x.onerror = x.ontimeout = function () { clearTimeout(slow); fail('無法開啟工具', '網路連線失敗，請稍後再試', false); };
   x.send(JSON.stringify(req));
