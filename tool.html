@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="no-referrer">
 <title>專屬工具｜G.R.A.C.E Academy</title>
-<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.03_1050"};</script>
+<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.03_1052"};</script>
 <style>
 :root{color-scheme:dark;--ink:#110E0F;--t1:#F6EFEA;--t3:#A0948F;--rose:#FF2E8B;--gold:#C9A27A}
 *{box-sizing:border-box}
@@ -26,12 +26,12 @@ a.btn{display:inline-block;margin-top:18px;padding:12px 22px;border-radius:12px;
 </head>
 <body>
 <div id="st"><main><div class="sp" id="sp" aria-hidden="true"></div><div class="code" id="code" hidden>404</div><h1 id="ttl">正在開啟工具</h1><p id="msg" role="status">請稍候…</p><a class="btn" id="dl" href="#" hidden>下載工具</a></main></div>
-<iframe id="fr" title="專屬工具" sandbox="allow-scripts allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-downloads"></iframe>
+<iframe id="fr" title="專屬工具" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-downloads"></iframe>
 <script>
 /*
  * 3.3.0 開啟工具：tool.html#<學姊鍵 16 碼>.<token 40 碼>[.<版本>]
  *   向資料中心 POST tool_open 取回 HTML（工具內容不放在本網站；token 只在 # 之後，不會送到伺服器記錄）
- *   以 sandbox iframe 執行（與後台不同來源，工具程式讀不到後台登入資料）；localStorage／sessionStorage 以記憶體版本代替
+ *   以 iframe（blob 網址）執行；需 allow-same-origin，工具的登入、記住此裝置、展示入口等才能使用瀏覽器儲存（工具為校長自製內容）；儲存不可用時以記憶體版本代替
  *   舊版（帶版本）只限校長登入後台後，從版本紀錄開啟（帶後台登入 token）
  */
 (function () {
