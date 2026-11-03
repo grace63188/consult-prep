@@ -1160,7 +1160,7 @@ button.tool.add{min-height:36px;margin-top:2px}
   } catch (e) { /* 儲存不可用時不導向 */ }
 })();
 </script>
-<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.03_0031", "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com", "GOOGLE_API_KEY": "AIzaSyAM11cAROO9pStVWp74jsapBWB_iE8HLQE", "GOOGLE_APP_ID": "423060878330"};</script>
+<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.03_1017", "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com", "GOOGLE_API_KEY": "AIzaSyAM11cAROO9pStVWp74jsapBWB_iE8HLQE", "GOOGLE_APP_ID": "423060878330"};</script>
 <script>
 /*
  * G.R.A.C.E Academy《諮詢教材·專屬訂製》作業欄位設定檔
@@ -3786,7 +3786,10 @@ button.tool.add{min-height:36px;margin-top:2px}
     keyword: '領取諮詢教材',
     folderName: '諮詢教材交付',
     tab: '諮詢教材',
-    headers: ['flowId', 'rosterKey', 'libId', 'material', 'amount', 'deadline', 'state', 'notifiedAt', 'replyOrderedAt', 'matchPending', 'matchedAt', 'orderEvidence', 'driveFileId', 'fileName', 'fileSize', 'lineFileSent', 'deliverTextMode', 'unzipCard', 'deliverCard', 'deliveredAt', 'receivedAt', 'updatedAt', 'createdAt'],
+    headers: ['flowId', 'rosterKey', 'libId', 'material', 'amount', 'deadline', 'state', 'notifiedAt', 'replyOrderedAt', 'matchPending', 'matchedAt', 'orderEvidence', 'driveFileId', 'fileName', 'fileSize', 'lineFileSent', 'deliverTextMode', 'unzipCard', 'deliverCard', 'deliveredAt', 'receivedAt', 'updatedAt', 'createdAt',
+      /* 3.3.0 只新增（附加在最後）：本次諮詢、下單網址與商品 ID、發送者、點擊、我已下單、比對依據與問題、交付來源與連結、自動交付、提醒、收件人核對 */
+      'cycle', 'orderUrl', 'orderProductId', 'orderBy', 'clickAt', 'clickLast', 'clickN', 'claimAt', 'matchBy', 'matchBasis', 'matchIssue', 'matchNote', 'matchOrderId', 'matchAmount',
+      'deliverSource', 'deliverUrl', 'deliverAuto', 'deliverHold', 'remindAt', 'remindN', 'syncAt'],
     maxFileBytes: 50 * 1024 * 1024,
     chunkBytes: 4 * 1024 * 1024,
     getMaxBytes: 8 * 1024 * 1024,
@@ -3873,6 +3876,137 @@ button.tool.add{min-height:36px;margin-top:2px}
       });
     return out;
   }
+
+  /* ================================================================ */
+  /* 3.3.0 諮詢流程：確認金額 → 確認下單 → 等待下單 → 比對訂單 → 交付教材          */
+  /*   六段流程軌：製作工具、測試工具、確認金額、確認下單、等待下單、交付教材         */
+  /*   比對（一定要認人）：對象僅限該學姊本人（名冊鍵相同）、下單通知發出之後的購買、 */
+  /*   商品 ID（orderUrl 可解析且官網資料有 pro_id）優先，否則名稱關鍵字；金額＝確認金額才可自動交付 */
+  /* ================================================================ */
+  var ORDER = {
+    STAGES: [['make', '製作工具'], ['test', '測試工具'], ['price', '確認金額'], ['order', '確認下單'], ['wait', '等待下單'], ['deliver', '交付教材']],
+    PREP_TABS: ['make', 'test', 'price', 'order'],
+    DELIVER_TABS: ['wait', 'ready', 'log'],
+    baseKeywords: ['諮詢教材', 'AI指令'],
+    quickDays: [3, 5, 7],
+    maxPurchases: 3000,
+    maxReason: 60,
+    maxPrice: 10000000,
+    priceLogKeep: 20,
+    clickKeep: 20,
+    timeline: [['notifiedAt', '下單通知發出'], ['clickAt', '點前往下單'], ['claimAt', '按我已下單'], ['matchedAt', '比對到訂單'], ['deliveredAt', '教材交付']],
+    issues: { amount: '金額不符，請確認', noAmount: '金額無法核對，請確認', recipient: '收件人核對未通過，未自動交付' }
+  };
+  /** 官網下單網址 → 商品 ID（/product/show/805、?pro_id=805、/products/805）；無法解析回 '' */
+  function orderProductIdOf(url) {
+    var s = cleanStr(url), m = /\/product\/show\/(\d{1,9})(?:[/?#]|$)/.exec(s) || /[?&](?:pro_id|product_id|pid)=(\d{1,9})(?:&|#|$)/.exec(s) || /\/products?\/(\d{1,9})(?:[/?#]|$)/.exec(s);
+    return m ? String(Number(m[1])) : '';
+  }
+  /** 下單網址檢查：https、無空白與引號、≤ 500 字 → '' 或錯誤訊息 */
+  function orderUrlIssue(url) {
+    var s = cleanStr(url);
+    if (!s) return '請填官網下單網址';
+    if (!/^https:\/\/[^\s"'<>]+$/.test(s)) return '下單網址需為 https 開頭';
+    if (s.length > 500) return '下單網址過長';
+    return '';
+  }
+  /** 比對用名稱關鍵字：教材下單商品設定的關鍵字＋ID 對照名稱＋預設「諮詢教材」「AI指令」 */
+  function orderKeywords(cfg) {
+    var c = cfg && cfg.ids ? cfg : normalizeMatProducts(cfg), out = [];
+    ORDER.baseKeywords.concat(c.keywords || []).concat(Object.keys(c.idNames || {}).map(function (k) { return c.idNames[k]; })).forEach(function (t) { t = cleanStr(t); if (t && out.indexOf(t) < 0) out.push(t); });
+    return out;
+  }
+  /** 購買紀錄正規化：{ id, uid, at, productId?, productName?, reason?, amount?（課費；負數取絕對值）} → 物件或 null */
+  function orderPurchaseNorm(p) {
+    if (!p || typeof p !== 'object') return null;
+    var id = cleanStr(p.id).slice(0, 60), uid = cleanStr(p.uid).slice(0, 120), at = cleanStr(p.at || p.created_at || p.buy_at).slice(0, 40), ms = siteTimeMs(at);
+    if (!id || !uid || ms == null) return null;
+    var pr = materialProductOf({ productId: p.productId != null ? p.productId : p.pro_id, productName: p.productName != null ? p.productName : p.pro_name, reason: p.reason });
+    var raw = p.amount != null && p.amount !== '' ? p.amount : p.points, n = raw == null || raw === '' ? null : Math.abs(Math.round(Number(raw)));
+    return { id: id, uid: uid, at: stampOf(ms), ms: ms, productId: pr.id, productName: pr.name, reason: cleanStr(p.reason).slice(0, 120), amount: n != null && isFinite(n) && n > 0 ? n : null };
+  }
+  /** 名稱是否含關鍵字（全形半形不拘） */
+  function orderKeywordHit(p, keywords) {
+    var text = halfWidth(cleanStr(p.productName) + ' ' + cleanStr(p.reason));
+    return (keywords || []).some(function (t) { return t && text.indexOf(halfWidth(t)) >= 0; });
+  }
+  /**
+   * 單一學姊的訂單比對（認人＋時間＋商品＋金額）
+   *   flow：{ flowId, rosterKey, notifiedAt, amount（確認金額）, orderProductId? }
+   *   purchases：已正規化（orderPurchaseNorm）且帶 key（uid 的名冊鍵）
+   *   opts：{ keywords, used:{ 購買 id:1 } }
+   * → null（無符合）或 { purchase, basis:'id'|'keyword', ok（可自動交付）, issue:''|'amount'|'noAmount', note }
+   */
+  function orderMatch(flow, purchases, opts) {
+    opts = opts || {};
+    if (!flow || !/^[0-9a-f]{16}$/.test(String(flow.rosterKey || ''))) return null;
+    var since = timeToMs(flow.notifiedAt); if (since == null) return null;
+    var used = opts.used || {}, kw = opts.keywords && opts.keywords.length ? opts.keywords : ORDER.baseKeywords;
+    var mine = (purchases || []).filter(function (p) { return p && p.key === flow.rosterKey && p.ms != null && p.ms >= since && !used[p.id]; }).sort(function (a, b) { return a.ms - b.ms; });
+    if (!mine.length) return null;
+    var pid = String(flow.orderProductId || ''), hit = null, basis = '';
+    if (pid && mine.some(function (p) { return !!p.productId; })) { hit = mine.filter(function (p) { return p.productId === pid; })[0] || null; basis = 'id'; }
+    else { hit = mine.filter(function (p) { return orderKeywordHit(p, kw); })[0] || null; basis = 'keyword'; }
+    if (!hit) return null;
+    var want = Math.round(Number(flow.amount) || 0), issue = hit.amount == null ? 'noAmount' : hit.amount !== want ? 'amount' : '';
+    var note = (basis === 'id' ? '商品 ID #' + hit.productId : '商品名稱含關鍵字') + '・' + hit.at.slice(0, 16) + (hit.amount != null ? '・' + amountText(hit.amount) : '');
+    return { purchase: hit, basis: basis, ok: !issue, issue: issue, note: note };
+  }
+  /**
+   * 合併官網兩種來源（已正規化）：點數紀錄（有金額、名稱在 reason）＋課程總覽（有 pro_id、無金額）
+   *   同一學姊、名稱相同（或 reason 含課程名稱）、時間相差 ≤ 30 分 → 點數紀錄補上商品 ID；配不到的總覽紀錄保留（金額未知）
+   */
+  function orderPurchasesMerge(list) {
+    var pts = [], ovs = [];
+    (list || []).forEach(function (p) { if (!p) return; (p.amount == null && p.productId ? ovs : pts).push(p); });
+    var taken = {};
+    pts.forEach(function (p) {
+      if (p.productId) return;
+      var hit = ovs.filter(function (o, i) { return !taken[i] && o.uid.toLowerCase() === p.uid.toLowerCase() && o.productName && (o.productName === p.productName || cleanStr(p.reason).indexOf(o.productName) >= 0) && Math.abs(o.ms - p.ms) <= 30 * 60000; })[0];
+      if (hit) { taken[ovs.indexOf(hit)] = 1; p.productId = hit.productId; }
+    });
+    return pts.concat(ovs.filter(function (o, i) { return !taken[i]; }));
+  }
+  /** 確認金額檢查：金額為 1–1000 萬整數；與原定價不同時需改價原因 → '' 或錯誤訊息 */
+  function orderPriceIssue(initial, amount, reason) {
+    var a = Math.round(Number(String(amount == null ? '' : amount).replace(/[,\s]/g, '')));
+    if (!isFinite(a) || a <= 0 || a > ORDER.maxPrice) return '請填確認金額（新台幣，整數）';
+    var pi = Math.round(Number(initial) || 0);
+    if (pi > 0 && a !== pi && !cleanStr(reason)) return '金額與原定價不同，請填改價原因';
+    if (cleanStr(reason).length > ORDER.maxReason) return '改價原因最多 ' + ORDER.maxReason + ' 字';
+    return '';
+  }
+  /** 快選下單期限：今天＋N 天 23:59（台北）→ ISO */
+  function orderQuickDeadline(nowMs, days) {
+    var t = new Date((nowMs == null ? Date.now() : nowMs) + 8 * 3600000);
+    return deadlineIso(Date.UTC(t.getUTCFullYear(), t.getUTCMonth(), t.getUTCDate() + Number(days || 0), 23, 59) - 8 * 3600000);
+  }
+  /**
+   * 學姊所在階段：make 製作工具、test 測試工具、price 確認金額、order 確認下單、wait 等待下單、ready 待交付、log 交付紀錄
+   *   tt：tooltest 公開列（state、priceConfirmed、cycle、at）；mat：該學姊最新教材流程（state、cycle、deliveredAt）
+   *   教材流程屬於本次諮詢：流程 cycle 與工具 cycle 相同；舊流程（無 cycle）未交付、或交付時間晚於工具建立時間
+   */
+  function orderStageOf(tt, mat) {
+    tt = tt || {}; var s = tt.state || 'make';
+    if (s === 'make' || s === 'fix' || !s) return 'make';
+    if (s === 'test') return 'test';
+    var cur = mat && mat.state ? (mat.cycle ? String(mat.cycle) === String(tt.cycle || '') : (mat.state !== 'delivered' || !tt.createdAt || String(mat.deliveredAt || '') >= String(tt.createdAt))) : false;
+    if (cur && mat.state === 'delivered') return 'log';
+    if (cur && mat.state === 'ordered') return 'ready';
+    if (cur && mat.state === 'notified') return 'wait';
+    return tt.priceConfirmed > 0 ? 'order' : 'price';
+  }
+  /** 六段流程軌目前位置（0–5）：ready／log 都在「交付教材」 */
+  var ORDER_TRACK = { make: 0, test: 1, price: 2, order: 3, wait: 4, ready: 5, log: 6 };
+  function orderTrackIndex(stage) { return ORDER_TRACK[stage] != null ? ORDER_TRACK[stage] : 0; }
+  /** 時間軸（下單通知發出、點前往下單、按我已下單、比對到訂單、教材交付）→ [{ k, label, at（yyyy.mm.dd HH:mm 或 ''）}] */
+  function orderTimeline(f) {
+    f = f || {};
+    return ORDER.timeline.map(function (x) { var ms = timeToMs(f[x[0]]); return { k: x[0], label: x[1], at: ms == null ? '' : stampOf(ms).slice(0, 16) }; });
+  }
+  /** 點擊紀錄連結：前台 go.html?t=<flowId>.<簽章> */
+  function orderClickToken(flowId, sig) { return String(flowId || '') + '.' + String(sig || ''); }
+  function orderClickParse(t) { var m = /^(mf[0-9A-Za-z-]{4,40})\.([0-9a-f]{12})$/.exec(String(t || '')); return m ? { flowId: m[1], sig: m[2] } : null; }
 
   /** Drive 匯出格式（drive_folder_files：Google 文件類需匯出） */
   var DRIVE_EXPORT = {
@@ -4119,6 +4253,8 @@ button.tool.add{min-height:36px;margin-top:2px}
     SUPP: SUPP, suppParse: suppParse, suppTarget: suppTarget, suppOptId: suppOptId, suppDefaultLabel: suppDefaultLabel, suppOptNorm: suppOptNorm, suppOptList: suppOptList,
     suppOptAdd: suppOptAdd, suppMerge: suppMerge, suppByTarget: suppByTarget, suppPendingCount: suppPendingCount, suppVars: suppVars,
     materialMatch: materialMatch,
+    ORDER: ORDER, orderProductIdOf: orderProductIdOf, orderUrlIssue: orderUrlIssue, orderKeywords: orderKeywords, orderPurchaseNorm: orderPurchaseNorm, orderKeywordHit: orderKeywordHit, orderMatch: orderMatch, orderPurchasesMerge: orderPurchasesMerge,
+    orderPriceIssue: orderPriceIssue, orderQuickDeadline: orderQuickDeadline, orderStageOf: orderStageOf, orderTrackIndex: orderTrackIndex, orderTimeline: orderTimeline, orderClickToken: orderClickToken, orderClickParse: orderClickParse,
     MAT_PRODUCTS: MAT_PRODUCTS,
     normalizeMatProducts: normalizeMatProducts,
     materialProductOf: materialProductOf,
@@ -11244,13 +11380,14 @@ button.tool.add{min-height:36px;margin-top:2px}
     });
   }
   /**
-   * 3.2.8 上傳工具 toolUpload({ rosterKey, cycle?, tool, url? | file? }, onProgress?) → { row, shared? }
+   * 3.2.8 上傳工具 toolUpload({ rosterKey, cycle?, tool, price?, url? | file? }, onProgress?) → { row, shared? }
    *   網址：tooltest_upload_url；檔案 ≤ 8 MB：tooltest_upload_file（單次，資料中心不用 UrlFetch）；較大：begin → chunk ×N（8 MB）→ finish
    */
   var TOOL_SMALL = 8 * 1024 * 1024;
   function toolUpload(o, onProgress) {
     o = o || {};
     var base = { rosterKey: o.rosterKey, cycle: o.cycle || '', tool: o.tool || '', by: 'principal' };   // 3.2.10 上傳＝送助教測試
+    if (o.price != null && o.price !== '') base.price = o.price;   // 3.3.0 教材定價（沒有原定價時必填）
     if (!o.file) return authed('tooltest_upload_url', Object.assign({ url: o.url || '' }, base), { retries: 0 });
     var file = o.file, total = file.size, name = file.name || 'tool', mime = file.type || mimeForName(name, 'application/octet-stream');
     if (total <= TOOL_SMALL) return blobToBase64(file).then(function (data) { return authed('tooltest_upload_file', Object.assign({ name: name, mime: mime, data: data }, base), { retries: 0, timeoutMs: 120000 }); }).then(function (r) { if (onProgress) onProgress({ sent: total, total: total }); return r; });

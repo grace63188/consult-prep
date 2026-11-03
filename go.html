@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>前往下單｜G.R.A.C.E Academy</title>
+<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.03_1017"};</script>
+<style>
+:root{color-scheme:dark;--ink:#110E0F;--t1:#F6EFEA;--t3:#A0948F;--rose:#FF2E8B}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:var(--ink);color:var(--t1);font:16px/1.7 'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;padding:24px 16px}
+main{max-width:360px;text-align:center}
+.sp{width:36px;height:36px;margin:0 auto 18px;border-radius:50%;border:3px solid rgba(255,46,139,.25);border-top-color:var(--rose);animation:r 1s linear infinite}
+@keyframes r{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.sp{animation:none}}
+h1{font-size:20px;margin:0 0 6px;font-family:'Noto Serif TC',serif}
+p{margin:0;color:var(--t3);font-size:14px}
+a{display:inline-block;margin-top:18px;padding:12px 22px;border-radius:12px;background:linear-gradient(180deg,#FF3D93,#E8247E);color:#fff;font-weight:700;text-decoration:none}
+</style>
+</head>
+<body>
+<main>
+  <div class="sp" id="sp" aria-hidden="true"></div>
+  <h1 id="ttl">正在前往官網下單頁</h1>
+  <p id="msg" role="status">請稍候…</p>
+  <a id="go" href="#" hidden>前往下單</a>
+</main>
+<script>
+/* 3.3.0 下單通知卡片「前往下單」：先記錄點擊時間（order_click，免登入、簽章驗證）再轉到官網下單網址 */
+(function () {
+  var C = window.CONSULT_CONFIG || {}, q = /[?&]t=([^&#]+)/.exec(location.search), t = q ? decodeURIComponent(q[1]) : '';
+  var SITE = /^https:\/\/(www\.)?graceschool\.com\.tw\//, done = false;
+  var msg = document.getElementById('msg'), sp = document.getElementById('sp'), a = document.getElementById('go');
+  function go(u) { if (done) return; done = true; a.href = u; location.replace(u); setTimeout(function () { a.hidden = false; msg.textContent = '若沒有自動開啟，請點下方按鈕'; }, 1500); }
+  function fail(m) { sp.style.display = 'none'; document.getElementById('ttl').textContent = '無法開啟下單頁'; msg.textContent = m; }
+  if (!/^mf[0-9A-Za-z-]{4,40}\.[0-9a-f]{12}$/.test(t)) { fail('連結不完整，請回到 LINE 重新點「前往下單」'); return; }
+  if (!C.GAS_URL) { fail('預覽模式：正式網站會記錄點擊後前往官網下單頁'); return; }
+  var slow = setTimeout(function () { msg.textContent = '連線中，請稍候…'; }, 3000);
+  var x = new XMLHttpRequest();
+  x.open('POST', C.GAS_URL, true);
+  x.setRequestHeader('Content-Type', 'text/plain;charset=utf-8');
+  x.timeout = 20000;
+  x.onload = function () {
+    clearTimeout(slow);
+    var j = null; try { j = JSON.parse(x.responseText); } catch (e) { j = null; }
+    if (j && j.ok && j.data && /^https:\/\/[^\s"'<>]+$/.test(j.data.url)) go(j.data.url);
+    else fail(j && j.error ? j.error + '，請聯繫官方 LINE' : '連結已失效，請聯繫官方 LINE');
+  };
+  x.onerror = x.ontimeout = function () { clearTimeout(slow); fail('網路連線失敗，請稍後再點一次「前往下單」'); };
+  x.send(JSON.stringify({ action: 'order_click', t: t }));
+  /* 只允許學院官網網域作為手動按鈕備援 */
+  a.addEventListener('click', function (ev) { if (!SITE.test(a.href)) { ev.preventDefault(); } });
+})();
+</script>
+</body>
+</html>
