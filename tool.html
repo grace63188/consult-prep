@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="no-referrer">
 <title>專屬工具｜G.R.A.C.E Academy</title>
-<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.03_1108"};</script>
+<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.03_1113"};</script>
 <style>
 :root{color-scheme:dark;--ink:#110E0F;--t1:#F6EFEA;--t3:#A0948F;--rose:#FF2E8B;--gold:#C9A27A}
 *{box-sizing:border-box}
@@ -35,6 +35,7 @@ a.btn{display:inline-block;margin-top:18px;padding:12px 22px;border-radius:12px;
  *   以 iframe（blob 網址）執行；需 allow-same-origin，工具的登入、記住此裝置、展示入口等才能使用瀏覽器儲存（工具為校長自製內容）；儲存不可用時以記憶體版本代替
  *   舊版（帶版本）只限校長登入後台後，從版本紀錄開啟（帶後台登入 token）
  */
+window.addEventListener('hashchange', function () { location.reload(); });   // 換工具連結時重新載入
 (function () {
   var C = window.CONSULT_CONFIG || {}, m = /^#([0-9a-f]{16})\.([0-9a-f]{40})(?:\.(\d{1,4}))?$/.exec(location.hash || '');
   var sp = document.getElementById('sp'), msg = document.getElementById('msg'), ttl = document.getElementById('ttl');
