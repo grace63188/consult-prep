@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="no-referrer">
 <title>專屬工具｜G.R.A.C.E Academy</title>
-<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.03_1055"};</script>
+<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.03_1108"};</script>
 <style>
 :root{color-scheme:dark;--ink:#110E0F;--t1:#F6EFEA;--t3:#A0948F;--rose:#FF2E8B;--gold:#C9A27A}
 *{box-sizing:border-box}
@@ -39,6 +39,13 @@ a.btn{display:inline-block;margin-top:18px;padding:12px 22px;border-radius:12px;
   var C = window.CONSULT_CONFIG || {}, m = /^#([0-9a-f]{16})\.([0-9a-f]{40})(?:\.(\d{1,4}))?$/.exec(location.hash || '');
   var sp = document.getElementById('sp'), msg = document.getElementById('msg'), ttl = document.getElementById('ttl');
   function fail(t, m2, code) { sp.style.display = 'none'; if (code) document.getElementById('code').hidden = false; ttl.textContent = t; msg.textContent = m2; }
+  /* 測試卡片：#demo 示範 HTML 工具（可操作）、#demo-zip 示範 ZIP 下載與說明 */
+  if (location.hash === '#demo-zip') { sp.style.display = 'none'; ttl.textContent = '示範工具（ZIP・測試卡片）'; msg.textContent = '請下載後解壓縮，開啟 index.html，並使用展示模式測試。正式卡片會下載該學姊最新版的工具檔。'; var dz = document.getElementById('dl'); dz.href = 'assets/demo/demo-tool.zip'; dz.setAttribute('download', 'demo-tool.zip'); dz.hidden = false; document.title = '示範工具（ZIP）｜G.R.A.C.E Academy'; return; }
+  if (location.hash === '#demo') {
+    var xd = new XMLHttpRequest(); xd.open('GET', 'assets/demo/demo-index.html', true);
+    xd.onload = function () { if (xd.status !== 200) { fail('示範工具讀取失敗', '請稍後再試', false); return; } var fr0 = document.getElementById('fr'); fr0.src = URL.createObjectURL(new Blob([xd.responseText], { type: 'text/html;charset=utf-8' })); fr0.style.display = 'block'; document.getElementById('st').style.display = 'none'; document.title = '示範工具（測試卡片）｜G.R.A.C.E Academy'; };
+    xd.onerror = function () { fail('示範工具讀取失敗', '網路連線失敗', false); }; xd.send(); return;
+  }
   if (!m) { fail('找不到這個工具', '連結不完整，請回到後台或 LINE 重新開啟最新的工具連結', true); return; }
   if (!C.GAS_URL) { fail('預覽模式', '正式網站會在這裡開啟可直接操作的工具', false); return; }
   var req = { action: 'tool_open', tool: m[1], k: m[2] };

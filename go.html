@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="no-referrer">
 <title>前往下單｜G.R.A.C.E Academy</title>
-<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.03_1055"};</script>
+<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.03_1108"};</script>
 <style>
 :root{color-scheme:dark;--ink:#110E0F;--t1:#F6EFEA;--t3:#A0948F;--rose:#FF2E8B}
 *{box-sizing:border-box}
@@ -36,6 +36,14 @@ a{display:inline-block;margin-top:18px;padding:12px 22px;border-radius:12px;back
   var msg = document.getElementById('msg'), sp = document.getElementById('sp'), a = document.getElementById('go');
   function go(u) { if (done) return; done = true; a.href = u; location.replace(u); setTimeout(function () { a.hidden = false; msg.textContent = '若沒有自動開啟，請點下方按鈕'; }, 1500); }
   function fail(m) { sp.style.display = 'none'; document.getElementById('ttl').textContent = '無法開啟下單頁'; msg.textContent = m; }
+  if (t === 'test') {   // 3.3.0 測試卡片：說明後轉到官網下單頁（不記錄點擊）
+    document.getElementById('ttl').textContent = '測試卡片：前往下單';
+    msg.textContent = '正式卡片會先記錄點擊時間，再轉到該學姊的官網下單頁。3 秒後開啟官網下單頁（示範）…';
+    var TEST_URL = 'https://www.graceschool.com.tw/product/show/805?kind=65';
+    a.href = TEST_URL; a.hidden = false; a.textContent = '開啟官網下單頁'; sp.style.display = 'none';
+    setTimeout(function () { location.replace(TEST_URL); }, 3000);
+    return;
+  }
   if (!/^mf[0-9A-Za-z-]{4,40}\.[0-9a-f]{12}$/.test(t)) { fail('連結不完整，請回到 LINE 重新點「前往下單」'); return; }
   if (!C.GAS_URL) { fail('預覽模式：正式網站會記錄點擊後前往官網下單頁'); return; }
   var slow = setTimeout(function () { msg.textContent = '連線中，請稍候…'; }, 3000);
