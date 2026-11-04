@@ -1,0 +1,8 @@
+{
+  "GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec",
+  "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com",
+  "BOOKMARKLET_VERSION": "3.4.0",
+  "BOOKMARKLET_FILE": "roster-bookmarklet.txt",
+  "ADMIN": "admin/",
+  "BUILD": "2026.11.04_1530"
+}

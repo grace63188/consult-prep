@@ -9,7 +9,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="no-referrer">
 <title>前往下單｜G.R.A.C.E Academy</title>
-<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.04_1501"};</script>
+<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.04_1530"};</script>
 <style>
 :root{color-scheme:dark;--ink:#110E0F;--t1:#F6EFEA;--t3:#A0948F;--rose:#FF2E8B}
 *{box-sizing:border-box}
@@ -45,6 +45,30 @@ a{display:inline-block;margin-top:18px;padding:12px 22px;border-radius:12px;back
     var TEST_URL = 'https://www.graceschool.com.tw/product/show/805?kind=65';
     a.href = TEST_URL; a.hidden = false; a.textContent = '開啟官網下單頁'; sp.style.display = 'none';
     setTimeout(function () { location.replace(TEST_URL); }, 3000);
+    return;
+  }
+  /* 3.4.0 學院管理後台（topgod）圖卡按鈕：新參數 l（不影響原有 t）；lms_click 記錄點擊後轉址。
+     只允許學院官網；物流查詢按鈕（l 結尾為 -c）另允許順豐與中華郵政查詢頁 */
+  var ql = /[?&]l=([^&#]+)/.exec(location.search), l = ql ? decodeURIComponent(ql[1]) : '';
+  if (!t && l) {
+    var CARRIER = /^https:\/\/(www\.sf-express\.com|postserv\.post\.gov\.tw)(\/[^\s"'<>]*)?$/, isC = /-c\.[0-9a-f]{12}$/.test(l);
+    var okUrl = function (u) { return SITE.test(u || '') || (isC && CARRIER.test(u || '')); };
+    document.getElementById('ttl').textContent = isC ? '正在前往物流查詢' : '正在前往學院官網';
+    a.textContent = isC ? '前往物流查詢' : '前往學院官網';
+    if (!/^lm[0-9A-Za-z]{6,24}(-[rc])?\.[0-9a-f]{12}$/.test(l)) { fail('連結不完整，請回到 LINE 重新點一次'); return; }
+    if (!C.GAS_URL) { fail('預覽模式：正式網站會記錄點擊後前往學院官網'); return; }
+    var xl = new XMLHttpRequest();
+    xl.open('POST', C.GAS_URL, true);
+    xl.setRequestHeader('Content-Type', 'text/plain;charset=utf-8');
+    xl.timeout = 20000;
+    xl.onload = function () {
+      var j = null; try { j = JSON.parse(xl.responseText); } catch (e) { j = null; }
+      if (j && j.ok && j.data && okUrl(j.data.url)) { if (j.data.msg) { document.getElementById('ttl').textContent = String(j.data.msg).slice(0, 40); msg.textContent = '即將前往學院官網…'; setTimeout(function () { go(j.data.url); }, 1500); } else go(j.data.url); }
+      else fail(j && j.error ? j.error + '，請聯繫官方 LINE' : '連結已失效，請聯繫官方 LINE');
+    };
+    xl.onerror = xl.ontimeout = function () { fail('網路連線失敗，請稍後再點一次'); };
+    xl.send(JSON.stringify({ action: 'lms_click', l: l }));
+    a.addEventListener('click', function (ev) { if (!okUrl(a.href)) { ev.preventDefault(); } });
     return;
   }
   if (!/^mf[0-9A-Za-z-]{4,40}\.[0-9a-f]{12}$/.test(t)) { fail('連結不完整，請回到 LINE 重新點「前往下單」'); return; }
