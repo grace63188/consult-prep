@@ -234,12 +234,12 @@ body[data-type=matorder] .reply b,body[data-type=matdeliver] .reply b{font-size:
   var TYPES = {
     matorder: {
       en: 'MATERIAL ORDER', no: 'No. 04', title: '教材下單', tag: '諮詢教材',
-      msg: '校長為學姊準備了專屬諮詢教材，請先到官網<em>完成下單</em>，官方確認後即交付檔案。',
+      msg: '校長為學姐準備了專屬諮詢教材，請先到官網<em>完成下單</em>，官方確認後即交付檔案。',
       aside: 'slip', dlKey: '下單期限', pts: 1
     },
     matdeliver: {
       en: 'MATERIAL DELIVERY', no: 'No. 05', title: '教材交付', tag: '諮詢教材',
-      msg: '已確認學姊完成下單，專屬諮詢教材正式交付，請<em>用電腦下載</em>並妥善保存。',
+      msg: '已確認學姐完成下單，專屬諮詢教材正式交付，請<em>用電腦下載</em>並妥善保存。',
       aside: 'file', dlKey: '交付日期', pts: 3
     },
     unzip: {
@@ -263,7 +263,7 @@ body[data-type=matorder] .reply b,body[data-type=matdeliver] .reply b{font-size:
     }
   };
   var DEFAULTS = {
-    type: 'notice', name: '林雅婷', suffix: '學姊',
+    type: 'notice', name: '林雅婷', suffix: '學姐',
     deadline: '2026.11.03 23:59',
     items: [],
     link: '點選訊息下方連結進入作業頁',
@@ -393,7 +393,7 @@ body[data-type=matorder] .reply b,body[data-type=matdeliver] .reply b{font-size:
     var imgReady = img.complete ? Promise.resolve() : new Promise(function (r) { img.onload = img.onerror = r; });
     var fontLoads = fontChecks.map(function (f) { return document.fonts.load(f, text).catch(function () { return []; }); });
     return Promise.all([imgReady, document.fonts.ready].concat(fontLoads)).then(function () {
-      var ok = fontChecks.some(function (f) { return document.fonts.check(f, '學姊'); });
+      var ok = fontChecks.some(function (f) { return document.fonts.check(f, '學姐'); });
       document.body.dataset.fontOk = ok ? '1' : '0';
       document.body.dataset.ready = '1';
       return { fontOk: ok };

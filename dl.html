@@ -9,7 +9,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="no-referrer">
 <title>領取教材｜G.R.A.C.E Academy</title>
-<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.04_1247"};</script>
+<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.04_1501"};</script>
 <style>
 :root{color-scheme:dark;--ink:#110E0F;--t1:#F6EFEA;--t3:#A0948F;--rose:#FF2E8B}
 *{box-sizing:border-box}
@@ -41,7 +41,29 @@ a{display:inline-block;margin-top:18px;padding:12px 22px;border-radius:12px;back
   function go(u, name) { if (done) return; done = true; a.href = u; if (name) a.setAttribute('download', name); hint.hidden = false; location.replace(u); setTimeout(function () { a.hidden = false; sp.style.display = 'none'; msg.textContent = '若沒有自動開始下載，請點下方按鈕'; }, 1500); }   /* 3.3.4 領取教材＝下載原始檔；手機（LINE 內建瀏覽器）附提示 */
   function fail(t2, m) { sp.style.display = 'none'; ttl.textContent = t2; msg.textContent = m; }
   function fmt(v) { var m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(String(v || '')); if (!m) return ''; return m[1] + '.' + m[2] + '.' + m[3] + ' ' + m[4] + ':' + m[5]; }   // 3.3.4 yyyy.mm.dd HH:mm
-  if (t === 'test') { fail('測試卡片：領取教材', '正式卡片會先確認下載期限並記錄點擊時間，期限內直接下載該學姊的教材檔；期限後顯示「下載期限已過」。'); a.href = 'assets/demo/demo-tool.zip'; a.setAttribute('download', 'demo-tool.zip'); a.textContent = '下載示範檔'; a.hidden = false; return; }
+  /* 3.3.8 補件附檔（sf：學姐下載附檔）與回傳檔（sr：後台下載學姐回傳檔）：簽章驗證後轉 Drive 直接下載 */
+  var sq = /[?&](sf|sr)=([^&#]+)/.exec(location.search);
+  if (sq) {
+    var sk = sq[1], st = decodeURIComponent(sq[2]), lab = sk === 'sf' ? '補件附檔' : '學姐回傳的補件檔';
+    document.title = (sk === 'sf' ? '下載補件附檔' : '下載回傳檔') + '｜G.R.A.C.E Academy'; ttl.textContent = '正在開啟' + lab; a.textContent = '下載檔案';
+    if (!/^CP\d{8}-[A-Z0-9]{5}\.s\d{8}-[A-Za-z0-9]{3,12}\.i\d{2}\.[0-9a-f]{12}$/.test(st)) { fail('無法開啟' + lab, sk === 'sf' ? '連結不完整，請回到 LINE 重新點「下載附檔」' : '連結不完整，請回到後台重新點「下載」'); return; }
+    if (/\bLine\//i.test(navigator.userAgent) && !/[?&]openExternalBrowser=1/.test(location.search)) { location.replace(location.pathname + '?' + sk + '=' + encodeURIComponent(st) + '&openExternalBrowser=1'); return; }   /* LINE 內建瀏覽器會擋下載：改以外部瀏覽器開啟 */
+    if (!C.GAS_URL) { fail('預覽模式', '正式網站會確認連結後直接下載' + lab); return; }
+    var sl = setTimeout(function () { msg.textContent = '連線中，請稍候…'; }, 3000), xs = new XMLHttpRequest();
+    xs.open('POST', C.GAS_URL, true); xs.setRequestHeader('Content-Type', 'text/plain;charset=utf-8'); xs.timeout = 30000;
+    xs.onload = function () {
+      clearTimeout(sl);
+      var j = null; try { j = JSON.parse(xs.responseText); } catch (e) { j = null; }
+      var u = j && j.ok && j.data ? String(j.data.url || '') : '';
+      if (u && (DL_OK.test(u) || (sk === 'sf' && j.data.kind === 'url' && /^https:\/\/[^\s"'<>]+$/.test(u)))) { ttl.textContent = '正在下載' + lab; msg.textContent = (j.data.name ? '檔案：' + j.data.name + '・' : '') + '即將開始下載…'; go(u, j.data.name || ''); return; }
+      fail('無法開啟' + lab, j && j.error ? j.error : '連結已失效');
+    };
+    xs.onerror = xs.ontimeout = function () { clearTimeout(sl); fail('無法開啟' + lab, '網路連線失敗，請稍後再試一次'); };
+    xs.send(JSON.stringify({ action: sk === 'sf' ? 'supp_file_dl' : 'supp_return_dl', t: st }));
+    a.addEventListener('click', function (ev) { if (!/^https:\/\//.test(a.getAttribute('href') || '')) ev.preventDefault(); });
+    return;
+  }
+  if (t === 'test') { fail('測試卡片：領取教材', '正式卡片會先確認下載期限並記錄點擊時間，期限內直接下載該學姐的教材檔；期限後顯示「下載期限已過」。'); a.href = 'assets/demo/demo-tool.zip'; a.setAttribute('download', 'demo-tool.zip'); a.textContent = '下載示範檔'; a.hidden = false; return; }
   if (!/^mf[0-9A-Za-z-]{4,40}\.[0-9a-f]{12}$/.test(t)) { fail('無法開啟教材', '連結不完整，請回到 LINE 重新點「領取教材」'); return; }
   if (/\bLine\//i.test(navigator.userAgent) && !/[?&]openExternalBrowser=1/.test(location.search)) { location.replace(location.pathname + '?t=' + encodeURIComponent(t) + '&openExternalBrowser=1'); return; }   /* 3.3.4 LINE 內建瀏覽器會擋下載：改以外部瀏覽器開啟同一連結 */
   if (!C.GAS_URL) { fail('預覽模式', '正式網站會確認下載期限後開始下載'); return; }

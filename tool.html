@@ -9,7 +9,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="no-referrer">
 <title>專屬工具｜G.R.A.C.E Academy</title>
-<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.04_1247"};</script>
+<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.04_1501"};</script>
 <style>
 :root{color-scheme:dark;--ink:#110E0F;--t1:#F6EFEA;--t3:#A0948F;--rose:#FF2E8B;--gold:#C9A27A}
 *{box-sizing:border-box}
@@ -33,7 +33,7 @@ a.btn{display:inline-block;margin-top:18px;padding:12px 22px;border-radius:12px;
 <iframe id="fr" title="專屬工具" sandbox="allow-scripts allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-downloads"></iframe>
 <script>
 /*
- * 3.3.0 開啟工具：tool.html#<學姊鍵 16 碼>.<token 40 碼>[.<版本>]
+ * 3.3.0 開啟工具：tool.html#<學姐鍵 16 碼>.<token 40 碼>[.<版本>]
  *   向資料中心 POST tool_open 取回 HTML（工具內容不放在本網站；token 只在 # 之後，不會送到伺服器記錄）
  *   以 iframe（srcdoc）執行；sandbox 不含 allow-same-origin（3.3.1 安全修正）：工具為獨立來源，讀不到本網站的瀏覽器儲存（後台登入 token）與父頁；
  *   工具內的 localStorage／sessionStorage 以記憶體版本代替（SHIM），登入、展示入口等在單次開啟期間可用，重新整理後不保留
@@ -57,7 +57,7 @@ window.addEventListener('hashchange', function () { location.reload(); });   // 
     document.getElementById('st').style.display = 'none';
   }
   /* 測試卡片：#demo 示範 HTML 工具（可操作）、#demo-zip 示範 ZIP 下載與說明 */
-  if (location.hash === '#demo-zip') { sp.style.display = 'none'; ttl.textContent = '示範工具（ZIP・測試卡片）'; msg.textContent = '請下載後解壓縮，開啟 index.html，並使用展示模式測試。正式卡片會下載該學姊最新版的工具檔。'; var dz = document.getElementById('dl'); dz.href = 'assets/demo/demo-tool.zip'; dz.setAttribute('download', 'demo-tool.zip'); dz.hidden = false; document.title = '示範工具（ZIP）｜G.R.A.C.E Academy'; return; }
+  if (location.hash === '#demo-zip') { sp.style.display = 'none'; ttl.textContent = '示範工具（ZIP・測試卡片）'; msg.textContent = '請下載後解壓縮，開啟 index.html，並使用展示模式測試。正式卡片會下載該學姐最新版的工具檔。'; var dz = document.getElementById('dl'); dz.href = 'assets/demo/demo-tool.zip'; dz.setAttribute('download', 'demo-tool.zip'); dz.hidden = false; document.title = '示範工具（ZIP）｜G.R.A.C.E Academy'; return; }
   if (location.hash === '#demo') {
     var xd = new XMLHttpRequest(); xd.open('GET', 'assets/demo/demo-index.html', true);
     xd.onload = function () { if (xd.status !== 200) { fail('示範工具讀取失敗', '請稍後再試', false); return; } mount(xd.responseText); document.title = '示範工具（測試卡片）｜G.R.A.C.E Academy'; };
