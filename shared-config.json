@@ -1,10 +1,27 @@
 {
   "GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec",
   "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com",
-  "BOOKMARKLET_VERSION": "3.6.0",
+  "BOOKMARKLET_VERSION": "3.7.0",
   "BOOKMARKLET_FILE": "roster-bookmarklet.txt",
-  "BOOKMARKLET_BYTES": 113787,
+  "BOOKMARKLET_BYTES": 120454,
   "BOOKMARKLET_CHANGELOG": [
+    {
+      "version": "3.7.0",
+      "items": [
+        "增量同步：只處理上次之後有變的資料（新購課、新上傳、資料有變的學姐），另每次輪替複查少數學姐",
+        "資料中心內容沒變的列不再重寫",
+        "完成時顯示「本次更新 N 筆」與耗時",
+        "寫回後重讀被改到的學姐（修正 3.6.1 重讀沒有執行）"
+      ]
+    },
+    {
+      "version": "3.6.1",
+      "items": [
+        "書籤名稱改為 學院管理同步V3.6.1",
+        "進行中的課表：同一張只送一次（官網總覽重複列出時不再整批失敗）",
+        "新增課表堂次後回填官網堂次 id（之後可刪除該堂）"
+      ]
+    },
     {
       "version": "3.6.0",
       "items": [
@@ -29,5 +46,5 @@
     }
   ],
   "ADMIN": "admin/",
-  "BUILD": "2026.11.05_0819"
+  "BUILD": "2026.11.05_1155"
 }
