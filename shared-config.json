@@ -1,8 +1,33 @@
 {
   "GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec",
   "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com",
-  "BOOKMARKLET_VERSION": "3.5.0",
+  "BOOKMARKLET_VERSION": "3.6.0",
   "BOOKMARKLET_FILE": "roster-bookmarklet.txt",
+  "BOOKMARKLET_BYTES": 113787,
+  "BOOKMARKLET_CHANGELOG": [
+    {
+      "version": "3.6.0",
+      "items": [
+        "寫回佇列：執行已核准的工單（前值比對、寫入、後值驗證、回報結果）",
+        "新資料：觀看秒數、儲值訂單、級別異動、道具持有",
+        "個資剔除：密碼雜湊、身分證、電話、地址等欄位不送出",
+        "舊寫回工單不再執行"
+      ]
+    },
+    {
+      "version": "3.5.0",
+      "items": [
+        "同步專用金鑰直接同步",
+        "課程目錄與活動獎勵：諮詢項目、道具、官網活動"
+      ]
+    },
+    {
+      "version": "3.4.0",
+      "items": [
+        "讀 LMS 資料（學院管理後台）"
+      ]
+    }
+  ],
   "ADMIN": "admin/",
-  "BUILD": "2026.11.04_2240"
+  "BUILD": "2026.11.05_0819"
 }
