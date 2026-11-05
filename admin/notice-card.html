@@ -226,7 +226,7 @@ body[data-type=matorder] .reply b,body[data-type=matdeliver] .reply b{font-size:
 /*
  * 填值方式（三擇一，後者覆蓋前者）：
  *   1. 預設示範值（DEFAULTS）
- *   2. 網址參數：?type=deadline&name=林雅婷&deadline=2026.11.03%2023:59&items=A|B|C&link=...
+ *   2. 網址參數：?type=deadline&name=樣本雅婷&deadline=2026.11.03%2023:59&items=A|B|C&link=...
  *   3. 頁面載入前設定 window.CARD_DATA = {...}，或載入後呼叫 window.renderCard({...})（回傳 Promise，字型與圖片就緒後 resolve）
  * 就緒訊號：<body data-ready="1">；字型檢查結果寫在 data-font-ok。
  */
@@ -263,7 +263,7 @@ body[data-type=matorder] .reply b,body[data-type=matdeliver] .reply b{font-size:
     }
   };
   var DEFAULTS = {
-    type: 'notice', name: '林雅婷', suffix: '學姐',
+    type: 'notice', name: '樣本雅婷', suffix: '學姐',
     deadline: '2026.11.03 23:59',
     items: [],
     link: '點選訊息下方連結進入作業頁',

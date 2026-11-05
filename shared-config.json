@@ -1,10 +1,28 @@
 {
   "GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec",
   "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com",
-  "BOOKMARKLET_VERSION": "3.7.0",
+  "BOOKMARKLET_VERSION": "3.8.0",
   "BOOKMARKLET_FILE": "roster-bookmarklet.txt",
-  "BOOKMARKLET_BYTES": 120454,
+  "BOOKMARKLET_BYTES": 126384,
   "BOOKMARKLET_CHANGELOG": [
+    {
+      "version": "3.8.0",
+      "items": [
+        "觀看秒數加逐月與近 7 天逐時（進修時數本日／本週／年度）",
+        "預約多讀標題、時長、課程編號；14 天內已確認的預約讀 Zoom 連結；官網刪除的預約標示為已刪除（不刪資料）",
+        "寫回：折扣碼（先）與點數追蹤碼〔GR-…〕（後）；點數工單另讀會員 uid",
+        "寫回：諮詢任務的作業檔案上傳到官網（form-data）",
+        "還原工單：刪除額外輔導作業、刪除折扣券（前值比對後才刪）",
+        "點數對帳：依名目與日期讀官網點數紀錄（只留 6 個欄位）"
+      ]
+    },
+    {
+      "version": "3.7.1",
+      "items": [
+        "作業審核可直接開啟／下載學姐上傳的作業檔案（同步作業檔案位置）",
+        "第一次執行會把所有已上傳作業的檔案位置補齊一輪"
+      ]
+    },
     {
       "version": "3.7.0",
       "items": [
@@ -46,5 +64,5 @@
     }
   ],
   "ADMIN": "admin/",
-  "BUILD": "2026.11.05_1155"
+  "BUILD": "2026.11.05_1446"
 }

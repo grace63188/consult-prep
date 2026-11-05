@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<!-- 3.8.0 補充近況給校長（學姐端留言頁）：網址只帶亂數 t，不含學姐資料；內容向資料中心 lms_msg_get／lms_msg_post 讀寫 -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src https://script.google.com https://script.googleusercontent.com; img-src 'self' data:; form-action 'none'; base-uri 'none'; object-src 'none'">
+<script>(function(){if(window.top===window.self)return;var s=false;try{s=window.top.location.origin===location.origin}catch(e){}if(!s){document.documentElement.style.display='none';try{window.top.location.replace(location.href)}catch(e){}}})();</script>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>補充近況給校長｜G.R.A.C.E Academy</title>
+<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.05_1446"};</script>
+<style>
+:root{color-scheme:dark;--bg:#0A0F18;--box:#121A26;--line:#2A3A4E;--acc:#7CB8EC;--acc2:#A8D4F5;--t1:#FFFFFF;--t2:#C9D3DF;--t3:#8A97A8;--creamA:#F4E9D6;--creamB:#D9C3A0;--ink:#2A1F12}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--t1);font:16px/1.7 'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;padding:20px 16px 40px}
+main{max-width:520px;margin:0 auto}
+.pill{display:inline-block;padding:2px 12px;border-radius:999px;background:var(--acc2);color:#0A1A2A;font-size:12px;font-weight:700}
+.en{font-size:10px;letter-spacing:.2em;color:var(--acc);margin-left:8px}
+h1{font-family:'Noto Serif TC',serif;font-size:22px;margin:10px 0 2px}
+.sub{color:var(--t2);font-size:14px;margin:0}
+.rule{width:40px;height:2px;background:var(--acc);margin:12px 0 16px}
+.box{background:var(--box);border:1px solid var(--line);border-radius:14px;padding:14px}
+.thread{display:flex;flex-direction:column;gap:12px;margin-bottom:16px}
+.m{max-width:88%;display:flex;flex-direction:column;gap:4px}
+.m.me{align-self:flex-end;align-items:flex-end}
+.m .b{padding:10px 13px;border-radius:14px;background:var(--box);border:1px solid var(--line);white-space:pre-wrap;word-break:break-word}
+.m.me .b{background:#1A2638;border-color:var(--acc)}
+.m .f{display:block;margin-top:6px;color:var(--acc2);font-size:13px}
+.m .t{font-size:11px;color:var(--t3)}
+textarea{width:100%;min-height:110px;resize:vertical;border-radius:12px;border:1px solid var(--line);background:#0E1520;color:var(--t1);padding:12px;font:inherit}
+textarea:focus,button:focus-visible,label.fb:focus-within{outline:2px solid var(--acc);outline-offset:2px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
+label.fb{display:inline-flex;align-items:center;gap:6px;padding:9px 14px;border-radius:10px;border:1px solid var(--line);color:var(--t2);font-size:14px;cursor:pointer}
+.files{font-size:13px;color:var(--t2);display:flex;flex-direction:column;gap:4px;margin-top:8px}
+.files span button{margin-left:8px;background:none;border:0;color:var(--acc2);cursor:pointer;font:inherit}
+button.send{flex:1;min-width:160px;height:48px;border:0;border-radius:12px;background:linear-gradient(90deg,var(--creamA),var(--creamB));color:var(--ink);font:700 16px/1 inherit;letter-spacing:.08em;cursor:pointer}
+button.send[disabled]{opacity:.5;cursor:default}
+.st{font-size:14px;color:var(--t2);margin-top:10px;min-height:1.7em}
+.st.err{color:#FFB09E}
+.hint{font-size:12px;color:var(--t3);margin-top:6px}
+.sp{width:32px;height:32px;margin:40px auto;border-radius:50%;border:3px solid rgba(124,184,236,.25);border-top-color:var(--acc);animation:r 1s linear infinite}
+@keyframes r{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.sp{animation:none}}
+footer{text-align:center;font-size:11px;letter-spacing:.2em;color:var(--t3);margin-top:28px}
+</style>
+</head>
+<body>
+<main>
+  <div><span class="pill">一對一諮詢</span><span class="en">CONSULTATION / NOTES</span></div>
+  <h1 id="ttl">補充近況給校長</h1>
+  <p class="sub" id="sub">讀取中…</p>
+  <div class="rule"></div>
+  <div class="sp" id="sp" aria-hidden="true"></div>
+  <section id="app" hidden>
+    <div class="thread" id="thread" aria-live="polite"></div>
+    <div class="box">
+      <label for="txt" style="font-size:14px;color:var(--t2)">想先讓校長知道的近況、卡住的地方或問題</label>
+      <textarea id="txt" maxlength="2000" placeholder="例：這週把活動頁改好了，想請校長看看報名表的設計"></textarea>
+      <div class="files" id="files"></div>
+      <div class="row"><label class="fb">附上檔案<input type="file" id="file" hidden accept=".pdf,.docx,.xlsx,.pptx,.zip" multiple></label><button class="send" id="send" type="button">送出給校長</button></div>
+      <p class="hint">檔案可附 PDF、Word、Excel、PowerPoint、ZIP，每個 50 MB 內、最多 5 個</p>
+      <p class="st" id="st" role="status"></p>
+    </div>
+  </section>
+  <footer>G.R.A.C.E ACADEMY</footer>
+</main>
+<script>
+(function () {
+  var C = window.CONSULT_CONFIG || {}, q = /[?&]t=([A-Za-z0-9]{16,40})(?:&|#|$)/.exec(location.search), t = q ? q[1] : '';
+  var $ = function (id) { return document.getElementById(id); }, files = [], busy = false;
+  function fmt(v) { var d = new Date(v); if (isNaN(d)) return ''; var x = new Date(d.getTime() + 8 * 3600e3), p = function (n) { return (n < 10 ? '0' : '') + n; }; return x.getUTCFullYear() + '.' + p(x.getUTCMonth() + 1) + '.' + p(x.getUTCDate()) + ' ' + p(x.getUTCHours()) + ':' + p(x.getUTCMinutes()); }
+  function fail(m) { $('sp').style.display = 'none'; $('sub').textContent = m; }
+  function call(action, payload, cb, onErr) {
+    var x = new XMLHttpRequest(); x.open('POST', C.GAS_URL, true); x.setRequestHeader('Content-Type', 'text/plain;charset=utf-8'); x.timeout = 60000;
+    x.onload = function () { var j = null; try { j = JSON.parse(x.responseText); } catch (e) { j = null; } if (j && j.ok) cb(j.data || {}); else onErr(j && j.error ? j.error : '資料中心沒有回應，請稍後再試'); };
+    x.onerror = x.ontimeout = function () { onErr('網路連線失敗，請稍後再試'); };
+    var b = { action: action, t: t }; for (var k in payload) b[k] = payload[k]; x.send(JSON.stringify(b));
+  }
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function draw(d) {
+    var th = $('thread'); th.innerHTML = '';
+    (d.msgs || []).forEach(function (m) {
+      var me = m.from === 'student', w = el('div', 'm' + (me ? ' me' : '')), b = el('div', 'b', m.text || '');
+      (m.files || []).forEach(function (f) { b.appendChild(el('span', 'f', '附檔：' + (f.name || ''))); });
+      w.appendChild(b); w.appendChild(el('span', 't', (me ? '學姐' : '校長') + '・' + fmt(m.at))); th.appendChild(w);
+    });
+    if (!(d.msgs || []).length) th.appendChild(el('p', 'sub', '還沒有留言；寫下近況後按「送出給校長」，校長諮詢前會先看過。'));
+  }
+  function drawFiles() {
+    var box = $('files'); box.innerHTML = '';
+    files.forEach(function (f, i) { var s = el('span', '', f.name + '（' + Math.max(1, Math.round(f.size / 1024)) + ' KB）'), x = el('button', '', '移除'); x.type = 'button'; x.onclick = function () { files.splice(i, 1); drawFiles(); }; s.appendChild(x); box.appendChild(s); });
+  }
+  function st(m, err) { $('st').textContent = m || ''; $('st').className = 'st' + (err ? ' err' : ''); }
+  function upload(f, done, onErr) {
+    call('lms_msg_up_begin', { name: f.name, size: f.size }, function (b) {
+      var step = b.chunkBytes || 2 * 1024 * 1024, off = 0;
+      (function next() {
+        if (off >= f.size) { call('lms_msg_up_finish', { uploadId: b.uploadId }, function (r) { done(r.file); }, onErr); return; }
+        var end = Math.min(f.size, off + step), rd = new FileReader();
+        rd.onload = function () { var data = String(rd.result).replace(/^data:[^,]*,/, ''); call('lms_msg_up_chunk', { uploadId: b.uploadId, offset: off, end: end, total: f.size, data: data }, function () { off = end; st('上傳「' + f.name + '」 ' + Math.round(off / f.size * 100) + '%'); next(); }, onErr); };
+        rd.onerror = function () { onErr('讀取檔案失敗'); };
+        rd.readAsDataURL(f.slice(off, end));
+      })();
+    }, onErr);
+  }
+  if (!t) { fail('連結不完整，請回到 LINE 重新點「補充近況給校長」'); return; }
+  if (!C.GAS_URL) { fail('預覽模式：正式網站會讀取學姐的留言'); return; }
+  call('lms_msg_get', {}, function (d) {
+    $('sp').style.display = 'none'; $('app').hidden = false;
+    $('ttl').textContent = (d.name ? d.name + '學姐，' : '') + '補充近況給校長';
+    $('sub').textContent = d.counsel && d.counsel.at ? '諮詢：' + fmt(d.counsel.at) + '　' + (d.counsel.type || '') : '諮詢前想讓校長先知道的事，都可以寫在這裡';
+    draw(d);
+  }, function (e) { fail(e); });
+  $('file').addEventListener('change', function () {
+    Array.prototype.forEach.call(this.files || [], function (f) { if (files.length >= 5) { st('最多附 5 個檔案', true); return; } if (f.size > 50 * 1024 * 1024) { st('「' + f.name + '」超過 50 MB', true); return; } if (!/\.(pdf|docx|xlsx|pptx|zip)$/i.test(f.name)) { st('「' + f.name + '」格式不支援', true); return; } files.push(f); });
+    this.value = ''; drawFiles();
+  });
+  $('send').addEventListener('click', function () {
+    if (busy) return; var text = $('txt').value.trim();
+    if (!text && !files.length) { st('請先寫下近況或附上檔案', true); return; }
+    busy = true; $('send').disabled = true; var up = [], i = 0;
+    var errF = function (e) { busy = false; $('send').disabled = false; st(e, true); };
+    (function nextFile() {
+      if (i >= files.length) {
+        st('送出中…');
+        call('lms_msg_post', { text: text, files: up }, function () { files = []; drawFiles(); $('txt').value = ''; st('已送出，校長諮詢前會先看過🤍'); call('lms_msg_get', {}, function (d) { draw(d); }, function () {}); busy = false; $('send').disabled = false; }, errF);
+        return;
+      }
+      upload(files[i], function (f) { up.push(f); i++; nextFile(); }, errF);
+    })();
+  });
+})();
+</script>
+</body>
+</html>

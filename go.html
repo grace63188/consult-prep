@@ -9,7 +9,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="no-referrer">
 <title>前往下單｜G.R.A.C.E Academy</title>
-<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.05_1155"};</script>
+<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.05_1446"};</script>
 <style>
 :root{color-scheme:dark;--ink:#110E0F;--t1:#F6EFEA;--t3:#A0948F;--rose:#FF2E8B}
 *{box-sizing:border-box}
@@ -51,11 +51,12 @@ a{display:inline-block;margin-top:18px;padding:12px 22px;border-radius:12px;back
      只允許學院官網；物流查詢按鈕（l 結尾為 -c）另允許順豐與中華郵政查詢頁 */
   var ql = /[?&]l=([^&#]+)/.exec(location.search), l = ql ? decodeURIComponent(ql[1]) : '';
   if (!t && l) {
-    var CARRIER = /^https:\/\/(www\.sf-express\.com|postserv\.post\.gov\.tw)(\/[^\s"'<>]*)?$/, isC = /-c\.[0-9a-f]{12}$/.test(l);
-    var okUrl = function (u) { return SITE.test(u || '') || (isC && CARRIER.test(u || '')); };
-    document.getElementById('ttl').textContent = isC ? '正在前往物流查詢' : '正在前往學院官網';
-    a.textContent = isC ? '前往物流查詢' : '前往學院官網';
-    if (!/^lm[0-9A-Za-z]{6,24}(-[rc])?\.[0-9a-f]{12}$/.test(l)) { fail('連結不完整，請回到 LINE 重新點一次'); return; }
+    /* 2.4.0：-c 另允許「補充近況給校長」學姐留言頁；-k＝確認諮詢時段（記錄確認後回官網） */
+    var CARRIER = /^https:\/\/(www\.sf-express\.com|postserv\.post\.gov\.tw)(\/[^\s"'<>]*)?$/, MSGP = /^https:\/\/grace63188\.github\.io\/consult-prep\/msg\.html\?t=[A-Za-z0-9]{16,40}$/, isC = /-c\.[0-9a-f]{12}$/.test(l), isK = /-k\.[0-9a-f]{12}$/.test(l);
+    var okUrl = function (u) { return SITE.test(u || '') || (isC && CARRIER.test(u || '')) || (isC && MSGP.test(u || '')); };
+    document.getElementById('ttl').textContent = isK ? '正在確認諮詢時段' : isC ? '正在開啟' : '正在前往學院官網';
+    a.textContent = isC ? '繼續' : '前往學院官網';
+    if (!/^lm[0-9A-Za-z]{6,24}(-[rck])?\.[0-9a-f]{12}$/.test(l)) { fail('連結不完整，請回到 LINE 重新點一次'); return; }
     if (!C.GAS_URL) { fail('預覽模式：正式網站會記錄點擊後前往學院官網'); return; }
     var xl = new XMLHttpRequest();
     xl.open('POST', C.GAS_URL, true);
