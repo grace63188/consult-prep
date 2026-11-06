@@ -1,10 +1,18 @@
 {
   "GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec",
   "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com",
-  "BOOKMARKLET_VERSION": "3.8.1",
+  "BOOKMARKLET_VERSION": "3.8.2",
   "BOOKMARKLET_FILE": "roster-bookmarklet.txt",
-  "BOOKMARKLET_BYTES": 127992,
+  "BOOKMARKLET_BYTES": 130141,
   "BOOKMARKLET_CHANGELOG": [
+    {
+      "version": "3.8.2",
+      "items": [
+        "月禮包：開放時間到時建立官網「課費反饋」活動（每月新建，不改名舊活動）、直接贈點、個人折扣碼（前綴＋隨機碼，依碼找回驗證）",
+        "月禮包折扣碼讀回（判斷已使用）；開放中依名目讀回返點紀錄",
+        "作業說明：有上傳作業的課程另讀商品明細（作業說明、題目檔）；輔導作業一併帶作業說明與題目檔"
+      ]
+    },
     {
       "version": "3.8.1",
       "items": [
@@ -74,5 +82,5 @@
     }
   ],
   "ADMIN": "admin/",
-  "BUILD": "2026.11.06_0926"
+  "BUILD": "2026.11.06_1442"
 }
