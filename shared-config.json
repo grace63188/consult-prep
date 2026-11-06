@@ -1,10 +1,20 @@
 {
   "GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec",
   "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com",
-  "BOOKMARKLET_VERSION": "3.8.0",
+  "BOOKMARKLET_VERSION": "3.8.1",
   "BOOKMARKLET_FILE": "roster-bookmarklet.txt",
-  "BOOKMARKLET_BYTES": 126384,
+  "BOOKMARKLET_BYTES": 127992,
   "BOOKMARKLET_CHANGELOG": [
+    {
+      "version": "3.8.1",
+      "items": [
+        "學院後台同步加讀學姐生日（yyyy-mm-dd；只進資料中心給後台看，不進任何圖卡與學姐端畫面）",
+        "寫回順序與資料中心契約一致：「停止課表（重新排課）」排在建立新課表之前；加入「改諮詢時段」「發布諮詢任務」（任務作業 id 回填同諮詢任務）",
+        "逐位加讀每位學姐完整點數紀錄（最新 300 筆，只留六欄；學姐頁 › 點數紀錄）",
+        "LINE Webhook 加入諮詢時段挪動回覆（學姐點圖卡時段 → 資料中心）",
+        "課表申請：另讀官網「待審」課表（學姐剛送出的申請也會出現在待排課）"
+      ]
+    },
     {
       "version": "3.8.0",
       "items": [
@@ -64,5 +74,5 @@
     }
   ],
   "ADMIN": "admin/",
-  "BUILD": "2026.11.05_1446"
+  "BUILD": "2026.11.06_0926"
 }
