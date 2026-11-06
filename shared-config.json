@@ -1,10 +1,17 @@
 {
   "GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec",
   "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com",
-  "BOOKMARKLET_VERSION": "3.8.2",
+  "BOOKMARKLET_VERSION": "3.8.3",
   "BOOKMARKLET_FILE": "roster-bookmarklet.txt",
-  "BOOKMARKLET_BYTES": 130141,
+  "BOOKMARKLET_BYTES": 131108,
   "BOOKMARKLET_CHANGELOG": [
+    {
+      "version": "3.8.3",
+      "items": [
+        "作業檔案補讀：官網作業列表依購課分組分頁時讀到整頁沒有上傳為止，缺漏的上傳檔案位置重新補讀一輪",
+        "取消的諮詢預約補上取消日（讀預約明細的更新時間；停止諮詢讀停止時間）"
+      ]
+    },
     {
       "version": "3.8.2",
       "items": [
@@ -82,5 +89,5 @@
     }
   ],
   "ADMIN": "admin/",
-  "BUILD": "2026.11.06_1442"
+  "BUILD": "2026.11.06_2217"
 }
