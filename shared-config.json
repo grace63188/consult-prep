@@ -1,10 +1,17 @@
 {
   "GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec",
   "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com",
-  "BOOKMARKLET_VERSION": "3.8.3",
+  "BOOKMARKLET_VERSION": "3.8.4",
   "BOOKMARKLET_FILE": "roster-bookmarklet.txt",
-  "BOOKMARKLET_BYTES": 131108,
+  "BOOKMARKLET_BYTES": 132037,
   "BOOKMARKLET_CHANGELOG": [
+    {
+      "version": "3.8.4",
+      "items": [
+        "寫回：課表新增多堂時，每一堂回填自己的官網堂次 id（依課程對應新增的那一列；官網回傳 id 時直接採用），不再全部記成第一堂",
+        "寫回失敗原因：官網回應錯誤（4xx／5xx）時，回應內容（約 500 字）記在寫回結果備註，失敗原因也帶回應訊息"
+      ]
+    },
     {
       "version": "3.8.3",
       "items": [
@@ -89,5 +96,5 @@
     }
   ],
   "ADMIN": "admin/",
-  "BUILD": "2026.11.06_2217"
+  "BUILD": "2026.11.07_1004"
 }
