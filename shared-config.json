@@ -1,10 +1,16 @@
 {
   "GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec",
   "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com",
-  "BOOKMARKLET_VERSION": "3.8.4",
+  "BOOKMARKLET_VERSION": "3.8.5",
   "BOOKMARKLET_FILE": "roster-bookmarklet.txt",
-  "BOOKMARKLET_BYTES": 132037,
+  "BOOKMARKLET_BYTES": 132915,
   "BOOKMARKLET_CHANGELOG": [
+    {
+      "version": "3.8.5",
+      "items": [
+        "寫回：課表堂次寫完後，官網課表自動由「待審核」改為「進行中」（只對官網目前課表就是這份、且仍在待審核時執行；已是進行中則略過；讀回確認進行中才算完成）"
+      ]
+    },
     {
       "version": "3.8.4",
       "items": [
@@ -96,5 +102,5 @@
     }
   ],
   "ADMIN": "admin/",
-  "BUILD": "2026.11.07_1004"
+  "BUILD": "2026.11.09_0327"
 }
