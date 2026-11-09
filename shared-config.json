@@ -1,10 +1,17 @@
 {
   "GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec",
   "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com",
-  "BOOKMARKLET_VERSION": "3.8.5",
+  "BOOKMARKLET_VERSION": "3.8.6",
   "BOOKMARKLET_FILE": "roster-bookmarklet.txt",
-  "BOOKMARKLET_BYTES": 132915,
+  "BOOKMARKLET_BYTES": 135343,
   "BOOKMARKLET_CHANGELOG": [
+    {
+      "version": "3.8.6",
+      "items": [
+        "親筆信：同步學姐的郵寄地址（郵遞區號＋地址），只給學院管理後台的親筆信與物流寄送使用",
+        "打底層以上的學姐即使級別已到期，觀看、點數紀錄等逐位資料仍會更新"
+      ]
+    },
     {
       "version": "3.8.5",
       "items": [
@@ -102,5 +109,5 @@
     }
   ],
   "ADMIN": "admin/",
-  "BUILD": "2026.11.09_1137"
+  "BUILD": "2026.11.09_1234"
 }
