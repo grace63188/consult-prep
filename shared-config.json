@@ -1,10 +1,19 @@
 {
   "GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec",
   "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com",
-  "BOOKMARKLET_VERSION": "3.8.6",
+  "BOOKMARKLET_VERSION": "3.8.7",
   "BOOKMARKLET_FILE": "roster-bookmarklet.txt",
-  "BOOKMARKLET_BYTES": 135343,
+  "BOOKMARKLET_BYTES": 146283,
   "BOOKMARKLET_CHANGELOG": [
+    {
+      "version": "3.8.7",
+      "items": [
+        "面板標題改為「學院管理同步」，分階段顯示進度（學姐名冊、作業、訂單、寫回、諮詢、課程與活動、課表、點數・觀看・級別、郵寄地址），完成時列出哪幾張表有變動與筆數",
+        "速度：官網各份清單與資料中心同時讀取，資料中心寫入合併成一次；作業、訂單、寫回先完成就顯示「已同步」，其餘資料在背景更新、不擋操作",
+        "沒有待寫回的工單時不再另外領取；預約明細改為同時讀 4 筆",
+        "書籤會自動載入線上最新版同步程式：之後的更新不必重新拖曳（載入不到時用書籤內建的版本）"
+      ]
+    },
     {
       "version": "3.8.6",
       "items": [
@@ -109,5 +118,5 @@
     }
   ],
   "ADMIN": "admin/",
-  "BUILD": "2026.11.10_1909"
+  "BUILD": "2026.11.10_2015"
 }

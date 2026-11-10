@@ -1,9 +1,9 @@
 {
   "mode": "gas",
   "gas": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec",
-  "build": "2026.11.10_1909",
+  "build": "2026.11.10_2015",
   "schema": "3.0.0",
   "googleClientId": true,
-  "bookmarkletBytes": 135343,
+  "bookmarkletBytes": 146283,
   "lineMapBookmarkletBytes": 15338
 }
