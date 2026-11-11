@@ -1,10 +1,18 @@
 {
   "GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec",
   "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com",
-  "BOOKMARKLET_VERSION": "3.8.8",
+  "BOOKMARKLET_VERSION": "3.8.9",
   "BOOKMARKLET_FILE": "roster-bookmarklet.txt",
-  "BOOKMARKLET_BYTES": 147365,
+  "BOOKMARKLET_BYTES": 154372,
   "BOOKMARKLET_CHANGELOG": [
+    {
+      "version": "3.8.9",
+      "items": [
+        "申請入學：同步官網「會員管理 › 申請入學」的真人驗證完成時間（只讀近期註冊、入學生與資料中心指定的幾位），供學院管理後台追蹤入學生七日內儲值",
+        "只同步狀態與時間，申請內容、審核備註、影片與聯絡資料都不離開官網",
+        "不必重新拖曳書籤（線上最新版自動載入）"
+      ]
+    },
     {
       "version": "3.8.8",
       "items": [
@@ -127,5 +135,5 @@
     }
   ],
   "ADMIN": "admin/",
-  "BUILD": "2026.11.11_1125"
+  "BUILD": "2026.11.11_1303"
 }
