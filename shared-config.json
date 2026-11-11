@@ -1,10 +1,18 @@
 {
   "GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec",
   "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com",
-  "BOOKMARKLET_VERSION": "3.8.10",
+  "BOOKMARKLET_VERSION": "3.9.0",
   "BOOKMARKLET_FILE": "roster-bookmarklet.txt",
-  "BOOKMARKLET_BYTES": 155892,
+  "BOOKMARKLET_BYTES": 181777,
   "BOOKMARKLET_CHANGELOG": [
+    {
+      "version": "3.9.0",
+      "items": [
+        "自動同步：在官網後台按過一次書籤後，這個分頁開著時自動寫回與同步（每 5／10／30 分鐘檢查、每 60 分鐘完整同步；右下角可停止）",
+        "後台按「請求同步」或核准寫回後，自動同步中的分頁一分鐘內開始處理",
+        "別的分頁或瀏覽器正在同步時不重複執行"
+      ]
+    },
     {
       "version": "3.8.10",
       "items": [
@@ -141,5 +149,5 @@
     }
   ],
   "ADMIN": "admin/",
-  "BUILD": "2026.11.11_1310"
+  "BUILD": "2026.11.11_1820"
 }
