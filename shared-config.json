@@ -1,10 +1,19 @@
 {
   "GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec",
   "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com",
-  "BOOKMARKLET_VERSION": "3.8.7",
+  "BOOKMARKLET_VERSION": "3.8.8",
   "BOOKMARKLET_FILE": "roster-bookmarklet.txt",
-  "BOOKMARKLET_BYTES": 146283,
+  "BOOKMARKLET_BYTES": 147365,
   "BOOKMARKLET_CHANGELOG": [
+    {
+      "version": "3.8.8",
+      "items": [
+        "速度：名冊、作業、輔導作業、訂單合成一次資料中心呼叫（原本超過 2,000 筆會拆成兩次）",
+        "資料中心每一項寫入不再各自更新同步紀錄表，一批只寫一次",
+        "同步紀錄留下各階段耗時（資料中心連線、官網讀取、寫入、寫回）",
+        "已安裝 3.8.7 的書籤自動使用這一版，不必重新拖曳"
+      ]
+    },
     {
       "version": "3.8.7",
       "items": [
@@ -118,5 +127,5 @@
     }
   ],
   "ADMIN": "admin/",
-  "BUILD": "2026.11.10_2015"
+  "BUILD": "2026.11.11_1125"
 }
