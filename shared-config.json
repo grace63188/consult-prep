@@ -1,10 +1,16 @@
 {
   "GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec",
   "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com",
-  "BOOKMARKLET_VERSION": "3.8.9",
+  "BOOKMARKLET_VERSION": "3.8.10",
   "BOOKMARKLET_FILE": "roster-bookmarklet.txt",
-  "BOOKMARKLET_BYTES": 154372,
+  "BOOKMARKLET_BYTES": 155892,
   "BOOKMARKLET_CHANGELOG": [
+    {
+      "version": "3.8.10",
+      "items": [
+        "官網已停用的會員：資料中心同步改標為停用（只改狀態，不刪資料；整份名單讀完才核對，人數不合理時不動）"
+      ]
+    },
     {
       "version": "3.8.9",
       "items": [
@@ -135,5 +141,5 @@
     }
   ],
   "ADMIN": "admin/",
-  "BUILD": "2026.11.11_1303"
+  "BUILD": "2026.11.11_1310"
 }
