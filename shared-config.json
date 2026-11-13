@@ -1,10 +1,27 @@
 {
   "GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec",
   "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com",
-  "BOOKMARKLET_VERSION": "3.9.0",
+  "BOOKMARKLET_VERSION": "3.9.5",
   "BOOKMARKLET_FILE": "roster-bookmarklet.txt",
-  "BOOKMARKLET_BYTES": 181777,
+  "BOOKMARKLET_BYTES": 190379,
   "BOOKMARKLET_CHANGELOG": [
+    {
+      "version": "3.9.5",
+      "items": [
+        "課表狀態補齊：官網已完成或未完成的課表，完整同步時讀回最新狀態與堂次（以前會一直停在進行中，已結束課表的堂次照舊提醒）",
+        "晚收款的訂單補齊：先建立、之後才收款的儲值訂單（例如分期付款）每次同步都會補進來",
+        "作業上傳補齊：有未上傳作業、期限已過或 7 天內到期的學姐，每次同步輪流逐位核對官網作業紀錄（官網依上傳時間排序的清單會漏掉部分上傳）",
+        "自動同步擴充功能（G.R.A.C.E 自動同步）接手時：上次完整同步在 60 分鐘內就不再立刻完整同步（官網分頁重新整理、Chrome 重新開啟後不必每次重跑），待寫回與申請入學照常馬上處理",
+        "手動按書籤的行為不變"
+      ]
+    },
+    {
+      "version": "3.9.1",
+      "items": [
+        "生日與最高級別：每次完整同步讀全部啟用學姐的會員明細，學姐頁與排課頁的生日、最高級別都有資料（只送這兩欄）",
+        "自動同步：官網後台分頁關閉或被瀏覽器暫停時，學院管理後台會顯示原因（不再只顯示沒有回報）；回到分頁或喚醒電腦會立刻繼續"
+      ]
+    },
     {
       "version": "3.9.0",
       "items": [
@@ -149,5 +166,5 @@
     }
   ],
   "ADMIN": "admin/",
-  "BUILD": "2026.11.11_1820"
+  "BUILD": "2026.11.13_1715"
 }
