@@ -1,10 +1,20 @@
 {
   "GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec",
   "GOOGLE_CLIENT_ID": "423060878330-9jb6rn4i2lr4lalgvuv39nu6acb8ukcp.apps.googleusercontent.com",
-  "BOOKMARKLET_VERSION": "3.9.5",
+  "BOOKMARKLET_VERSION": "4.0.0",
   "BOOKMARKLET_FILE": "roster-bookmarklet.txt",
-  "BOOKMARKLET_BYTES": 190379,
+  "BOOKMARKLET_BYTES": 238076,
   "BOOKMARKLET_CHANGELOG": [
+    {
+      "version": "4.0.0",
+      "items": [
+        "同步改為只送有變動的資料：官網後台分頁每 2 分鐘看一次官網，沒有變動就不必連資料中心，有變動只送變動的那幾筆（一次連線）",
+        "後台按「立即同步」或核准寫回後，只處理相關的學姐（不必整份重跑）",
+        "每小時的完整同步照舊在背景執行，同時核對兩邊資料是否一致，結果顯示在學院管理後台",
+        "讀取官網的速度有上限（同時最多 4 筆），官網忙碌時自動放慢",
+        "現有書籤不必重新拖曳（線上最新版自動載入）"
+      ]
+    },
     {
       "version": "3.9.5",
       "items": [
@@ -166,5 +176,5 @@
     }
   ],
   "ADMIN": "admin/",
-  "BUILD": "2026.11.14_2144"
+  "BUILD": "2026.11.14_2212"
 }
