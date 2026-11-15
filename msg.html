@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <!-- 3.8.0 補充近況給校長（學姐端留言頁）：網址只帶亂數 t，不含學姐資料；內容向資料中心 lms_msg_get／lms_msg_post 讀寫
      v85 上傳空間：?r=token（後台「開放上傳空間」發出）→ 只有上傳；檔案直接存到該上傳空間，列出已上傳的檔案（lms_up_*）
+     v87.5 預覽：&preview=1（試傳的卡、後台以學姐畫面開啟）→ 唯讀橫幅、輸入停用、不自動儲存、不能送出；資料中心不記已開啟（lms_msg_get preview）
      v85 諮詢前準備：沒有預約也可開啟（預約後自動帶入該場）；額外題目（lms_msg_save，選填）；附檔另收圖片 jpg・png・heic（相簿／拍照／檔案），逐檔進度與重試 -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src https://script.google.com https://script.googleusercontent.com; img-src 'self' data:; form-action 'none'; base-uri 'none'; object-src 'none'">
 <script>(function(){if(window.top===window.self)return;var s=false;try{s=window.top.location.origin===location.origin}catch(e){}if(!s){document.documentElement.style.display='none';try{window.top.location.replace(location.href)}catch(e){}}})();</script>
@@ -11,7 +12,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="no-referrer">
 <title>諮詢前準備｜G.R.A.C.E Academy</title>
-<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.15_1452"};</script>
+<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.16_0322"};</script>
 <style>
 :root{color-scheme:dark;--bg:#0A0F18;--box:#121A26;--line:#2A3A4E;--acc:#7CB8EC;--acc2:#A8D4F5;--t1:#FFFFFF;--t2:#C9D3DF;--t3:#8A97A8;--creamA:#F4E9D6;--creamB:#D9C3A0;--ink:#2A1F12}
 *{box-sizing:border-box}
@@ -100,8 +101,9 @@ footer{text-align:center;font-size:11px;letter-spacing:.2em;color:var(--t3);marg
 <script>
 (function () {
   var C = window.CONSULT_CONFIG || {}, q = /[?&]t=([A-Za-z0-9]{16,40})(?:&|#|$)/.exec(location.search), t = q ? q[1] : '';
-  var qr = /[?&]r=([A-Za-z0-9]{16,40})(?:&|#|$)/.exec(location.search), r = qr ? qr[1] : '';   /* v85 上傳空間 */
-  var PV = r && /[?&]preview=1(?:&|#|$)/.test(location.search);   /* 後台「以學姐畫面開啟」：唯讀預覽（不能上傳、不記開啟） */
+  var qr = /[?&]r=([A-Za-z0-9]{16,40}|preview)(?:&|#|$)/.exec(location.search), r = qr ? qr[1] : '';   /* v85 上傳空間；r=preview＝圖卡預覽的示範連結 */
+  /* 預覽（&preview=1：試傳的卡、後台「以學姐畫面開啟」）：唯讀；資料中心不記開啟、不存作答、不能送出或上傳 */
+  var PV = /[?&]preview=1(?:&|#|$)/.test(location.search) || r === 'preview';
   var ACT = function (a) { return r ? a.replace('lms_msg_up_', 'lms_up_').replace('lms_msg_', 'lms_up_') : a; };
   var $ = function (id) { return document.getElementById(id); }, files = [], busy = false, D = null, F = [], A = [], ansT = 0, ansDirty = false;
   var EXT = /\.(pdf|docx|xlsx|pptx|zip|jpe?g|png|hei[cf])$/i, IMG = /\.(jpe?g|png|hei[cf])$/i, TYPES = { short: '簡答', para: '段落', single: '單選', multi: '多選', rate: '評分' };
@@ -112,7 +114,7 @@ footer{text-align:center;font-size:11px;letter-spacing:.2em;color:var(--t3);marg
     var x = new XMLHttpRequest(); x.open('POST', C.GAS_URL, true); x.setRequestHeader('Content-Type', 'text/plain;charset=utf-8'); x.timeout = 60000;
     x.onload = function () { var j = null; try { j = JSON.parse(x.responseText); } catch (e) { j = null; } if (j && j.ok) cb(j.data || {}); else onErr(j && j.error ? j.error : '資料中心沒有回應，請稍後再試'); };
     x.onerror = x.ontimeout = function () { onErr('網路連線失敗，已上傳的部分會保留，請按「重試」'); };
-    var b = r ? { action: ACT(action), r: r } : { action: action, t: t }; for (var k in payload) b[k] = payload[k]; x.send(JSON.stringify(b));
+    var b = r ? { action: ACT(action), r: r } : { action: action, t: t }; if (PV) b.preview = 1; for (var k in payload) b[k] = payload[k]; x.send(JSON.stringify(b));
   }
   function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
   function draw(d) {
@@ -153,17 +155,18 @@ footer{text-align:center;font-size:11px;letter-spacing:.2em;color:var(--t3);marg
       }
       box.appendChild(w);
     });
+    if (PV) Array.prototype.forEach.call(box.querySelectorAll('input, textarea, button'), function (x) { x.disabled = true; });
   }
-  function changed() { ansDirty = true; clearTimeout(ansT); ansT = setTimeout(function () { saveAns(); }, 2500); }
+  function changed() { if (PV) return; ansDirty = true; clearTimeout(ansT); ansT = setTimeout(function () { saveAns(); }, 2500); }
   function saveAns(done) {
-    clearTimeout(ansT); if (!F.length || !ansDirty) { if (done) done(); return; }
+    clearTimeout(ansT); if (PV || !F.length || !ansDirty) { if (done) done(); return; }
     var sent = JSON.stringify(A);
     call('lms_msg_save', { answers: JSON.parse(sent) }, function () { if (JSON.stringify(A) === sent) ansDirty = false; if (done) done(); }, function (e) { st(e, true); if (done) done(e); });
   }
   /* ── v85 上傳空間：只有上傳（檔案直接存到該上傳空間）；列出已上傳的檔案 ── */
   function drawDone(list) {
     var box = $('thread'); box.innerHTML = '';
-    if (!list || !list.length) return;
+    if (!list || !list.length) { if (PV) box.appendChild(el('p', 'sub', '還沒有上傳的檔案；學姐上傳後會列在這裡')); return; }
     var h = el('div', 'qh', '已上傳的檔案（' + list.length + '）'); h.style.cssText = 'font-size:15px;font-weight:700'; box.appendChild(h);
     list.forEach(function (f) { var w = el('div', 'it'); w.appendChild(el('span', 'tn', IMG.test(f.name) ? '圖片' : ((/\.([a-z0-9]+)$/i.exec(f.name) || [])[1] || '檔').toUpperCase())); var mn = el('div'); mn.style.minWidth = '0'; mn.appendChild(el('div', 'nm', f.name)); mn.appendChild(el('div', 's ok', fmt(f.at) + '・' + size(f.size))); w.appendChild(mn); w.appendChild(el('span')); box.appendChild(w); });
   }
@@ -172,8 +175,12 @@ footer{text-align:center;font-size:11px;letter-spacing:.2em;color:var(--t3);marg
     var en = document.querySelector('.en'); if (en) en.textContent = 'UPLOAD';
     $('txtL').textContent = '想補充說明的話（選填）'; $('txt').maxLength = 100; $('txt').placeholder = '例：第 2 張是最新版本'; $('txt').style.minHeight = '64px';
     $('send').textContent = '上傳'; $('hint').textContent = '圖片 jpg・png・heic，文件 PDF・Word・Excel・PowerPoint・ZIP；每個 50 MB 內、一次最多 10 個';
+    if (PV) { var bar = el('div', 'pvbar', '預覽：學姐看到的畫面（唯讀，不能上傳）'); bar.id = 'pvbar'; document.body.insertBefore(bar, document.body.firstChild); }
+    if (r === 'preview') {   /* 圖卡預覽的示範連結：不連資料中心，直接顯示學姐的上傳頁長相 */
+      $('sp').style.display = 'none'; $('ttl').textContent = '上傳空間'; $('sub').textContent = '學姐點「上傳資料」會開啟自己的上傳空間，把資料傳到這裡，校長就會收到';
+      drawDone([]); $('app').hidden = false; document.querySelector('#app > .box:not(.qbox)').hidden = true; return;
+    }
     if (!C.GAS_URL) { fail('預覽模式：正式網站會讀取上傳空間'); return; }
-    if (PV) { var bar = el('div', 'pvbar', '預覽：學姐看到的畫面（唯讀，不能上傳）'); document.body.insertBefore(bar, document.body.firstChild); }
     call('lms_up_get', PV ? { preview: true } : {}, function (d) {
       $('sp').style.display = 'none';
       document.title = '上傳空間・' + String(d.label || '').replace('・', ' ') + '｜G.R.A.C.E Academy';
@@ -186,7 +193,7 @@ footer{text-align:center;font-size:11px;letter-spacing:.2em;color:var(--t3);marg
     try { if (!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches)) { document.querySelector('.pick .cam').hidden = true; document.querySelector('.pick').classList.add('two'); } } catch (e) { /* ignore */ }
     ['file', 'fileImg', 'fileCam'].forEach(function (id) { $(id).addEventListener('change', function () { addFiles(this.files); this.value = ''; }); });
     $('send').addEventListener('click', function () {
-      if (busy) return; var text = $('txt').value.trim();
+      if (busy || PV) return; var text = $('txt').value.trim();
       if (!files.length) { st('請先選擇圖片或檔案', true); return; }
       busy = true; $('send').disabled = true;
       var errF = function (e) { busy = false; $('send').disabled = false; drawFiles(); st(/保留/.test(e) ? e : e + '（按「重試」接續，已上傳的部分會保留）', true); };
@@ -221,6 +228,7 @@ footer{text-align:center;font-size:11px;letter-spacing:.2em;color:var(--t3);marg
   }
   function st(m, err) { $('st').textContent = m || ''; $('st').className = 'st' + (err ? ' err' : ''); }
   function addFiles(list) {
+    if (PV) return;
     Array.prototype.forEach.call(list || [], function (f) {
       if (files.length >= (r ? 10 : 5)) { st('最多附 ' + (r ? 10 : 5) + ' 個檔案', true); return; }
       if (f.size > 50 * 1024 * 1024) { st('「' + f.name + '」超過 50 MB', true); return; }
@@ -245,9 +253,11 @@ footer{text-align:center;font-size:11px;letter-spacing:.2em;color:var(--t3);marg
   }
   if (r) { upMode(); return; }
   if (!t) { fail('連結不完整，請回到 LINE 重新點「諮詢前準備」'); return; }
+  if (PV) { var pvb = el('div', 'pvbar', '預覽：學姐看到的畫面（唯讀）'); pvb.id = 'pvbar'; document.body.insertBefore(pvb, document.body.firstChild); }
   if (!C.GAS_URL) { fail('預覽模式：正式網站會讀取學姐的留言'); return; }
   call('lms_msg_get', {}, function (d) {
     D = d; $('sp').style.display = 'none'; $('app').hidden = false;
+    if (PV) { ['txt', 'file', 'fileImg', 'fileCam', 'send'].forEach(function (id) { $(id).disabled = true; }); $('send').textContent = '預覽不能送出'; document.querySelector('.pick').style.opacity = '.5'; }
     $('ttl').textContent = (d.name ? d.name + '學姐，' : '') + '諮詢前準備';
     $('sub').textContent = d.counsel && d.counsel.at ? '諮詢：' + fmt(d.counsel.at) + '　' + (d.counsel.type || '') : '尚未預約諮詢；預約後這裡的內容會自動帶到該場諮詢';
     F = flat(d.form); A = F.map(function (x, k) { var v = (d.answers || [])[k]; return x.type === 'multi' ? (Array.isArray(v) ? v.slice() : []) : (v == null ? '' : String(v)); });
@@ -257,7 +267,7 @@ footer{text-align:center;font-size:11px;letter-spacing:.2em;color:var(--t3);marg
   try { if (!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches)) { document.querySelector('.pick .cam').hidden = true; document.querySelector('.pick').classList.add('two'); } } catch (e) { /* ignore */ }
   ['file', 'fileImg', 'fileCam'].forEach(function (id) { $(id).addEventListener('change', function () { addFiles(this.files); this.value = ''; }); });
   $('send').addEventListener('click', function () {
-    if (busy) return; var text = $('txt').value.trim();
+    if (busy || PV) return; var text = $('txt').value.trim();
     var hasAns = F.length && A.some(function (v) { return Array.isArray(v) ? v.length : String(v || '').trim(); });
     var miss = F.filter(function (x, k) { return x.req && !(Array.isArray(A[k]) ? A[k].length : String(A[k] || '').trim()); });
     if (miss.length) { st('「' + miss[0].t + '」為必填', true); return; }
