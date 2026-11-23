@@ -9,7 +9,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="no-referrer">
 <title>專屬工具｜G.R.A.C.E Academy</title>
-<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.15_1452"};</script>
+<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.23_2328"};</script>
 <style>
 :root{color-scheme:dark;--ink:#110E0F;--t1:#F6EFEA;--t3:#A0948F;--rose:#FF2E8B;--gold:#C9A27A}
 *{box-sizing:border-box}
@@ -30,11 +30,25 @@ a.btn,button.btn{display:inline-block;margin-top:18px;padding:12px 22px;border-r
 #vf{margin-top:6px;display:flex;flex-direction:column;align-items:center;gap:0}
 #vf small{display:block;margin-top:8px;color:var(--t3);font-size:13px;line-height:1.6}
 #vf .btn{margin-top:14px}
-#fr{position:fixed;inset:0;width:100%;height:100%;border:0;background:#fff;display:none}
+#fr{position:fixed;left:0;right:0;top:0;bottom:0;width:100%;height:100%;border:0;background:#fff;display:none}
+/* v87.54 頁首：工具名稱＋［下載原始檔］（工具顯示時固定在上方，工具在下方） */
+#hd{position:fixed;top:0;left:0;right:0;height:48px;display:flex;align-items:center;gap:10px;padding:0 max(10px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left));background:var(--ink);border-bottom:1px solid rgba(201,162,122,.3);z-index:3}
+#hd .t{flex:1;min-width:0;font-size:14px;font-weight:700;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#hd .t small{font-weight:400;color:var(--t3);margin-left:6px;font-size:12px}
+.dlb{display:inline-flex;align-items:center;justify-content:center;gap:6px;flex:none;min-height:36px;padding:0 14px;border-radius:10px;border:1px solid var(--gold);background:none;color:var(--gold);font:inherit;font-size:14px;font-weight:700;line-height:1;cursor:pointer;white-space:nowrap}
+.dlb svg{width:16px;height:16px;flex:none}
+.dlb[disabled]{opacity:.6;cursor:default}
+#st .dlb{margin-top:18px;min-height:44px;padding:0 20px}
+#hn{position:fixed;top:48px;left:0;right:0;padding:8px 16px;background:#2A1C22;color:var(--t1);font-size:13px;line-height:1.6;z-index:3;border-bottom:1px solid rgba(201,162,122,.3)}
+#dn{display:block;margin-top:10px;color:var(--t3);font-size:13px;line-height:1.6}
+body.hd #fr{top:48px;bottom:auto;height:calc(100% - 48px)}
+body.hd #st{padding-top:72px}
 </style>
 </head>
 <body>
-<div id="st"><main><div class="sp" id="sp" aria-hidden="true"></div><div class="code" id="code" hidden>404</div><h1 id="ttl">正在開啟工具</h1><p id="msg" role="status">請稍候…</p><a class="btn" id="dl" href="#" hidden>下載工具</a><div id="vf" hidden><a class="btn sec" id="pv" href="#" target="_blank" rel="noopener" hidden>開啟上一版</a><small id="pvn" hidden></small><button type="button" class="btn" id="rv">重新登記</button><small id="rvn">校長專用：重新確認這一版的檔案（在垃圾桶就還原），不加版本、不發通知</small></div></main></div>
+<header id="hd" hidden><div class="t" id="hdt"></div><button type="button" class="dlb" id="dlo" data-dl="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="M7 10l5 5 5-5"/><path d="M5 19h14"/></svg><span>下載原始檔</span></button></header>
+<div id="hn" role="status" hidden></div>
+<div id="st"><main><div class="sp" id="sp" aria-hidden="true"></div><div class="code" id="code" hidden>404</div><h1 id="ttl">正在開啟工具</h1><p id="msg" role="status">請稍候…</p><a class="btn" id="dl" href="#" hidden>下載工具</a><button type="button" class="dlb" id="dl2" data-dl="1" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="M7 10l5 5 5-5"/><path d="M5 19h14"/></svg><span>下載原始檔</span></button><small id="dn" role="status" hidden></small><div id="vf" hidden><a class="btn sec" id="pv" href="#" target="_blank" rel="noopener" hidden>開啟上一版</a><small id="pvn" hidden></small><button type="button" class="btn" id="rv">重新登記</button><small id="rvn">校長專用：重新確認這一版的檔案（在垃圾桶就還原），不加版本、不發通知</small></div></main></div>
 <iframe id="fr" title="專屬工具" sandbox="allow-scripts allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-downloads"></iframe>
 <script>
 /*
@@ -47,22 +61,76 @@ a.btn,button.btn{display:inline-block;margin-top:18px;padding:12px 22px;border-r
  *   v87.46 工具內 history.pushState／replaceState 失敗（獨立來源不能改網址）時改設 location.hash，不讓工具停在白畫面
  *   v87.47 目前這一版讀不到（檔案在垃圾桶、不存在、過大）：顯示「此版本讀取失敗」、上一版連結、［重新登記］（校長；按下時才讀後台登入、向資料中心重新確認檔案）；連結本身無效仍是 404
  *   3.3.2 交付連結：tool.html#dl.<flowId>.<簽章>（領取教材 dl.html 轉入；下載期限內可操作，期限後顯示已失效）
+ *   v87.54 頁首［下載原始檔］（助教測試、校長檢查可直接存下原檔）：
+ *     已讀到的 HTML → 直接存檔（原始檔名；與原檔位元組數相同才用）；沒讀到、或位元組數不符 → 這個瀏覽器登入過學院學習管理時，以 lms_zip_chunk { tool:true } 分段讀原檔（同時 4 段）
+ *     顯示檢查：工具文件開始解析時回報（postMessage，只回報狀態、不傳資料）；iframe 載入後 4 秒仍沒有回報、或 60 秒內沒有載入 → 改顯示說明＋［下載原始檔］（大型 HTML 在手機上顯示不出來時不留白畫面）
  */
 window.addEventListener('hashchange', function () { location.reload(); });   // 換工具連結時重新載入
 (function () {
   var C = window.CONSULT_CONFIG || {}, m = /^#([0-9a-f]{16})\.([0-9a-f]{40})(?:\.(\d{1,4}))?$/.exec(location.hash || ''), dl = /^#dl\.(mf[0-9A-Za-z-]{4,40}\.[0-9a-f]{12})$/.exec(location.hash || '');
   var sp = document.getElementById('sp'), msg = document.getElementById('msg'), ttl = document.getElementById('ttl');
-  function fail(t, m2, code) { sp.style.display = 'none'; if (code) document.getElementById('code').hidden = false; ttl.textContent = t; msg.textContent = m2; }
+  function fail(t, m2, code, canDl) { sp.style.display = 'none'; if (code) document.getElementById('code').hidden = false; ttl.textContent = t; msg.textContent = m2; document.getElementById('dl2').hidden = !canDl; }
+  /* v87.54［下載原始檔］ */
+  var T = { html: null, title: '', name: '', size: 0, version: 0, mime: 'text/html', busy: false };
+  var hd = document.getElementById('hd'), hn = document.getElementById('hn'), dn = document.getElementById('dn');
+  function fileName() { var n = String(T.name || '').trim(); if (!n) n = String(T.title || '專屬工具').replace(/[\\/:*?"<>|\u0000-\u001f]+/g, '_').slice(0, 80) + '.html'; return n; }
+  function adminTok() { var ss = null; try { ss = JSON.parse(localStorage.getItem('consult_admin_token') || 'null'); } catch (e) { ss = null; } return ss && ss.token && !(ss.expiresAt && ss.expiresAt < Date.now()) ? ss.token : ''; }
+  function save(blob, name) { var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.rel = 'noopener'; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 60000); }
+  function note(t) { if (!hd.hidden) { hn.textContent = t; hn.hidden = !t; } else { dn.textContent = t; dn.hidden = !t; } }
+  function btnText(t) { [].forEach.call(document.querySelectorAll('[data-dl] span'), function (x) { x.textContent = t; }); }
+  function btnBusy(on) { T.busy = on; [].forEach.call(document.querySelectorAll('[data-dl]'), function (b) { b.disabled = on; }); if (!on) btnText('下載原始檔'); }
+  function b64(s) { var bin = atob(s || ''), n = bin.length, u = new Uint8Array(n); for (var i = 0; i < n; i++) u[i] = bin.charCodeAt(i); return u; }
+  /** 分段讀原檔（學院學習管理登入者；資料中心 lms_zip_chunk { rosterKey, tool:true }）：第一段 2 MB 知道大小，其餘同時 4 段 */
+  function viaChunks(tok, done, bad) {
+    var L = 2 * 1024 * 1024, parts = [], size = -1, next = 0, run = 0, got = 0, dead = false, name = '', mime = '';
+    function call(off, cb, t) {
+      var y = new XMLHttpRequest(); y.open('POST', C.GAS_URL, true); y.setRequestHeader('Content-Type', 'text/plain;charset=utf-8'); y.timeout = 120000;
+      y.onload = function () { var r = null; try { r = JSON.parse(y.responseText); } catch (e) { r = null; } if (r && r.ok && r.data) cb(null, r.data); else if ((t || 1) < 3 && !(r && /^ERR_(STALE|NOT_FOUND|FORBIDDEN|AUTH|VALIDATION)/.test(r.code || ''))) setTimeout(function () { call(off, cb, (t || 1) + 1); }, 600); else cb((r && r.error) || '讀取失敗'); };
+      y.onerror = y.ontimeout = function () { if ((t || 1) < 3) setTimeout(function () { call(off, cb, (t || 1) + 1); }, 600); else cb('網路連線失敗'); };
+      y.send(JSON.stringify({ action: 'lms_zip_chunk', rosterKey: m[1], tool: true, offset: off, length: L, token: tok }));
+    }
+    function piece(i) { return function (e, d) { run--; if (dead) return; if (e) { dead = true; bad(e); return; } parts[i] = b64(d.base64); got += parts[i].length; if (size > 0) btnText('下載中 ' + Math.min(99, Math.floor(got * 100 / size)) + '%'); pump(); }; }
+    function pump() {
+      while (run < 4 && next * L < size) { run++; call(next * L, piece(next)); next++; }
+      if (!run && got >= size) { dead = true; done(new Blob(parts, { type: mime || 'application/octet-stream' }), name); }
+    }
+    call(0, function (e, d) { if (e) { bad(e); return; } size = Number(d.size) || 0; name = d.name || ''; mime = d.mime || ''; parts[0] = b64(d.base64); got = parts[0].length; next = 1; pump(); });
+  }
+  function download() {
+    if (T.busy) return;
+    var tok = m ? adminTok() : '', b = T.html != null ? new Blob([T.html], { type: 'text/html' }) : null;
+    if (b && (!T.size || b.size === T.size || !tok)) { save(b, fileName()); note('已下載 ' + fileName() + '（' + (b.size / 1048576).toFixed(1) + ' MB）'); return; }
+    if (!tok) { note('這個瀏覽器尚未登入學院學習管理：請回到後台 教材進度 › 測試，按［下載工具］'); return; }
+    btnBusy(true); btnText('下載中…'); note('');
+    viaChunks(tok, function (blob, name) { btnBusy(false); var n = name || fileName(); save(blob, n); note('已下載 ' + n + '（' + (blob.size / 1048576).toFixed(1) + ' MB）'); },
+      function (e) { btnBusy(false); note('下載失敗：' + e + '；請回到後台 教材進度 › 測試，按［下載工具］'); });
+  }
+  [].forEach.call(document.querySelectorAll('[data-dl]'), function (b) { b.addEventListener('click', download); });
+  function header() { var t = document.getElementById('hdt'); t.textContent = T.title || '專屬工具'; if (T.version) { var sm = document.createElement('small'); sm.textContent = '第 ' + T.version + ' 版'; t.appendChild(sm); } hd.hidden = false; document.body.classList.add('hd'); }
+  /** 工具顯示不出來 → 說明＋［下載原始檔］（取代白畫面） */
+  function broken(t, m2) {
+    var fr = document.getElementById('fr'); fr.style.display = 'none'; try { fr.removeAttribute('srcdoc'); } catch (e) { /* ignore */ }
+    hn.hidden = true; document.getElementById('st').style.display = ''; fail(t, m2, false, true);
+  }
   var SHIM = '<script>(function(){function S(){var d={};return{getItem:function(k){k=String(k);return Object.prototype.hasOwnProperty.call(d,k)?d[k]:null},setItem:function(k,v){d[String(k)]=String(v)},removeItem:function(k){delete d[String(k)]},clear:function(){d={}},key:function(i){return Object.keys(d)[i]||null},get length(){return Object.keys(d).length}}}' +
     '["localStorage","sessionStorage"].forEach(function(n){var ok=false;try{ok=!!window[n]&&(window[n].setItem("__t","1"),window[n].removeItem("__t"),true)}catch(e){ok=false}if(!ok){try{Object.defineProperty(window,n,{value:S(),configurable:true})}catch(e){}}});' +
     /* v87.46 history.pushState／replaceState：srcdoc 獨立來源下帶網址會丟 SecurityError（用 # 換頁的工具一開就停在白畫面）→ 失敗時改設 location.hash，其餘略過 */
     'try{var H=window.History&&History.prototype;H&&["pushState","replaceState"].forEach(function(n){var o=H[n];if(typeof o!=="function")return;H[n]=function(s,t,u){try{return o.apply(this,arguments)}catch(e){try{var i=u==null?-1:String(u).indexOf("#");if(i>=0)location.hash=String(u).slice(i)}catch(e2){}}}})}catch(e){}' +
+    /* v87.54 顯示檢查：文件開始解析、解析完成、載入完成時回報父頁（只有狀態字串） */
+    'try{var P=function(k){try{parent.postMessage({graceTool:k},"*")}catch(e){}};P("start");document.addEventListener("DOMContentLoaded",function(){P("dom")});window.addEventListener("load",function(){P("load")})}catch(e){}' +
     '})();<\/script>';
-  function mount(html) {   // 注入 SHIM 後載入 sandbox iframe
+  function mount(html, withHead) {   // 注入 SHIM 後載入 sandbox iframe
     var i = html.search(/<head[^>]*>/i);
     html = i >= 0 ? html.replace(/<head[^>]*>/i, function (h) { return h + SHIM; }) : SHIM + html;
-    var fr = document.getElementById('fr');
-    fr.srcdoc = html;   // srcdoc（不用 blob：opaque 來源下工具內 location.reload() 會被擋）；sandbox 無 allow-same-origin，仍為獨立來源
+    var fr = document.getElementById('fr'), seen = '', wd = 0;
+    if (withHead) header();
+    /* v87.54 顯示檢查：工具有回報 → 正常；iframe 載入後 4 秒沒有任何回報、或 60 秒內沒有載入 → 說明＋［下載原始檔］ */
+    window.addEventListener('message', function (e) { if (e.source !== fr.contentWindow || !e.data || typeof e.data.graceTool !== 'string') return; seen = e.data.graceTool; if (seen === 'dom' || seen === 'load') { clearTimeout(wd); hn.hidden = true; } });
+    var bad = function () { broken('工具無法在這個瀏覽器顯示', '檔案較大或瀏覽器記憶體不足時可能發生。請按［下載原始檔］存到裝置後開啟測試，或改用電腦的 Chrome 開啟這個連結。'); };
+    fr.onload = function () { if (!seen) setTimeout(function () { if (!seen) bad(); }, 4000); };
+    wd = setTimeout(function () { if (!seen) bad(); else if (seen === 'start') note('工具仍在載入；畫面若一直空白，請按［下載原始檔］改用下載的檔案測試'); }, 60000);
+    try { fr.srcdoc = html; }   // srcdoc（不用 blob：opaque 來源下工具內 location.reload() 會被擋）；sandbox 無 allow-same-origin，仍為獨立來源
+    catch (e) { clearTimeout(wd); bad(); return; }
     fr.style.display = 'block';
     document.getElementById('st').style.display = 'none';
   }
@@ -70,7 +138,7 @@ window.addEventListener('hashchange', function () { location.reload(); });   // 
   if (location.hash === '#demo-zip') { sp.style.display = 'none'; ttl.textContent = '示範工具（ZIP・測試卡片）'; msg.textContent = '請下載後解壓縮，開啟 index.html，並使用展示模式測試。正式卡片會下載該學姐最新版的工具檔。'; var dz = document.getElementById('dl'); dz.href = 'assets/demo/demo-tool.zip'; dz.setAttribute('download', 'demo-tool.zip'); dz.hidden = false; document.title = '示範工具（ZIP）｜G.R.A.C.E Academy'; return; }
   if (location.hash === '#demo') {
     var xd = new XMLHttpRequest(); xd.open('GET', 'assets/demo/demo-index.html', true);
-    xd.onload = function () { if (xd.status !== 200) { fail('示範工具讀取失敗', '請稍後再試', false); return; } mount(xd.responseText); document.title = '示範工具（測試卡片）｜G.R.A.C.E Academy'; };
+    xd.onload = function () { if (xd.status !== 200) { fail('示範工具讀取失敗', '請稍後再試', false); return; } T.html = xd.responseText; T.title = '示範工具（測試卡片）'; T.name = 'demo-tool.html'; mount(xd.responseText, true); document.title = '示範工具（測試卡片）｜G.R.A.C.E Academy'; };
     xd.onerror = function () { fail('示範工具讀取失敗', '網路連線失敗', false); }; xd.send(); return;
   }
   /* v87.47 此版本讀取失敗：上一版連結＋［重新登記］（校長） */
@@ -100,6 +168,7 @@ window.addEventListener('hashchange', function () { location.reload(); });   // 
       y.send(JSON.stringify({ action: 'tooltest_upload_finish', reverify: true, rosterKey: m[1], by: 'principal', token: ss.token }));
     };
     document.getElementById('vf').hidden = false;
+    document.getElementById('dl2').hidden = !adminTok();   // v87.54 登入過學院學習管理 → 可直接下載原檔
   }
   if (!m && !dl) { fail('找不到這個工具', '連結不完整，請回到後台或 LINE 重新開啟最新的工具連結', true); return; }
   if (!C.GAS_URL) { fail('預覽模式', '正式網站會在這裡開啟可直接操作的工具', false); return; }
@@ -109,10 +178,11 @@ window.addEventListener('hashchange', function () { location.reload(); });   // 
   var x = new XMLHttpRequest();
   x.open('POST', C.GAS_URL, true);
   x.setRequestHeader('Content-Type', 'text/plain;charset=utf-8');
-  x.timeout = 60000;
+  x.timeout = 120000;   // v87.54 大型 HTML（9 MB 以上）在手機網路上 60 秒可能不夠
   x.onload = function () {
     clearTimeout(slow);
     var j = null; try { j = JSON.parse(x.responseText); } catch (e) { j = null; }
+    if (!j && x.status === 200 && x.responseText && x.responseText.length > 1048576) { fail('工具無法在這個瀏覽器顯示', '檔案較大、瀏覽器讀取失敗。請按［下載原始檔］存到裝置後開啟測試，或改用電腦的 Chrome 開啟這個連結。', false, !!m); return; }   // v87.54
     if (j && j.ok && j.data && /^https:\/\/[^\s"'<>]+$/.test(j.data.go || '')) {   // 最新版為 ZIP／網址
       document.title = (j.data.title || '專屬工具') + '｜G.R.A.C.E Academy';
       if (j.data.kind === 'zip') { sp.style.display = 'none'; ttl.textContent = (j.data.title || '專屬工具') + '（第 ' + j.data.version + ' 版・ZIP）'; msg.textContent = j.data.note || '請下載後解壓縮，開啟 index.html，並使用展示模式測試'; var d = document.getElementById('dl'); d.href = j.data.go; d.hidden = false; }
@@ -123,13 +193,15 @@ window.addEventListener('hashchange', function () { location.reload(); });   // 
       if (j && j.code === 'ERR_DL_EXPIRED') fail('下載期限已過', '教材連結已失效。教材為一次性交付，不會補發；如有特殊狀況請聯繫官方 LINE。', false);
       else if (j && j.code === 'ERR_RATE_LIMIT') fail('開啟次數過多', '請稍候一分鐘再重新整理', false);
       else if (m && j && (j.code === 'ERR_TOO_LARGE' || j.code === 'ERR_VERIFY' || (j.code === 'ERR_NOT_FOUND' && j.detail))) verFail(j);
+      else if (m && j && /^ERR_(INTERNAL|TIMEOUT|MEMORY|HTTP)/.test(j.code || '')) fail('工具暫時無法開啟', (j.error || '資料中心讀取失敗') + '；可按［下載原始檔］直接下載', false, true);   // v87.54
       else fail('找不到這個工具', (j && j.error) || '連結已失效，請回到後台重新開啟最新的工具連結', true);
       return;
     }
     document.title = (j.data.title || '專屬工具') + '｜G.R.A.C.E Academy';
-    mount(j.data.html);
+    T.html = j.data.html; T.title = j.data.title || '專屬工具'; T.name = j.data.name || ''; T.size = Number(j.data.size) || 0; T.version = Number(j.data.version) || 0;
+    try { mount(j.data.html, true); } catch (e) { fail('工具無法在這個瀏覽器顯示', '請按［下載原始檔］存到裝置後開啟測試', false, true); }
   };
-  x.onerror = x.ontimeout = function () { clearTimeout(slow); fail('無法開啟工具', '網路連線失敗，請稍後再試', false); };
+  x.onerror = x.ontimeout = function () { clearTimeout(slow); fail('無法開啟工具', '網路連線失敗，請稍後再試' + (m ? '；也可按［下載原始檔］直接下載' : ''), false, !!m); };
   x.send(JSON.stringify(req));
 })();
 </script>
