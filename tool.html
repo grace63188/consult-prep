@@ -24,12 +24,17 @@ body{color:var(--t1);font:16px/1.7 'Noto Sans TC','PingFang TC','Microsoft Jheng
 h1{font-size:20px;margin:0 0 6px;font-family:'Noto Serif TC',serif}
 .code{font-size:40px;letter-spacing:.08em;color:var(--gold);margin-bottom:6px;font-weight:700}
 p{margin:0;color:var(--t3);font-size:14px}
-a.btn{display:inline-block;margin-top:18px;padding:12px 22px;border-radius:12px;background:linear-gradient(180deg,#FF3D93,#E8247E);color:#fff;font-weight:700;text-decoration:none}
+a.btn,button.btn{display:inline-block;margin-top:18px;padding:12px 22px;border-radius:12px;background:linear-gradient(180deg,#FF3D93,#E8247E);color:#fff;font-weight:700;text-decoration:none;border:0;font:inherit;font-weight:700;cursor:pointer;min-height:44px}
+.btn.sec{background:none;border:1px solid var(--gold);color:var(--gold)}
+.btn[disabled]{opacity:.55;cursor:default}
+#vf{margin-top:6px;display:flex;flex-direction:column;align-items:center;gap:0}
+#vf small{display:block;margin-top:8px;color:var(--t3);font-size:13px;line-height:1.6}
+#vf .btn{margin-top:14px}
 #fr{position:fixed;inset:0;width:100%;height:100%;border:0;background:#fff;display:none}
 </style>
 </head>
 <body>
-<div id="st"><main><div class="sp" id="sp" aria-hidden="true"></div><div class="code" id="code" hidden>404</div><h1 id="ttl">正在開啟工具</h1><p id="msg" role="status">請稍候…</p><a class="btn" id="dl" href="#" hidden>下載工具</a></main></div>
+<div id="st"><main><div class="sp" id="sp" aria-hidden="true"></div><div class="code" id="code" hidden>404</div><h1 id="ttl">正在開啟工具</h1><p id="msg" role="status">請稍候…</p><a class="btn" id="dl" href="#" hidden>下載工具</a><div id="vf" hidden><a class="btn sec" id="pv" href="#" target="_blank" rel="noopener" hidden>開啟上一版</a><small id="pvn" hidden></small><button type="button" class="btn" id="rv">重新登記</button><small id="rvn">校長專用：重新確認這一版的檔案（在垃圾桶就還原），不加版本、不發通知</small></div></main></div>
 <iframe id="fr" title="專屬工具" sandbox="allow-scripts allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-downloads"></iframe>
 <script>
 /*
@@ -40,6 +45,7 @@ a.btn{display:inline-block;margin-top:18px;padding:12px 22px;border-radius:12px;
  *   工具不需要父頁資料，不提供 postMessage 通道
  *   3.3.2 只開最新版：舊版網址（帶版本）一律失效；不再讀取後台登入 token
  *   v87.46 工具內 history.pushState／replaceState 失敗（獨立來源不能改網址）時改設 location.hash，不讓工具停在白畫面
+ *   v87.47 目前這一版讀不到（檔案在垃圾桶、不存在、過大）：顯示「此版本讀取失敗」、上一版連結、［重新登記］（校長；按下時才讀後台登入、向資料中心重新確認檔案）；連結本身無效仍是 404
  *   3.3.2 交付連結：tool.html#dl.<flowId>.<簽章>（領取教材 dl.html 轉入；下載期限內可操作，期限後顯示已失效）
  */
 window.addEventListener('hashchange', function () { location.reload(); });   // 換工具連結時重新載入
@@ -67,6 +73,34 @@ window.addEventListener('hashchange', function () { location.reload(); });   // 
     xd.onload = function () { if (xd.status !== 200) { fail('示範工具讀取失敗', '請稍後再試', false); return; } mount(xd.responseText); document.title = '示範工具（測試卡片）｜G.R.A.C.E Academy'; };
     xd.onerror = function () { fail('示範工具讀取失敗', '網路連線失敗', false); }; xd.send(); return;
   }
+  /* v87.47 此版本讀取失敗：上一版連結＋［重新登記］（校長） */
+  function verFail(j) {
+    var d = null; try { d = JSON.parse(j.detail || 'null'); } catch (e) { d = null; }
+    sp.style.display = 'none';
+    ttl.textContent = '此版本讀取失敗';
+    msg.textContent = (d && d.v ? '第 ' + d.v + ' 版：' : '') + (j.error || '工具檔案讀取失敗');
+    var pv = document.getElementById('pv'), pvn = document.getElementById('pvn'), rv = document.getElementById('rv'), rvn = document.getElementById('rvn');
+    if (d && d.prev && /^https:\/\/[^\s"'<>]+$/.test(d.prev.url || '')) {
+      pv.href = d.prev.url; pv.textContent = '開啟上一版（第 ' + d.prev.v + ' 版）'; pv.hidden = false;
+      pvn.textContent = (d.prev.at ? '上傳於 ' + d.prev.at : '') + (d.prev.trashed ? (d.prev.at ? '・' : '') + '檔案已在雲端硬碟垃圾桶，校長可還原後開啟' : ''); pvn.hidden = !pvn.textContent;
+    }
+    rv.onclick = function () {
+      var ss = null; try { ss = JSON.parse(localStorage.getItem('consult_admin_token') || 'null'); } catch (e) { ss = null; }
+      if (!ss || !ss.token || (ss.expiresAt && ss.expiresAt < Date.now())) { rvn.textContent = '請先在這個瀏覽器登入學院學習管理（校長），再回來按一次'; return; }
+      if (ss.role && ss.role !== 'principal') { rvn.textContent = '重新登記由校長操作'; return; }
+      rv.disabled = true; rv.textContent = '重新登記中…';
+      var y = new XMLHttpRequest(); y.open('POST', C.GAS_URL, true); y.setRequestHeader('Content-Type', 'text/plain;charset=utf-8'); y.timeout = 60000;
+      var back = function (t) { rv.disabled = false; rv.textContent = '重新登記'; rvn.textContent = t; };
+      y.onload = function () {
+        var r = null; try { r = JSON.parse(y.responseText); } catch (e) { r = null; }
+        if (r && r.ok) { rvn.textContent = r.data && r.data.reverify && r.data.reverify.state === 'restored' ? '已從垃圾桶還原，重新開啟中…' : '檔案確認正常，重新開啟中…'; setTimeout(function () { location.reload(); }, 800); }
+        else back((r && r.error) || '重新登記失敗，請稍後再試');
+      };
+      y.onerror = y.ontimeout = function () { back('網路連線失敗，請稍後再試'); };
+      y.send(JSON.stringify({ action: 'tooltest_upload_finish', reverify: true, rosterKey: m[1], by: 'principal', token: ss.token }));
+    };
+    document.getElementById('vf').hidden = false;
+  }
   if (!m && !dl) { fail('找不到這個工具', '連結不完整，請回到後台或 LINE 重新開啟最新的工具連結', true); return; }
   if (!C.GAS_URL) { fail('預覽模式', '正式網站會在這裡開啟可直接操作的工具', false); return; }
   var req = dl ? { action: 'tool_open', dl: dl[1] } : { action: 'tool_open', tool: m[1], k: m[2] };
@@ -88,6 +122,7 @@ window.addEventListener('hashchange', function () { location.reload(); });   // 
     if (!j || !j.ok || !j.data || typeof j.data.html !== 'string') {
       if (j && j.code === 'ERR_DL_EXPIRED') fail('下載期限已過', '教材連結已失效。教材為一次性交付，不會補發；如有特殊狀況請聯繫官方 LINE。', false);
       else if (j && j.code === 'ERR_RATE_LIMIT') fail('開啟次數過多', '請稍候一分鐘再重新整理', false);
+      else if (m && j && (j.code === 'ERR_TOO_LARGE' || j.code === 'ERR_VERIFY' || (j.code === 'ERR_NOT_FOUND' && j.detail))) verFail(j);
       else fail('找不到這個工具', (j && j.error) || '連結已失效，請回到後台重新開啟最新的工具連結', true);
       return;
     }
