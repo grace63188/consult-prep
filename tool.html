@@ -9,7 +9,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="no-referrer">
 <title>專屬工具｜G.R.A.C.E Academy</title>
-<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.23_2328"};</script>
+<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.24_0000"};</script>
 <style>
 :root{color-scheme:dark;--ink:#110E0F;--t1:#F6EFEA;--t3:#A0948F;--rose:#FF2E8B;--gold:#C9A27A}
 *{box-sizing:border-box}
@@ -63,6 +63,7 @@ body.hd #st{padding-top:72px}
  *   3.3.2 交付連結：tool.html#dl.<flowId>.<簽章>（領取教材 dl.html 轉入；下載期限內可操作，期限後顯示已失效）
  *   v87.54 頁首［下載原始檔］（助教測試、校長檢查可直接存下原檔）：
  *     已讀到的 HTML → 直接存檔（原始檔名；與原檔位元組數相同才用）；沒讀到、或位元組數不符 → 這個瀏覽器登入過學院學習管理時，以 lms_zip_chunk { tool:true } 分段讀原檔（同時 4 段）
+ *     v87.55 tool_open 讀取對沖：25 秒沒有回應再送一筆（最多 3 筆）；等待超過 20 秒先顯示［下載原始檔］
  *     顯示檢查：工具文件開始解析時回報（postMessage，只回報狀態、不傳資料）；iframe 載入後 4 秒仍沒有回報、或 60 秒內沒有載入 → 改顯示說明＋［下載原始檔］（大型 HTML 在手機上顯示不出來時不留白畫面）
  */
 window.addEventListener('hashchange', function () { location.reload(); });   // 換工具連結時重新載入
@@ -175,11 +176,21 @@ window.addEventListener('hashchange', function () { location.reload(); });   // 
   var req = dl ? { action: 'tool_open', dl: dl[1] } : { action: 'tool_open', tool: m[1], k: m[2] };
   if (m && m[3]) req.v = Number(m[3]);
   var slow = setTimeout(function () { msg.textContent = '連線中，請稍候…'; }, 3000);
-  var x = new XMLHttpRequest();
-  x.open('POST', C.GAS_URL, true);
-  x.setRequestHeader('Content-Type', 'text/plain;charset=utf-8');
-  x.timeout = 120000;   // v87.54 大型 HTML（9 MB 以上）在手機網路上 60 秒可能不夠
-  x.onload = function () {
+  /* v87.55 讀取對沖（實測 2026.11.23 線上：同一個 tool_open 有時送出後石沉大海 120 秒，再送一次 10 秒內回來）：
+   *  25 秒沒有回應 → 再送一筆相同的請求，先回來的算數、其餘中止（每連結最多 3 筆，資料中心每分鐘上限 30 次）；等待超過 20 秒時先顯示［下載原始檔］（學院學習管理登入者） */
+  var xs = [], over = false, bad = 0, hedgeT = 0, HEDGE_MS = 25000;
+  function send() {
+    var x = new XMLHttpRequest(); xs.push(x);
+    x.open('POST', C.GAS_URL, true);
+    x.setRequestHeader('Content-Type', 'text/plain;charset=utf-8');
+    x.timeout = 120000;   // v87.54 大型 HTML（9 MB 以上）在手機網路上 60 秒可能不夠
+    x.onload = function () { if (over) return; over = true; clearTimeout(hedgeT); xs.forEach(function (y) { if (y !== x) { try { y.abort(); } catch (e) { /* ignore */ } } }); got(x); };
+    x.onerror = x.ontimeout = function () { if (over) return; bad++; if (bad < xs.length) return; if (xs.length < 3) { clearTimeout(hedgeT); send(); arm(); return; } over = true; clearTimeout(hedgeT); clearTimeout(slow); fail('無法開啟工具', '網路連線失敗，請稍後再試' + (m ? '；也可按［下載原始檔］直接下載' : ''), false, !!m); };
+    x.send(JSON.stringify(req));
+  }
+  function arm() { hedgeT = setTimeout(function () { if (over || xs.length >= 3) return; msg.textContent = '資料中心回應較慢，正在重新連線…'; send(); arm(); }, HEDGE_MS); }
+  setTimeout(function () { if (!over && m && adminTok()) { document.getElementById('dl2').hidden = false; dn.textContent = '工具還在讀取；也可以先下載原始檔測試'; dn.hidden = false; } }, 20000);
+  function got(x) {
     clearTimeout(slow);
     var j = null; try { j = JSON.parse(x.responseText); } catch (e) { j = null; }
     if (!j && x.status === 200 && x.responseText && x.responseText.length > 1048576) { fail('工具無法在這個瀏覽器顯示', '檔案較大、瀏覽器讀取失敗。請按［下載原始檔］存到裝置後開啟測試，或改用電腦的 Chrome 開啟這個連結。', false, !!m); return; }   // v87.54
@@ -200,9 +211,8 @@ window.addEventListener('hashchange', function () { location.reload(); });   // 
     document.title = (j.data.title || '專屬工具') + '｜G.R.A.C.E Academy';
     T.html = j.data.html; T.title = j.data.title || '專屬工具'; T.name = j.data.name || ''; T.size = Number(j.data.size) || 0; T.version = Number(j.data.version) || 0;
     try { mount(j.data.html, true); } catch (e) { fail('工具無法在這個瀏覽器顯示', '請按［下載原始檔］存到裝置後開啟測試', false, true); }
-  };
-  x.onerror = x.ontimeout = function () { clearTimeout(slow); fail('無法開啟工具', '網路連線失敗，請稍後再試' + (m ? '；也可按［下載原始檔］直接下載' : ''), false, !!m); };
-  x.send(JSON.stringify(req));
+  }
+  send(); arm();
 })();
 </script>
 </body>
