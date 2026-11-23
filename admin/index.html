@@ -7,7 +7,9 @@
 <title>已移到學院學習管理</title>
 <!-- 學院管理 v87.46（校長 2026.11.23）：舊後台「諮詢教材·專屬訂製」停用。每個舊路徑（含 #/…）轉到學院學習管理的對應頁面；
      #/prep/{make|test|price|order|deliver}[/學姐鍵]、#/prep/學姐鍵 → 諮詢服務 › 教材進度（f＝階段、k＝學姐鍵）；#/material/wait → 等待下單、#/material/ready → 待交付；
-     #/r/回執 → 交付紀錄；#/track → 諮詢場次（前置作業未交）；#/prep → 教材進度；其他 → 今日工作台。與 src/flex.js topgodHash 同一套對應 -->
+     #/r/回執 → 交付紀錄；#/track → 諮詢場次（前置作業未交）；#/prep → 教材進度；其他 → 今日工作台。與 src/flex.js topgodHash 同一套對應
+     學院管理同步 4.1.8：舊書籤開的三個路徑——#/line-map（LINE 對應書籤）→ 教材進度 › LINE 對應（學院學習管理接手書籤的訊息）；
+     #/order-sync（同步學院下單）、#/roster-sync（沒有同步金鑰的學院管理同步）→ 不轉址：回覆書籤一則說明（已改為自動同步／請重新拖曳）後關閉這個視窗 -->
 <style>
   :root{color-scheme:dark}
   body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box;background:#110E0F;color:#F3E9E2;font:15px/1.7 -apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC",sans-serif}
@@ -27,9 +29,37 @@
     if (p[0] === 'material') return prog(ST[p[1]] || 'waiting', key(p[2]));
     if (p[0] === 'r' && p[1]) return prog('records', '', String(p[1]).slice(0, 60));
     if (p[0] === 'track') return '#/consult/schedule?flow=prep';
+    if (p[0] === 'line-map') return '#/custom/progress?line=1';
     return '#/workbench/today';
   }
   window.GRACE_ADMIN_RETIRED = { map: map, BASE: BASE };
+  /* 4.1.8 舊書籤（同步學院下單、沒有同步金鑰的學院管理同步）：回覆說明、不轉址 */
+  var SITE = /^https:\/\/(www\.)?graceschool\.com\.tw$/;
+  var BM = {
+    'order-sync': { hello: 'grace-orders-hello', ack: 'grace-orders-ack', text: '「同步學院下單」書籤已停用：官網下單改為自動同步（學院管理同步或自動同步小工具每 15 分鐘比對），不必再按這個書籤，可從書籤列刪除。' },
+    'roster-sync': { hello: 'grace-roster-hello', ack: 'grace-roster-ack', text: '這個書籤沒有同步金鑰（舊版書籤）：請到學院學習管理「系統設定 › 一般」重新拖曳「學院管理同步」書籤，再刪掉這個舊書籤。' }
+  };
+  function bmOf(hash) { var h = String(hash || '').replace(/^#?\/?/, '').split(/[?\/]/)[0]; return BM[h] ? h : ''; }
+  window.GRACE_ADMIN_RETIRED.bmOf = bmOf; window.GRACE_ADMIN_RETIRED.BM = BM;
+  var bk = bmOf(location.hash);
+  if (bk) {
+    var B = BM[bk], replied = false;
+    window.addEventListener('message', function (ev) {
+      var d = ev.data;
+      if (!SITE.test(String(ev.origin)) || !d || typeof d !== 'object' || d.type !== B.hello || replied) return;
+      replied = true;
+      try { (ev.source || window.opener).postMessage({ type: B.ack, version: 1, ok: false, error: B.text }, ev.origin); } catch (e) { /* 視窗已關閉 */ }
+      setTimeout(function () { try { if (window.opener) window.close(); } catch (e) { /* ignore */ } }, 1500);
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+      var m = document.querySelector('main'); if (!m) return;
+      m.querySelector('b').textContent = bk === 'order-sync' ? '「同步學院下單」已改為自動同步' : '請重新拖曳「學院管理同步」書籤';
+      m.querySelector('div').textContent = B.text;
+      var a = document.getElementById('go'); a.textContent = '前往系統設定'; a.href = BASE + '#/settings/general';
+      var sm = m.querySelector('small'); if (sm) sm.textContent = '這個視窗會自動關閉。';
+    });
+    return;
+  }
   var to = BASE + map(location.hash);
   if (!/[?&]noredirect=1/.test(location.search)) location.replace(to);
   document.addEventListener('DOMContentLoaded', function () { var a = document.getElementById('go'); if (a) a.href = to; });
