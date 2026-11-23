@@ -9,7 +9,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="no-referrer">
 <title>專屬工具｜G.R.A.C.E Academy</title>
-<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.24_0000"};</script>
+<script>window.CONSULT_CONFIG = {"GAS_URL": "https://script.google.com/macros/s/AKfycbyi0Ft0XQtzcJUNyGWd4SF-isIKl5gW8ANhwBm7iWQossIuOGyXiC_inruOXF_M4MaV/exec", "MODE": "gas", "BUILD": "2026.11.24_0104"};</script>
 <style>
 :root{color-scheme:dark;--ink:#110E0F;--t1:#F6EFEA;--t3:#A0948F;--rose:#FF2E8B;--gold:#C9A27A}
 *{box-sizing:border-box}
@@ -31,6 +31,9 @@ a.btn,button.btn{display:inline-block;margin-top:18px;padding:12px 22px;border-r
 #vf small{display:block;margin-top:8px;color:var(--t3);font-size:13px;line-height:1.6}
 #vf .btn{margin-top:14px}
 #fr{position:fixed;left:0;right:0;top:0;bottom:0;width:100%;height:100%;border:0;background:#fff;display:none}
+#nb{position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:9;display:flex;align-items:center;gap:10px;max-width:calc(100vw - 24px);padding:8px 12px;border-radius:12px;background:rgba(17,14,15,.94);border:1px solid var(--gold);color:var(--t1);font-size:13px;line-height:1.5;box-shadow:0 6px 24px rgba(0,0,0,.35)}
+#nb button{margin:0;padding:6px 12px;min-height:32px;border-radius:9px;border:0;background:linear-gradient(180deg,#FF3D93,#E8247E);color:#fff;font:inherit;font-weight:700;cursor:pointer;white-space:nowrap}
+#nb .x{background:none;border:1px solid rgba(201,162,122,.5);color:var(--gold);font-weight:400}
 /* v87.54 頁首：工具名稱＋［下載原始檔］（工具顯示時固定在上方，工具在下方） */
 #hd{position:fixed;top:0;left:0;right:0;height:48px;display:flex;align-items:center;gap:10px;padding:0 max(10px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left));background:var(--ink);border-bottom:1px solid rgba(201,162,122,.3);z-index:3}
 #hd .t{flex:1;min-width:0;font-size:14px;font-weight:700;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -49,6 +52,7 @@ body.hd #st{padding-top:72px}
 <header id="hd" hidden><div class="t" id="hdt"></div><button type="button" class="dlb" id="dlo" data-dl="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="M7 10l5 5 5-5"/><path d="M5 19h14"/></svg><span>下載原始檔</span></button></header>
 <div id="hn" role="status" hidden></div>
 <div id="st"><main><div class="sp" id="sp" aria-hidden="true"></div><div class="code" id="code" hidden>404</div><h1 id="ttl">正在開啟工具</h1><p id="msg" role="status">請稍候…</p><a class="btn" id="dl" href="#" hidden>下載工具</a><button type="button" class="dlb" id="dl2" data-dl="1" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="M7 10l5 5 5-5"/><path d="M5 19h14"/></svg><span>下載原始檔</span></button><small id="dn" role="status" hidden></small><div id="vf" hidden><a class="btn sec" id="pv" href="#" target="_blank" rel="noopener" hidden>開啟上一版</a><small id="pvn" hidden></small><button type="button" class="btn" id="rv">重新登記</button><small id="rvn">校長專用：重新確認這一版的檔案（在垃圾桶就還原），不加版本、不發通知</small></div></main></div>
+<div id="nb" role="status" hidden><span id="nbt"></span><button type="button" id="nbg" hidden>載入新版</button><button type="button" class="x" id="nbx" aria-label="關閉">✕</button></div>
 <iframe id="fr" title="專屬工具" sandbox="allow-scripts allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-downloads"></iframe>
 <script>
 /*
@@ -60,6 +64,14 @@ body.hd #st{padding-top:72px}
  *   3.3.2 只開最新版：舊版網址（帶版本）一律失效；不再讀取後台登入 token
  *   v87.46 工具內 history.pushState／replaceState 失敗（獨立來源不能改網址）時改設 location.hash，不讓工具停在白畫面
  *   v87.47 目前這一版讀不到（檔案在垃圾桶、不存在、過大）：顯示「此版本讀取失敗」、上一版連結、［重新登記］（校長；按下時才讀後台登入、向資料中心重新確認檔案）；連結本身無效仍是 404
+ *   v87.56 先從本機開啟（校長 2026.11.23：開啟工具 9 MB 要等 11–16 秒）：
+ *     學院學習管理（同一個網域）在畫面出現［開啟工具］時就把整份 HTML 讀好存進這台裝置（IndexedDB grace_tools）；這一頁自己讀到的也存一份
+ *     本機有、而且連結上的 token 與存入時相同 → 立刻開啟（不等資料中心），再確認版本：
+ *       ・學院學習管理兩分鐘內才確認過目前版本（L: 紀錄）而且相同 → 不再呼叫資料中心
+ *       ・其餘 → 背景照舊向資料中心讀整份（tool_open，含 v87.55 的對沖）比對
+ *     版本不同：還沒開始操作 → 自動換成新版並提示「已更新為第 N 版」；已在操作 → 上方提示列［載入新版］（不打斷操作）
+ *     資料中心回「找不到／讀取失敗」→ 刪掉本機那份、重新載入走原本的畫面；連不上 → 維持本機那份
+ *     交付連結（#dl.…，有下載期限）不留在本機、每次都向資料中心讀
  *   3.3.2 交付連結：tool.html#dl.<flowId>.<簽章>（領取教材 dl.html 轉入；下載期限內可操作，期限後顯示已失效）
  *   v87.54 頁首［下載原始檔］（助教測試、校長檢查可直接存下原檔）：
  *     已讀到的 HTML → 直接存檔（原始檔名；與原檔位元組數相同才用）；沒讀到、或位元組數不符 → 這個瀏覽器登入過學院學習管理時，以 lms_zip_chunk { tool:true } 分段讀原檔（同時 4 段）
@@ -185,14 +197,15 @@ window.addEventListener('hashchange', function () { location.reload(); });   // 
     x.setRequestHeader('Content-Type', 'text/plain;charset=utf-8');
     x.timeout = 120000;   // v87.54 大型 HTML（9 MB 以上）在手機網路上 60 秒可能不夠
     x.onload = function () { if (over) return; over = true; clearTimeout(hedgeT); xs.forEach(function (y) { if (y !== x) { try { y.abort(); } catch (e) { /* ignore */ } } }); got(x); };
-    x.onerror = x.ontimeout = function () { if (over) return; bad++; if (bad < xs.length) return; if (xs.length < 3) { clearTimeout(hedgeT); send(); arm(); return; } over = true; clearTimeout(hedgeT); clearTimeout(slow); fail('無法開啟工具', '網路連線失敗，請稍後再試' + (m ? '；也可按［下載原始檔］直接下載' : ''), false, !!m); };
+    x.onerror = x.ontimeout = function () { if (over) return; bad++; if (bad < xs.length) return; if (xs.length < 3) { clearTimeout(hedgeT); send(); arm(); return; } over = true; clearTimeout(hedgeT); clearTimeout(slow); if (shown) return; fail('無法開啟工具', '網路連線失敗，請稍後再試' + (m ? '；也可按［下載原始檔］直接下載' : ''), false, !!m); };
     x.send(JSON.stringify(req));
   }
   function arm() { hedgeT = setTimeout(function () { if (over || xs.length >= 3) return; msg.textContent = '資料中心回應較慢，正在重新連線…'; send(); arm(); }, HEDGE_MS); }
-  setTimeout(function () { if (!over && m && adminTok()) { document.getElementById('dl2').hidden = false; dn.textContent = '工具還在讀取；也可以先下載原始檔測試'; dn.hidden = false; } }, 20000);
+  setTimeout(function () { if (!over && !shown && m && adminTok()) { document.getElementById('dl2').hidden = false; dn.textContent = '工具還在讀取；也可以先下載原始檔測試'; dn.hidden = false; } }, 20000);
   function got(x) {
     clearTimeout(slow);
     var j = null; try { j = JSON.parse(x.responseText); } catch (e) { j = null; }
+    if (shown) { gotBg(j); return; }   // v87.56 本機那份已經開著：只比對版本
     if (!j && x.status === 200 && x.responseText && x.responseText.length > 1048576) { fail('工具無法在這個瀏覽器顯示', '檔案較大、瀏覽器讀取失敗。請按［下載原始檔］存到裝置後開啟測試，或改用電腦的 Chrome 開啟這個連結。', false, !!m); return; }   // v87.54
     if (j && j.ok && j.data && /^https:\/\/[^\s"'<>]+$/.test(j.data.go || '')) {   // 最新版為 ZIP／網址
       document.title = (j.data.title || '專屬工具') + '｜G.R.A.C.E Academy';
@@ -208,11 +221,75 @@ window.addEventListener('hashchange', function () { location.reload(); });   // 
       else fail('找不到這個工具', (j && j.error) || '連結已失效，請回到後台重新開啟最新的工具連結', true);
       return;
     }
-    document.title = (j.data.title || '專屬工具') + '｜G.R.A.C.E Academy';
-    T.html = j.data.html; T.title = j.data.title || '專屬工具'; T.name = j.data.name || ''; T.size = Number(j.data.size) || 0; T.version = Number(j.data.version) || 0;
-    try { mount(j.data.html, true); } catch (e) { fail('工具無法在這個瀏覽器顯示', '請按［下載原始檔］存到裝置後開啟測試', false, true); }
+    if (!showData(j.data, 'net', '')) return;
+    if (m && !m[3]) keep(j.data, '');   // v87.56 存一份在這台裝置（交付連結有下載期限，不留）
   }
-  send(); arm();
+  /* ── v87.56 本機那一份（IndexedDB grace_tools；與學院學習管理 ui/toolcache.js 同一個格式）── */
+  var T0 = Date.now(), H = m ? m[1] : '', TK = m ? m[2] : '', DB = null, shown = null, PHONE = /iP(hone|ad|od)|Android|Mobile/i.test(navigator.userAgent || '');
+  function showData(data, from, f) {
+    document.title = (data.title || '專屬工具') + '｜G.R.A.C.E Academy';
+    T.html = data.html; T.title = data.title || '專屬工具'; T.name = data.name || ''; T.size = Number(data.size) || 0; T.version = Number(data.version) || 0;
+    try { mount(data.html, true); } catch (e) { fail('工具無法在這個瀏覽器顯示', '請按［下載原始檔］存到裝置後開啟測試', false, true); return false; }
+    shown = { v: T.version, f: f || '', len: data.html.length };
+    window.__toolOpen = { from: from, ms: Date.now() - T0, v: shown.v, bytes: shown.len };
+    document.documentElement.setAttribute('data-tool-from', from);
+    return true;
+  }
+  function idb(cb) {
+    var done = false, t = 0, fin = function (d) { if (done) { try { if (d) d.close(); } catch (e) {} return; } done = true; clearTimeout(t); cb(d); };
+    t = setTimeout(function () { fin(null); }, 1500);
+    try { var r = indexedDB.open('grace_tools', 1); r.onupgradeneeded = function () { var d = r.result; if (!d.objectStoreNames.contains('t')) d.createObjectStore('t', { keyPath: 'k' }); }; r.onsuccess = function () { fin(r.result); }; r.onerror = r.onblocked = function () { fin(null); }; } catch (e) { fin(null); }
+  }
+  function getRec(k, cb) { if (!DB) return cb(null); try { var q = DB.transaction('t', 'readonly').objectStore('t').get(k); q.onsuccess = function () { cb(q.result || null); }; q.onerror = function () { cb(null); }; } catch (e) { cb(null); } }
+  function write(fn) { if (!DB) return; try { fn(DB.transaction('t', 'readwrite').objectStore('t')); } catch (e) { /* 容量不足或無痕：這次照樣開啟 */ } }
+  function forget() { write(function (st) { st.delete(H); st.delete('M:' + H); st.delete('L:' + H); }); }
+  function keep(data, f) {   // 存一份（單一工具 30 MB 以內）＋目錄＋目前版本；超過個數或容量由最久沒用的開始刪
+    var html = data.html, at = Date.now(), v = Number(data.version) || 0;
+    if (!DB || !html || html.length > 30 * 1048576) return;
+    write(function (st) {
+      st.put({ k: H, tk: TK, v: v, f: f || '', title: String(data.title || ''), name: String(data.name || ''), html: html, at: at });
+      st.put({ k: 'M:' + H, tk: TK, v: v, f: f || '', size: html.length, at: at });
+      st.put({ k: 'L:' + H, v: v, f: f || '', at: at });
+      var q = st.getAll(IDBKeyRange.bound('M:', 'M:\uffff'));
+      q.onsuccess = function () {
+        var rows = (q.result || []).sort(function (a, b) { return a.at - b.at; }), max = PHONE ? 4 : 8, cap = (PHONE ? 60 : 160) * 1048576, total = 0, n = rows.length, i;
+        for (i = 0; i < rows.length; i++) total += rows[i].size || 0;
+        for (i = 0; i < rows.length && (n > max || total > cap); i++) { var k = String(rows[i].k).slice(2); if (k === H) continue; st.delete(k); st.delete('M:' + k); n--; total -= rows[i].size || 0; }
+      };
+    });
+  }
+  var nb = document.getElementById('nb'), nbt = document.getElementById('nbt'), nbg = document.getElementById('nbg'), nbTimer = 0, using = false;
+  document.getElementById('nbx').onclick = function () { nb.hidden = true; };
+  function bar(text, onGo, ms) { clearTimeout(nbTimer); nbt.textContent = text; nbg.hidden = !onGo; nbg.onclick = onGo ? function () { nb.hidden = true; onGo(); } : null; nb.hidden = false; if (ms) nbTimer = setTimeout(function () { nb.hidden = true; }, ms); }
+  window.addEventListener('blur', function () { setTimeout(function () { if (document.activeElement === document.getElementById('fr')) using = true; }, 0); });   // 點進工具＝已在操作，換新版前先問
+  /** 本機那份開著時資料中心的回應：相同 → 記下確認時間；版本不同 → 換新版；找不到／讀不到 → 刪掉本機那份重新載入；其餘（連不上、次數過多）維持本機那份 */
+  function gotBg(j) {
+    if (!j) return;
+    if (j.ok && j.data && typeof j.data.html === 'string') {
+      if (Number(j.data.version) === shown.v && j.data.html.length === shown.len) { write(function (st) { st.put({ k: 'L:' + H, v: shown.v, f: shown.f, at: Date.now() }); }); return; }
+      keep(j.data, '');
+      var old = shown.v, go = function () { using = false; if (showData(j.data, 'net', '')) bar('已更新為第 ' + (Number(j.data.version) || '') + ' 版', null, 4000); };
+      if (using) bar('第 ' + (Number(j.data.version) || '') + ' 版已上傳，目前開著的是第 ' + old + ' 版', go, 0); else go();
+      return;
+    }
+    if (j.code === 'ERR_RATE_LIMIT' || /^ERR_(INTERNAL|TIMEOUT|MEMORY|HTTP)/.test(j.code || '')) return;
+    forget(); setTimeout(function () { location.reload(); }, 50);
+  }
+  function start() { send(); arm(); }
+  if (!m || m[3] || typeof indexedDB === 'undefined') { start(); return; }
+  idb(function (d) {
+    DB = d;
+    getRec(H, function (rec) {
+      if (!(rec && rec.tk === TK && typeof rec.html === 'string' && rec.html)) { start(); return; }
+      clearTimeout(slow);
+      if (!showData({ html: rec.html, title: rec.title, name: rec.name, version: rec.v, size: rec.html.length }, 'local', rec.f)) { shown = null; start(); return; }
+      write(function (st) { st.put({ k: 'M:' + H, tk: TK, v: rec.v, f: rec.f || '', size: rec.html.length, at: Date.now() }); });   // 最近用過
+      getRec('L:' + H, function (L) {
+        if (L && Date.now() - Number(L.at || 0) < 120000 && Number(L.v) === Number(rec.v) && (!L.f || !rec.f || L.f === rec.f)) return;   // 學院學習管理兩分鐘內確認過：就是目前的版本
+        start();   // 背景向資料中心讀整份比對（畫面已經開著，不必等）
+      });
+    });
+  });
 })();
 </script>
 </body>
